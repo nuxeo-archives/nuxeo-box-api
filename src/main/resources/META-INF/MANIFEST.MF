@@ -1,0 +1,10 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Name: nuxeo-box-api
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Nuxeo
+Bundle-Version: 1.0.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: nuxeo-box-api
+Nuxeo-WebModule: org.nuxeo.ecm.webengine.app.WebEngineModule;name=box;package=com/nuxeo/box/api
