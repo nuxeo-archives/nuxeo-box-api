@@ -13,6 +13,7 @@
  *
  * Contributors:
  *     vpasquier <vpasquier@nuxeo.com>
+ *     dmetzler <dmetzler@nuxeo.com>
  */
 
 package com.nuxeo.box.api;
@@ -39,7 +40,7 @@ import javax.ws.rs.core.Response;
  */
 @Path("/box")
 @Produces("text/html;charset=UTF-8")
-@WebObject(type = "Box")
+@WebObject(type = "box")
 public class Box extends ModuleRoot {
 
     @Path("/")
@@ -59,7 +60,7 @@ public class Box extends ModuleRoot {
 
     @Path("/folders")
     public Object doGetFolder() {
-        return newObject("Folder");
+        return newObject("folder");
     }
 
     @Override

@@ -7,4 +7,4 @@ Bundle-Vendor: Nuxeo
 Bundle-Version: 1.0.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: nuxeo-box-api
-Nuxeo-WebModule: org.nuxeo.ecm.webengine.app.WebEngineModule;name=box;package=com/nuxeo/box/api
+Nuxeo-WebModule: com.nuxeo.box.api.BoxAPIModule;name=box;package=com/nuxeo/box/api

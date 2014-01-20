@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -12,43 +12,43 @@
  * Lesser General Public License for more details.
  *
  * Contributors:
- *     dmetzler
+ *     vpasquier<vpasquier@nuxeo.com>
+ *     dmetzler <dmetzler@nuxeo.com>
  */
-package com.nuxeo.box.api;
+package com.nuxeo.box.api.folder;
 
+import com.nuxeo.box.api.folder.io.BoxFolder;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
-import org.nuxeo.ecm.core.rest.DocumentObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
+import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
+import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 /**
- * This object basically overrides the default DocumentObject that doesn't know
- * how to produce/consume JSON
+ * WebObject for a Box Folder
  *
  * @since 5.9.2
  */
-@WebObject(type = "Folder")
-@Produces({ "application/json+nxentity", MediaType.APPLICATION_JSON })
-public class JSONFolderObject extends DocumentObject {
+@WebObject(type = "folder")
+public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
-    @Override
     @GET
-    public DocumentModelList doGet() throws ClientException {
-        return ctx.getCoreSession().getChildren(doc.getRef());
+    public Object doGet() {
+        return getView("index");
     }
 
-    @Path("/")
-    public Object doGetRepository(@PathParam("id")
+    @GET
+    @Path("{folderId}")
+    public Object doGetRepository(@PathParam("folderId")
     String folderId) throws NoSuchDocumentException, ClientException {
-        return ctx.getCoreSession().getDocument(new IdRef(folderId));
+        DocumentModel folder = ctx.getCoreSession().getDocument(new IdRef(folderId));
+        return new BoxFolder(folder.getName(), folder);
     }
 
 }
