@@ -18,6 +18,7 @@
 
 package com.nuxeo.box.api;
 
+import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
@@ -53,7 +54,6 @@ public class Box extends ModuleRoot {
             } catch (final ClientException e) {
                 throw new WebResourceNotFoundException(e.getMessage());
             }
-
         }
         return newObject("repo");
     }
@@ -65,15 +65,7 @@ public class Box extends ModuleRoot {
 
     @Override
     public Object handleError(WebApplicationException e) {
-        if (e instanceof WebSecurityException) {
-            return Response.status(401).entity("not authorized").type(
-                    "text/plain").build();
-        } else if (e instanceof WebResourceNotFoundException) {
-            return Response.status(404).entity(e.getMessage()).type(
-                    "text/plain").build();
-        } else {
-            return super.handleError(e);
-        }
+        return new BoxJSONException(e);
     }
 
 }

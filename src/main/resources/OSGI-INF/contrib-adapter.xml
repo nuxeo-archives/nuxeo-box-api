@@ -1,0 +1,10 @@
+<component name="com.nuxeo.box.api.folder.io.adapter">
+
+  <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService"
+             point="adapters">
+    <adapter
+            class="com.nuxeo.box.api.folder.io.BoxFolderAdapter"
+            factory="com.nuxeo.box.api.folder.io.BoxFolderFactory"/>
+  </extension>
+
+</component>

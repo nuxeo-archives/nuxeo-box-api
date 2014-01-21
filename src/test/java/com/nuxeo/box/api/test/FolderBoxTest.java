@@ -28,6 +28,6 @@ public class FolderBoxTest {
 
     @Test
     public void itCanWriteABoxFolder() throws Exception {
-        //todo
+
     }
 }

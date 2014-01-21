@@ -17,7 +17,8 @@
  */
 package com.nuxeo.box.api.folder;
 
-import com.nuxeo.box.api.folder.io.BoxFolder;
+import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.nuxeo.box.api.folder.io.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
@@ -29,6 +30,8 @@ import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * WebObject for a Box Folder
@@ -36,6 +39,7 @@ import javax.ws.rs.PathParam;
  * @since 5.9.2
  */
 @WebObject(type = "folder")
+@Produces({ "application/json+nxentity", MediaType.APPLICATION_JSON })
 public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
@@ -46,9 +50,11 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     @GET
     @Path("{folderId}")
     public Object doGetRepository(@PathParam("folderId")
-    String folderId) throws NoSuchDocumentException, ClientException {
+    String folderId) throws NoSuchDocumentException, ClientException, BoxJSONException {
         DocumentModel folder = ctx.getCoreSession().getDocument(new IdRef(folderId));
-        return new BoxFolder(folder.getName(), folder);
+        BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
+        folderAdapter.newBoxInstance(ctx.getCoreSession());
+        return folderAdapter.getJSONBoxFolder();
     }
 
 }
