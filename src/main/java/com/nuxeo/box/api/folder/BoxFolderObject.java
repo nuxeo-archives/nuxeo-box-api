@@ -49,7 +49,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{folderId}")
-    public Object doGetRepository(@PathParam("folderId")
+    public Object doGetFolder(@PathParam("folderId")
     String folderId) throws NoSuchDocumentException, ClientException, BoxJSONException {
         DocumentModel folder = ctx.getCoreSession().getDocument(new IdRef(folderId));
         BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
