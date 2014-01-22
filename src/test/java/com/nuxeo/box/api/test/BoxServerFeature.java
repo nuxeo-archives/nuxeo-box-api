@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -12,22 +12,20 @@
  * Lesser General Public License for more details.
  *
  * Contributors:
- *     dmetzler
+ *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
 package com.nuxeo.box.api.test;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.ecm.webengine.test.WebEngineFeature;
+import org.nuxeo.runtime.test.runner.Deploy;
+import org.nuxeo.runtime.test.runner.Features;
+import org.nuxeo.runtime.test.runner.SimpleFeature;
 
 /**
  * @since 5.9.2
  */
-@RunWith(FeaturesRunner.class)
-public class FolderBoxTest {
+@Features({ WebEngineFeature.class })
+@Deploy({ "com.nuxeo.box.api" })
+public class BoxServerFeature extends SimpleFeature {
 
-    @Test
-    public void itCanWriteABoxFolder() throws Exception {
-
-    }
 }
