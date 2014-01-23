@@ -68,25 +68,25 @@ public class BoxFolderAdapter {
      * @throws BoxJSONException
      */
     public void newBoxInstance(CoreSession session) throws ClientException, BoxJSONException {
-        DocumentModel parent = session.getParentDocument(doc.getRef());
-        DocumentModelList children = session.getChildren(doc.getRef());
-
         Map<String, Object> boxProperties = new LinkedHashMap<>();
 
         boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
         boxProperties.put(BoxItem.FIELD_ID, doc.getId());
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, "sequence_id");
-        boxProperties.put(BoxItem.FIELD_ETAG, "etag");
+        // TODO: verify these properties
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, "1");
+        boxProperties.put(BoxItem.FIELD_ETAG, "1");
+
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT, ISODateTimeFormat.dateTime().print(
                 new DateTime(doc.getPropertyValue("dc:created"))));
         boxProperties.put(BoxItem.FIELD_MODIFIED_AT, ISODateTimeFormat.dateTime().print(
                 new DateTime(doc.getPropertyValue("dc:modified"))));
         boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description").toString());
-        // size -> quota
+
+        // size -> TODO quota?
         boxProperties.put(BoxItem.FIELD_SIZE, 12.0);
 
-        // path_collection -> Quota service?
+        // path_collection -> TODO quota?
         Map<String, Object> boxCollectionProperties = new LinkedHashMap<>();
         boxCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
         boxCollectionProperties.put(BoxCollection.FIELD_ENTRIES, new ArrayList<BoxTypedObject>());
@@ -108,9 +108,10 @@ public class BoxFolderAdapter {
         // Owner
         boxProperties.put(BoxItem.FIELD_OWNED_BY, boxCreator);
 
-        // iscanpreview -> BoxSharedLinkPermissions?
+        // Shared Link -> TODO wait for collection feature
         boxProperties.put(BoxItem.FIELD_SHARED_LINK, new BoxSharedLink());
 
+        // Email update -> TODO wait for collection feature
         LinkedHashMap<String, Object> boxEmailProperties = new LinkedHashMap<>();
         boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "open");
         boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "email");
@@ -125,11 +126,11 @@ public class BoxFolderAdapter {
         boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
         ArrayList<BoxTypedObject> boxTypedObjects = fillChildren(session.getChildren(doc.getRef()));
         boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES, boxTypedObjects);
-        // offset and limits are missing?
+        // offset and limits are missing in Box SDK -> TODO verify SDK compatibility
         BoxCollection boxItemCollection = new BoxCollection(boxItemCollectionProperties);
         boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION, boxItemCollection);
 
-        // Tags
+        // Tags -> Tag service
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
 
         boxFolder = new BoxFolder(boxProperties);
