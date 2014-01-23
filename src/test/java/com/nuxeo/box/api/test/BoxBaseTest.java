@@ -56,7 +56,7 @@ public class BoxBaseTest {
         config.getClasses().add(MultiPartWriter.class);
         Client client = Client.create(config);
         client.addFilter(new HTTPBasicAuthFilter(user, password));
-        return client.resource("http://localhost:18090/nuxeo/site/box/2.0/");
+        return client.resource("http://localhost:18090/box/2.0/");
     }
 
     protected ClientResponse getResponse(RequestType requestType, String path) {

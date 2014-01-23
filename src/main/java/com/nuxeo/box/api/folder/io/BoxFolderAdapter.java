@@ -81,7 +81,7 @@ public class BoxFolderAdapter {
                 new DateTime(doc.getPropertyValue("dc:created"))));
         boxProperties.put(BoxItem.FIELD_MODIFIED_AT, ISODateTimeFormat.dateTime().print(
                 new DateTime(doc.getPropertyValue("dc:modified"))));
-        boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description").toString());
+        boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description"));
 
         // size -> TODO quota? NXIO-59
         boxProperties.put(BoxItem.FIELD_SIZE, 12.0);
@@ -96,12 +96,12 @@ public class BoxFolderAdapter {
         // Users
         // Creator
         UserManager userManager = Framework.getLocalService(UserManager.class);
-        NuxeoPrincipal creator = userManager.getPrincipal(doc.getPropertyValue("dc:creator").toString());
+        NuxeoPrincipal creator = userManager.getPrincipal((String) doc.getPropertyValue("dc:creator"));
         BoxUser boxCreator = fillUser(creator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
         //Last Contributor
-        NuxeoPrincipal lastContributor = userManager.getPrincipal(doc.getPropertyValue("dc:lastContributor").toString());
+        NuxeoPrincipal lastContributor = userManager.getPrincipal((String) doc.getPropertyValue("dc:lastContributor"));
         BoxUser boxContributor = fillUser(lastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 

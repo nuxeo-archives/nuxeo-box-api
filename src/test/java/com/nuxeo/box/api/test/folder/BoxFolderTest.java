@@ -21,6 +21,8 @@ import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -32,6 +34,8 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,6 +51,7 @@ public class BoxFolderTest extends BoxBaseTest {
     @Inject
     CoreSession session;
 
+    // TODO NXIO-59 -> compare folder.json of box SDK unit test to enforce this test
     @Test
     public void itCanFetchABoxFolder() throws Exception {
         // Fetching the folder in Nuxeo way
@@ -56,9 +61,15 @@ public class BoxFolderTest extends BoxBaseTest {
         ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
                 "folders/" + folder.getId());
 
-        // Then i receive the content of the blob
+        // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        assertEquals("one", response.getEntity(String.class));
-
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("item_status"), "project");
     }
 }
