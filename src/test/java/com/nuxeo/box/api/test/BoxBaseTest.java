@@ -17,6 +17,13 @@
  */
 package com.nuxeo.box.api.test;
 
+import com.box.boxjavalibv2.BoxClient;
+import com.box.boxjavalibv2.BoxConfig;
+import com.box.boxjavalibv2.dao.BoxOAuthToken;
+import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
+import com.box.boxjavalibv2.exceptions.BoxServerException;
+import com.box.boxjavalibv2.requests.requestobjects.BoxOAuthRequestObject;
+import com.box.restclientv2.exceptions.BoxRestException;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -26,16 +33,33 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * @since 5.9.2
  */
 public class BoxBaseTest {
+
+    public static final int PORT = 4000;
+
+    public static final String key = "key";
+
+    public static final String secret = "secret";
+
+    public static final String redirect_uri = "redirect_ui";
+
+
+    protected BoxClient boxClient;
 
     protected static enum RequestType {
         GET, POST, DELETE, PUT, POSTREQUEST
@@ -44,6 +68,36 @@ public class BoxBaseTest {
     protected ObjectMapper mapper;
 
     protected WebResource service;
+
+    protected BoxClient getAuthenticatedClient(String code) throws BoxRestException, BoxServerException, AuthFatalFailureException {
+        BoxClient client = new BoxClient(key, secret);
+        BoxOAuthRequestObject obj = BoxOAuthRequestObject.createOAuthRequestObject(code, key, secret, redirect_uri);
+        BoxOAuthToken bt = client.getOAuthManager().createOAuth(obj);
+        client.authenticate(bt);
+        return client;
+    }
+
+    // TODO NXIO-59: activate it to test with Box client and NX OAuth
+    public void initBoxClient() throws AuthFatalFailureException, BoxServerException, BoxRestException {
+
+        String code = "Me7sMjpDTR";
+        // TODO NXIO-59: should be useful to skip code retrieval step to avoid functional test
+//        String url = "http://10.213.3.200:8080/nuxeo/oauth2/authorization?response_type=code&client_id=" + key + "&redirect_uri=" + redirect_uri;
+//        try {
+//            Desktop.getDesktop().browse(java.net.URI.create(url));
+//            code = getCode();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        BoxConfig boxConfig = BoxConfig.getInstance();
+        boxConfig.setAuthUrlScheme("http");
+        boxConfig.setOAuthApiUrlPath("/nuxeo");
+        boxConfig.setOAuthUrlAuthority("10.213.3.200:8080");
+
+        boxClient = getAuthenticatedClient(code);
+
+    }
 
     @Before
     public void doBefore() throws Exception {
@@ -106,4 +160,25 @@ public class BoxBaseTest {
             throw new RuntimeException();
         }
     }
+
+    protected String getCode() throws IOException {
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        Socket socket = serverSocket.accept();
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        while (true) {
+            String code = StringUtils.EMPTY;
+            code = in.readLine();
+            String match = "code";
+            int loc = code.indexOf(match);
+            if (loc > 0) {
+                int httpstr = code.indexOf("HTTP") - 1;
+                code = code.substring(code.indexOf(match), httpstr);
+                String parts[] = code.split("=");
+                code = parts[1];
+            }
+            return code;
+        }
+    }
+
 }
+

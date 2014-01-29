@@ -16,6 +16,10 @@
  */
 package com.nuxeo.box.api.test.folder;
 
+import com.box.boxjavalibv2.dao.BoxFolder;
+import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
+import com.box.boxjavalibv2.exceptions.BoxServerException;
+import com.box.restclientv2.exceptions.BoxRestException;
 import com.google.inject.Inject;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
@@ -23,8 +27,10 @@ import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -51,9 +57,9 @@ public class BoxFolderTest extends BoxBaseTest {
     @Inject
     CoreSession session;
 
-    // TODO NXIO-59 -> compare folder.json of box SDK unit test to enforce this test
     @Test
-    public void itCanFetchABoxFolder() throws Exception {
+    public void itCanFetchABoxFolderWithCommonClient() throws Exception {
+
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
@@ -71,5 +77,16 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("item_status"), "project");
+    }
+
+    @Test
+    @Ignore
+    //TODO NXIO-59: activate it after OAuth testing
+    public void itCanFetchABoxFolderWithBoxClient() throws BoxServerException, AuthFatalFailureException, BoxRestException, ClientException {
+        // Fetching the folder in Nuxeo way
+        DocumentModel folder = BoxServerInit.getFolder(1, session);
+
+        // Fetching the folder through Box Client
+        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder(folder.getId(), null);
     }
 }
