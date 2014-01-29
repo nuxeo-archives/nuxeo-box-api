@@ -20,7 +20,6 @@ import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.dao.BoxEmail;
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.dao.BoxItem;
-import com.box.boxjavalibv2.dao.BoxSharedLink;
 import com.box.boxjavalibv2.dao.BoxTypedObject;
 import com.box.boxjavalibv2.dao.BoxUser;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
@@ -36,6 +35,8 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.tag.Tag;
 import org.nuxeo.ecm.platform.tag.TagService;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.ecm.quota.size.QuotaAware;
+import org.nuxeo.ecm.quota.size.QuotaAwareDocument;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.ArrayList;
@@ -72,9 +73,10 @@ public class BoxFolderAdapter {
 
         boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
         boxProperties.put(BoxItem.FIELD_ID, doc.getId());
-        // TODO: verify these properties NXIO-59
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, "1");
-        boxProperties.put(BoxItem.FIELD_ETAG, "1");
+
+        // Etag and Sequence ID
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
+        boxProperties.put(BoxItem.FIELD_ETAG, "-1");
 
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT, ISODateTimeFormat.dateTime().print(
@@ -83,13 +85,15 @@ public class BoxFolderAdapter {
                 new DateTime(doc.getPropertyValue("dc:modified"))));
         boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description"));
 
-        // size -> TODO quota? NXIO-59
-        boxProperties.put(BoxItem.FIELD_SIZE, 12.0);
+        // size
+        QuotaAwareDocument quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter(QuotaAware.class);
+        boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ? quotaAwareDocument.getInnerSize() : -1.0);
 
-        // path_collection -> TODO quota? NXIO-59
+        // path_collection
         Map<String, Object> boxCollectionProperties = new LinkedHashMap<>();
         boxCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
-        boxCollectionProperties.put(BoxCollection.FIELD_ENTRIES, new ArrayList<BoxTypedObject>());
+        DocumentModel parentDoc = session.getParentDocument(doc.getParentRef());
+        boxCollectionProperties.put(BoxCollection.FIELD_ENTRIES, getParentsHierarchy(session, parentDoc));
         BoxCollection boxCollection = new BoxCollection(boxCollectionProperties);
         boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxCollection);
 
@@ -108,10 +112,10 @@ public class BoxFolderAdapter {
         // Owner
         boxProperties.put(BoxItem.FIELD_OWNED_BY, boxCreator);
 
-        // Shared Link -> TODO wait for collection feature NXIO-59
-        boxProperties.put(BoxItem.FIELD_SHARED_LINK, new BoxSharedLink());
+        // Shared Link
+        boxProperties.put(BoxItem.FIELD_SHARED_LINK, null);
 
-        // Email update -> TODO wait for collection feature NXIO-59
+        // Email update
         LinkedHashMap<String, Object> boxEmailProperties = new LinkedHashMap<>();
         boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "open");
         boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "email");
@@ -123,18 +127,33 @@ public class BoxFolderAdapter {
 
         // Children
         LinkedHashMap<String, Object> boxItemCollectionProperties = new LinkedHashMap<>();
-        boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
+        boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, session.getChildren(doc.getRef()).size());
         ArrayList<BoxTypedObject> boxTypedObjects = fillChildren(session.getChildren(doc.getRef()));
         boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES, boxTypedObjects);
-        // offset and limits are missing in Box SDK -> TODO verify SDK compatibility NXIO-59
+        // offset and limits are missing in Box SDK
         BoxCollection boxItemCollection = new BoxCollection(boxItemCollectionProperties);
         boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION, boxItemCollection);
 
-        // Tags -> Tag service
+        // Tags
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
 
         boxFolder = new BoxFolder(boxProperties);
         JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub()));
+    }
+
+    protected ArrayList<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc) throws ClientException {
+        ArrayList<BoxTypedObject> pathCollection = new ArrayList<>();
+        while (session.getRootDocument().equals(parentDoc)) {
+            Map<String, Object> parentCollectionProperties = new LinkedHashMap<>();
+            parentCollectionProperties.put(BoxItem.FIELD_TYPE, parentDoc.getType());
+            parentCollectionProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
+            parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
+            parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
+            parentCollectionProperties.put(BoxItem.FIELD_NAME, parentDoc.getName());
+            pathCollection.add(new BoxTypedObject(parentCollectionProperties));
+            parentDoc = session.getParentDocument(parentDoc.getParentRef());
+        }
+        return pathCollection;
     }
 
     protected String[] getTags(CoreSession session) throws ClientException {
