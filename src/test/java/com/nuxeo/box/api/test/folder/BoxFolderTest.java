@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
@@ -12,19 +12,24 @@
  * Lesser General Public License for more details.
  *
  * Contributors:
- *     dmetzler
+ *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
 package com.nuxeo.box.api.test.folder;
 
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
+import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.box.boxjavalibv2.exceptions.BoxServerException;
+import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
+import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.box.restclientv2.exceptions.BoxRestException;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.Ignore;
@@ -41,9 +46,11 @@ import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @since 5.9.2
@@ -79,14 +86,44 @@ public class BoxFolderTest extends BoxBaseTest {
         assertEquals(finalResult.getString("item_status"), "project");
     }
 
-    @Test
     @Ignore
+    @Test
     //TODO NXIO-59: activate it after OAuth testing
     public void itCanFetchABoxFolderWithBoxClient() throws BoxServerException, AuthFatalFailureException, BoxRestException, ClientException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
         // Fetching the folder through Box Client
-        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder(folder.getId(), null);
+        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
+        assertNotNull(boxFolder);
+    }
+
+    @Test
+    public void itCanPostABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+        // Fetching the folder in Nuxeo way
+        final DocumentModel folder = BoxServerInit.getFolder(1, session);
+
+        @SuppressWarnings("unchecked") // safe map as keys are string constants
+        final ImmutableMap.Builder<String, Object> parentParams = new ImmutableMap.Builder()
+                .put("id", folder.getId());
+        final BoxFolder parentBoxFolder = new BoxFolder(parentParams.build());
+        @SuppressWarnings("unchecked") // safe map as keys are string constants
+        final ImmutableMap.Builder<String, Object> parameters = new ImmutableMap.Builder()
+                .put("id", "new_child_folder")
+                .put("parent", parentBoxFolder);
+        final BoxFolder newBoxFolder = new BoxFolder(parameters.build());
+
+        final ClientResponse response = service.path("folders").post(ClientResponse.class, newBoxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub())));
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("item_status"), "project");
     }
 }

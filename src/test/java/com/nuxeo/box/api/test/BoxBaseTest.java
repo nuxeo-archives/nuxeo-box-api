@@ -52,11 +52,11 @@ public class BoxBaseTest {
 
     public static final int PORT = 4000;
 
-    public static final String key = "key";
+    public static final String key = "arnal";
 
-    public static final String secret = "secret";
+    public static final String secret = "vlado";
 
-    public static final String redirect_uri = "redirect_ui";
+    public static final String redirect_uri = "blabla";
 
 
     protected BoxClient boxClient;
@@ -80,20 +80,17 @@ public class BoxBaseTest {
     // TODO NXIO-59: activate it to test with Box client and NX OAuth
     public void initBoxClient() throws AuthFatalFailureException, BoxServerException, BoxRestException {
 
-        String code = "Me7sMjpDTR";
-        // TODO NXIO-59: should be useful to skip code retrieval step to avoid functional test
-//        String url = "http://10.213.3.200:8080/nuxeo/oauth2/authorization?response_type=code&client_id=" + key + "&redirect_uri=" + redirect_uri;
-//        try {
-//            Desktop.getDesktop().browse(java.net.URI.create(url));
-//            code = getCode();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        String code = "D2MT5whdEw";
 
         BoxConfig boxConfig = BoxConfig.getInstance();
+
         boxConfig.setAuthUrlScheme("http");
         boxConfig.setOAuthApiUrlPath("/nuxeo");
         boxConfig.setOAuthUrlAuthority("10.213.3.200:8080");
+
+        boxConfig.setApiUrlScheme("http");
+        boxConfig.setApiUrlPath("/nuxeo/site/box/2.0");
+        boxConfig.setApiUrlAuthority("10.213.3.200:8080");
 
         boxClient = getAuthenticatedClient(code);
 
@@ -103,6 +100,8 @@ public class BoxBaseTest {
     public void doBefore() throws Exception {
         service = getServiceFor("Administrator", "Administrator");
         mapper = new ObjectMapper();
+        // TODO NXIO-59: activate it to test with Box client and NX OAuth
+        initBoxClient();
     }
 
     protected WebResource getServiceFor(String user, String password) {
