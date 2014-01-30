@@ -77,7 +77,7 @@ public class BoxBaseTest {
         return client;
     }
 
-    // TODO NXIO-59: activate it to test with Box client and NX OAuth
+    // TODO NXIO-65: activate it to test with Box client and NX OAuth
     public void initBoxClient() throws AuthFatalFailureException, BoxServerException, BoxRestException {
 
         String code = "D2MT5whdEw";
@@ -100,7 +100,7 @@ public class BoxBaseTest {
     public void doBefore() throws Exception {
         service = getServiceFor("Administrator", "Administrator");
         mapper = new ObjectMapper();
-        // TODO NXIO-59: activate it to test with Box client and NX OAuth
+        // TODO NXIO-65: activate it to test with Box client and NX OAuth
         initBoxClient();
     }
 

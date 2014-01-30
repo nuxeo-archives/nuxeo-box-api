@@ -88,7 +88,7 @@ public class BoxFolderTest extends BoxBaseTest {
 
     @Ignore
     @Test
-    //TODO NXIO-59: activate it after OAuth testing
+    //TODO NXIO-65: activate it after OAuth testing
     public void itCanFetchABoxFolderWithBoxClient() throws BoxServerException, AuthFatalFailureException, BoxRestException, ClientException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
