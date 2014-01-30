@@ -45,7 +45,7 @@ public class Box extends ModuleRoot {
 
     @Path("/")
     public Object doGetRepository(@PathParam("repo")
-    String repositoryParam) throws NoSuchDocumentException {
+    final String repositoryParam) throws NoSuchDocumentException {
         if (StringUtils.isNotBlank(repositoryParam)) {
             String repoName = repositoryParam.substring("repo/".length() + 1);
             try {
@@ -63,7 +63,7 @@ public class Box extends ModuleRoot {
     }
 
     @Override
-    public Object handleError(WebApplicationException e) {
+    public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {
             return Response.status(401).entity("not authorized").type(
                     "text/plain").build();

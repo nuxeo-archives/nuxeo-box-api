@@ -40,7 +40,8 @@ import org.nuxeo.ecm.quota.size.QuotaAwareDocument;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,7 @@ public class BoxFolderAdapter {
      * @throws BoxJSONException
      */
     public void newBoxInstance(CoreSession session) throws ClientException, BoxJSONException {
-        Map<String, Object> boxProperties = new LinkedHashMap<>();
+        final Map<String, Object> boxProperties = new HashMap<>();
 
         boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
         boxProperties.put(BoxItem.FIELD_ID, doc.getId());
@@ -86,27 +87,27 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description"));
 
         // size
-        QuotaAwareDocument quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter(QuotaAware.class);
+        final QuotaAwareDocument quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter(QuotaAware.class);
         boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ? quotaAwareDocument.getInnerSize() : -1.0);
 
         // path_collection
-        Map<String, Object> boxCollectionProperties = new LinkedHashMap<>();
+        final DocumentModel parentDoc = session.getParentDocument(doc.getParentRef());
+        final Map<String, Object> boxCollectionProperties = new HashMap<>();
         boxCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
-        DocumentModel parentDoc = session.getParentDocument(doc.getParentRef());
         boxCollectionProperties.put(BoxCollection.FIELD_ENTRIES, getParentsHierarchy(session, parentDoc));
-        BoxCollection boxCollection = new BoxCollection(boxCollectionProperties);
+        BoxCollection boxCollection = new BoxCollection(Collections.unmodifiableMap(boxCollectionProperties));
         boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxCollection);
 
         // Users
         // Creator
-        UserManager userManager = Framework.getLocalService(UserManager.class);
-        NuxeoPrincipal creator = userManager.getPrincipal((String) doc.getPropertyValue("dc:creator"));
-        BoxUser boxCreator = fillUser(creator);
+        final UserManager userManager = Framework.getLocalService(UserManager.class);
+        final NuxeoPrincipal creator = userManager.getPrincipal((String) doc.getPropertyValue("dc:creator"));
+        final BoxUser boxCreator = fillUser(creator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
         //Last Contributor
-        NuxeoPrincipal lastContributor = userManager.getPrincipal((String) doc.getPropertyValue("dc:lastContributor"));
-        BoxUser boxContributor = fillUser(lastContributor);
+        final NuxeoPrincipal lastContributor = userManager.getPrincipal((String) doc.getPropertyValue("dc:lastContributor"));
+        final BoxUser boxContributor = fillUser(lastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 
         // Owner
@@ -116,50 +117,50 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_SHARED_LINK, null);
 
         // Email update
-        LinkedHashMap<String, Object> boxEmailProperties = new LinkedHashMap<>();
+        final Map<String, Object> boxEmailProperties = new HashMap<>();
         boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "open");
         boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "email");
-        BoxEmail boxEmail = new BoxEmail(boxEmailProperties);
+        final BoxEmail boxEmail = new BoxEmail(Collections.unmodifiableMap(boxEmailProperties));
         boxProperties.put(BoxFolder.FIELD_FOLDER_UPLOAD_EMAIL, boxEmail);
 
         // Status
         boxProperties.put(BoxItem.FIELD_ITEM_STATUS, doc.getCurrentLifeCycleState());
 
         // Children
-        LinkedHashMap<String, Object> boxItemCollectionProperties = new LinkedHashMap<>();
+        final Map<String, Object> boxItemCollectionProperties = new HashMap<>();
         boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, session.getChildren(doc.getRef()).size());
-        ArrayList<BoxTypedObject> boxTypedObjects = fillChildren(session.getChildren(doc.getRef()));
-        boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES, boxTypedObjects);
+        boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES, fillChildren(session.getChildren(doc.getRef())));
+
         // offset and limits are missing in Box SDK
-        BoxCollection boxItemCollection = new BoxCollection(boxItemCollectionProperties);
+        final BoxCollection boxItemCollection = new BoxCollection(Collections.unmodifiableMap(boxItemCollectionProperties));
         boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION, boxItemCollection);
 
         // Tags
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
 
-        boxFolder = new BoxFolder(boxProperties);
+        boxFolder = new BoxFolder(Collections.unmodifiableMap(boxProperties));
         JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub()));
     }
 
-    protected ArrayList<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc) throws ClientException {
-        ArrayList<BoxTypedObject> pathCollection = new ArrayList<>();
+    protected List<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc) throws ClientException {
+        final List<BoxTypedObject> pathCollection = new ArrayList<>();
         while (session.getRootDocument().equals(parentDoc)) {
-            Map<String, Object> parentCollectionProperties = new LinkedHashMap<>();
+            final Map<String, Object> parentCollectionProperties = new HashMap<>();
             parentCollectionProperties.put(BoxItem.FIELD_TYPE, parentDoc.getType());
             parentCollectionProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
             parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_NAME, parentDoc.getName());
-            pathCollection.add(new BoxTypedObject(parentCollectionProperties));
+            pathCollection.add(new BoxTypedObject(Collections.unmodifiableMap(parentCollectionProperties)));
             parentDoc = session.getParentDocument(parentDoc.getParentRef());
         }
         return pathCollection;
     }
 
     protected String[] getTags(CoreSession session) throws ClientException {
-        TagService tagService = Framework.getLocalService(TagService.class);
-        List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), session.getPrincipal().getName());
-        String[] tagNames = new String[tags.size()];
+        final TagService tagService = Framework.getLocalService(TagService.class);
+        final List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), session.getPrincipal().getName());
+        final String[] tagNames = new String[tags.size()];
         int index = 0;
         for (Tag tag : tags) {
             tagNames[index] = tag.getLabel();
@@ -174,17 +175,17 @@ public class BoxFolderAdapter {
      * @param children
      * @return the list of children in item collection
      */
-    protected ArrayList<BoxTypedObject> fillChildren(DocumentModelList children) throws ClientException {
-        ArrayList<BoxTypedObject> boxTypedObjects = new ArrayList<>();
-        LinkedHashMap<String, Object> childrenProperties = new LinkedHashMap<>();
+    protected List<BoxTypedObject> fillChildren(DocumentModelList children) throws ClientException {
+        final List<BoxTypedObject> boxTypedObjects = new ArrayList<>();
         for (DocumentModel child : children) {
+            final Map<String, Object> childrenProperties = new HashMap<>();
             childrenProperties.put(BoxTypedObject.FIELD_TYPE, child.getType());
             childrenProperties.put(BoxTypedObject.FIELD_ID, child.getId());
             childrenProperties.put(BoxTypedObject.FIELD_CREATED_AT, ISODateTimeFormat.dateTime().print(
                     new DateTime(child.getPropertyValue("dc:created"))));
             childrenProperties.put(BoxItem.FIELD_MODIFIED_AT, ISODateTimeFormat.dateTime().print(
                     new DateTime(child.getPropertyValue("dc:modified"))));
-            boxTypedObjects.add(new BoxTypedObject(childrenProperties));
+            boxTypedObjects.add(new BoxTypedObject(Collections.unmodifiableMap(childrenProperties)));
         }
         return boxTypedObjects;
     }
@@ -196,12 +197,12 @@ public class BoxFolderAdapter {
      * @return a box User
      */
     protected BoxUser fillUser(NuxeoPrincipal creator) {
-        LinkedHashMap<String, Object> mapUser = new LinkedHashMap<>();
+        final Map<String, Object> mapUser = new HashMap<>();
         mapUser.put("type", "user");
         mapUser.put("id", creator.getPrincipalId());
         mapUser.put("name", creator.getFirstName() + " " + creator.getLastName());
         mapUser.put("login", creator.getName());
-        return new BoxUser(mapUser);
+        return new BoxUser(Collections.unmodifiableMap(mapUser));
     }
 
     /**
