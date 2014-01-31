@@ -17,6 +17,10 @@
  */
 package com.nuxeo.box.api.folder.item;
 
+import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.webengine.WebException;
@@ -26,6 +30,7 @@ import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 /**
@@ -37,23 +42,31 @@ import javax.ws.rs.core.MediaType;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
 
-    DocumentModel folder;
+    BoxFolderAdapter folderAdapter;
 
     @Override
     public void initialize(Object... args) {
         assert args != null && args.length == 1;
         try {
             String folderId = (String) args[0];
-            folder = ctx.getCoreSession().getDocument(new IdRef(folderId));
+            CoreSession session = ctx.getCoreSession();
+            DocumentModel folder = session.getDocument(new IdRef(folderId));
+            folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
         } catch (Exception e) {
             throw WebException.wrap(e);
         }
         setRoot(true);
     }
 
+    // TODO NXIO-52: handle limit, offset and fields filter
     @GET
-    public Object doGet() {
-        return getView("index");
+    public Object doGetItems(@QueryParam("offset") String offset,
+            @QueryParam("limit") String limit, @QueryParam("fields") String
+            fields) throws
+            BoxJSONException, ClientException {
+        CoreSession session = ctx.getCoreSession();
+        folderAdapter.newBoxInstance(session);
+        return folderAdapter.getJSONBoxFolderItems();
     }
 
 }

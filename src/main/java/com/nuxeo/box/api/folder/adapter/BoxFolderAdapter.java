@@ -60,9 +60,19 @@ public class BoxFolderAdapter {
     protected BoxFolder boxFolder;
 
     protected String JSONBoxFolder;
+    protected String JSONBoxFolderItems;
 
     public BoxFolderAdapter(DocumentModel doc) {
         this.doc = doc;
+    }
+
+    public DocumentModel getDoc() {
+        return doc;
+    }
+
+    public String getJSONBoxFolderItems() {
+
+        return JSONBoxFolderItems;
     }
 
     /**
@@ -169,8 +179,11 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
 
         boxFolder = new BoxFolder(Collections.unmodifiableMap(boxProperties));
-        JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new
-                BoxResourceHub()));
+        BoxJSONParser boxJSONParser = new BoxJSONParser(new
+                BoxResourceHub());
+        JSONBoxFolder = boxFolder.toJSONString(boxJSONParser);
+        JSONBoxFolderItems = boxFolder.getItemCollection().toJSONString(boxJSONParser);
+
         return boxFolder;
     }
 
