@@ -155,4 +155,18 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("name"), "newName");
     }
+
+    @Test
+    public void itCanDeleteABoxFolder() throws ClientException {
+        // Fetching the folder in Nuxeo way
+        final DocumentModel folder = BoxServerInit.getFolder(1, session);
+        //Call delete on this folder
+        ClientResponse response = service.path("folders/" + folder.getId()).delete(ClientResponse.class);
+        // Checking response consistency
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+        // Checking if folder is removed
+        response = getResponse(BoxBaseTest.RequestType.GET,
+                "folders/" + folder.getId());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+    }
 }

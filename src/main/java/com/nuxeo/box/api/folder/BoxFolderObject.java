@@ -31,6 +31,7 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -106,5 +107,13 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         nxDocumentAdapter.save(session);
         // Return the new box folder json
         return nxDocumentAdapter.getJSONBoxFolder();
+    }
+
+    @DELETE
+    @Path("{folderId}")
+    public void doDeleteFolder(@PathParam("folderId") String folderId) throws ClientException {
+        final CoreSession session = ctx.getCoreSession();
+        session.removeDocument(new IdRef(folderId));
+        session.save();
     }
 }
