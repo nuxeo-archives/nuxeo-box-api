@@ -101,7 +101,7 @@ public class BoxBaseTest {
         service = getServiceFor("Administrator", "Administrator");
         mapper = new ObjectMapper();
         // TODO NXIO-65: activate it to test with Box client and NX OAuth
-        initBoxClient();
+        //initBoxClient();
     }
 
     protected WebResource getServiceFor(String user, String password) {
