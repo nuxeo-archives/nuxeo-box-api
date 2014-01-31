@@ -21,7 +21,7 @@ import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
-import com.nuxeo.box.api.folder.io.BoxFolderAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -115,5 +115,10 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(folderId));
         session.save();
+    }
+
+    @Path("{folderId}/items")
+    public Object doGetItems(@PathParam("folderId") String folderId) {
+        return newObject("item", folderId);
     }
 }

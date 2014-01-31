@@ -14,7 +14,7 @@
  * Contributors:
  *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
-package com.nuxeo.box.api.folder.io;
+package com.nuxeo.box.api.folder.adapter;
 
 import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.dao.BoxEmail;

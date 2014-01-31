@@ -15,7 +15,7 @@
  *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
 
-package com.nuxeo.box.api.folder.io;
+package com.nuxeo.box.api.folder.adapter;
 
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
