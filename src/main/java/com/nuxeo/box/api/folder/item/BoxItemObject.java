@@ -17,7 +17,10 @@
  */
 package com.nuxeo.box.api.folder.item;
 
+import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.google.common.base.Objects;
+import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -58,7 +61,6 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
         setRoot(true);
     }
 
-    // TODO NXIO-52: handle limit, offset and fields filter
     @GET
     public Object doGetItems(@QueryParam("offset") String offset,
             @QueryParam("limit") String limit, @QueryParam("fields") String
@@ -66,7 +68,12 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             BoxJSONException, ClientException {
         CoreSession session = ctx.getCoreSession();
         folderAdapter.newBoxInstance(session);
-        return folderAdapter.getJSONBoxFolderItems();
+        BoxCollection itemCollection = folderAdapter.getItemCollection
+                (session, Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT)
+                        , Objects.firstNonNull(offset,
+                        BoxConstants.BOX_OFFSET), Objects.firstNonNull
+                        (fields, BoxConstants.BOX_FIELDS));
+        return folderAdapter.toJSONString(itemCollection);
     }
 
 }

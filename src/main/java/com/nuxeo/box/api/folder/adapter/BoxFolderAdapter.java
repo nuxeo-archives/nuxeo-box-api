@@ -20,6 +20,7 @@ import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.dao.BoxEmail;
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.dao.BoxItem;
+import com.box.boxjavalibv2.dao.BoxObject;
 import com.box.boxjavalibv2.dao.BoxTypedObject;
 import com.box.boxjavalibv2.dao.BoxUser;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
@@ -59,9 +60,6 @@ public class BoxFolderAdapter {
 
     protected BoxFolder boxFolder;
 
-    protected String JSONBoxFolder;
-    protected String JSONBoxFolderItems;
-
     public BoxFolderAdapter(DocumentModel doc) {
         this.doc = doc;
     }
@@ -70,9 +68,25 @@ public class BoxFolderAdapter {
         return doc;
     }
 
-    public String getJSONBoxFolderItems() {
 
-        return JSONBoxFolderItems;
+    public BoxFolder getBoxFolder() {
+        return boxFolder;
+    }
+
+    public void setBoxFolder(BoxFolder boxFolder) {
+        this.boxFolder = boxFolder;
+    }
+
+    public void setTitle(String value) throws ClientException {
+        doc.setPropertyValue("dc:title", value);
+    }
+
+    public void setDescription(String value) throws ClientException {
+        doc.setPropertyValue("dc:description", value);
+    }
+
+    public void setCreator(String value) throws ClientException {
+        doc.setPropertyValue("dc:creator", value);
     }
 
     /**
@@ -95,10 +109,10 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT,
                 ISODateTimeFormat.dateTime().print(
-                new DateTime(doc.getPropertyValue("dc:created"))));
+                        new DateTime(doc.getPropertyValue("dc:created"))));
         boxProperties.put(BoxItem.FIELD_MODIFIED_AT,
                 ISODateTimeFormat.dateTime().print(
-                new DateTime(doc.getPropertyValue("dc:modified"))));
+                        new DateTime(doc.getPropertyValue("dc:modified"))));
         boxProperties.put(BoxItem.FIELD_DESCRIPTION,
                 doc.getPropertyValue("dc:description"));
 
@@ -164,27 +178,21 @@ public class BoxFolderAdapter {
                 doc.getCurrentLifeCycleState());
 
         // Children
-        final Map<String, Object> boxItemCollectionProperties = new HashMap<>();
-        boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
-                session.getChildren(doc.getRef()).size());
-        boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                fillChildren(session.getChildren(doc.getRef())));
-
-        // offset and limits are missing in Box SDK
-        final BoxCollection boxItemCollection = new BoxCollection(Collections
-                .unmodifiableMap(boxItemCollectionProperties));
-        boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION, boxItemCollection);
+        boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION,
+                getItemCollection(session, "100", "0", "*"));
 
         // Tags
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
 
         boxFolder = new BoxFolder(Collections.unmodifiableMap(boxProperties));
-        BoxJSONParser boxJSONParser = new BoxJSONParser(new
-                BoxResourceHub());
-        JSONBoxFolder = boxFolder.toJSONString(boxJSONParser);
-        JSONBoxFolderItems = boxFolder.getItemCollection().toJSONString(boxJSONParser);
 
         return boxFolder;
+    }
+
+    public String toJSONString(BoxObject boxObject) throws BoxJSONException {
+        BoxJSONParser boxJSONParser = new BoxJSONParser(new
+                BoxResourceHub());
+        return boxObject.toJSONString(boxJSONParser);
     }
 
     protected List<BoxTypedObject> getParentsHierarchy(CoreSession session,
@@ -222,14 +230,23 @@ public class BoxFolderAdapter {
     }
 
     /**
-     * Fill item collection entries box object (missing some attributes ->
-     * see box doc)
+     * Fill item collection entries box object
      *
-     * @param children
      * @return the list of children in item collection
      */
-    protected List<BoxTypedObject> fillChildren(DocumentModelList children)
-            throws ClientException {
+    public BoxCollection getItemCollection(CoreSession session,
+            String limit, String offset, String fields) throws
+            ClientException {
+        final Map<String, Object> boxItemCollectionProperties = new HashMap<>();
+
+        // Fetch items
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT * FROM Document WHERE ecm:parentId=");
+        query.append("'" + doc.getId() + "'");
+        DocumentModelList children = session.query(query.toString(),
+                null, Long.parseLong(limit), Long.parseLong(offset), false);
+        boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
+                children.size());
         final List<BoxTypedObject> boxTypedObjects = new ArrayList<>();
         for (DocumentModel child : children) {
             final Map<String, Object> childrenProperties = new HashMap<>();
@@ -237,15 +254,21 @@ public class BoxFolderAdapter {
             childrenProperties.put(BoxTypedObject.FIELD_ID, child.getId());
             childrenProperties.put(BoxTypedObject.FIELD_CREATED_AT,
                     ISODateTimeFormat.dateTime().print(
-                    new DateTime(child.getPropertyValue("dc:created"))));
+                            new DateTime(child.getPropertyValue("dc:created")
+                            )));
             childrenProperties.put(BoxItem.FIELD_MODIFIED_AT,
                     ISODateTimeFormat.dateTime().print(
-                    new DateTime(child.getPropertyValue("dc:modified"))));
+                            new DateTime(child.getPropertyValue
+                                    ("dc:modified"))));
             boxTypedObjects.add(new BoxTypedObject(Collections
                     .unmodifiableMap(childrenProperties)));
         }
-        return boxTypedObjects;
+        boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES,
+                boxTypedObjects);
+        return new BoxCollection(Collections.unmodifiableMap
+                (boxItemCollectionProperties));
     }
+
 
     /**
      * Fill box object user
@@ -261,13 +284,6 @@ public class BoxFolderAdapter {
                 .getLastName());
         mapUser.put("login", creator.getName());
         return new BoxUser(Collections.unmodifiableMap(mapUser));
-    }
-
-    /**
-     * @return the folder properties into json format
-     */
-    public String getJSONBoxFolder() {
-        return JSONBoxFolder;
     }
 
     /**
@@ -299,30 +315,8 @@ public class BoxFolderAdapter {
                         session.getPrincipal().getName());
             }
         }
-
-        JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new
-                BoxResourceHub()));
         session.saveDocument(doc);
         session.save();
     }
 
-    public BoxFolder getBoxFolder() {
-        return boxFolder;
-    }
-
-    public void setBoxFolder(BoxFolder boxFolder) {
-        this.boxFolder = boxFolder;
-    }
-
-    public void setTitle(String value) throws ClientException {
-        doc.setPropertyValue("dc:title", value);
-    }
-
-    public void setDescription(String value) throws ClientException {
-        doc.setPropertyValue("dc:description", value);
-    }
-
-    public void setCreator(String value) throws ClientException {
-        doc.setPropertyValue("dc:creator", value);
-    }
 }
