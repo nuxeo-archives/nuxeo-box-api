@@ -126,4 +126,28 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("item_status"), "project");
     }
+
+    @Test
+    public void itCanUpdateABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+        // Fetching the folder in Nuxeo way
+        final DocumentModel folder = BoxServerInit.getFolder(1, session);
+
+        @SuppressWarnings("unchecked") // safe map as keys are string constants
+        final ImmutableMap.Builder<String, Object> parameters = new ImmutableMap.Builder()
+                .put("id", "newName");
+        final BoxFolder boxFolderUpdated = new BoxFolder(parameters.build());
+
+        final ClientResponse response = service.path("folders/" + folder.getId()).put(ClientResponse.class, boxFolderUpdated.toJSONString(new BoxJSONParser(new BoxResourceHub())));
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("id"), "newName");
+    }
 }

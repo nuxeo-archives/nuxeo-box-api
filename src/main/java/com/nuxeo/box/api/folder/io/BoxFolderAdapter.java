@@ -25,12 +25,14 @@ import com.box.boxjavalibv2.dao.BoxUser;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
+import org.apache.commons.beanutils.BeanUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.tag.Tag;
 import org.nuxeo.ecm.platform.tag.TagService;
@@ -39,7 +41,10 @@ import org.nuxeo.ecm.quota.size.QuotaAware;
 import org.nuxeo.ecm.quota.size.QuotaAwareDocument;
 import org.nuxeo.runtime.api.Framework;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -118,8 +123,8 @@ public class BoxFolderAdapter {
 
         // Email update
         final Map<String, Object> boxEmailProperties = new HashMap<>();
-        boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "open");
-        boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "email");
+        boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "-1");
+        boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "-1");
         final BoxEmail boxEmail = new BoxEmail(Collections.unmodifiableMap(boxEmailProperties));
         boxProperties.put(BoxFolder.FIELD_FOLDER_UPLOAD_EMAIL, boxEmail);
 
@@ -212,15 +217,49 @@ public class BoxFolderAdapter {
         return JSONBoxFolder;
     }
 
-    public void save(CoreSession session) throws ClientException {
-        session.saveDocument(doc);
-    }
+    /**
+     * Update the document (nx/box sides) thanks to a box folder
+     */
+    public void save(CoreSession session, BoxFolder boxFolder) throws ClientException, ParseException, InvocationTargetException, IllegalAccessException {
+        // Let copy new properties into box folder
+        BeanUtils.copyProperties(this.boxFolder, boxFolder);
 
-    public String getId() {
-        return doc.getId();
+        // Update nx document with new box folder properties
+        setTitle(boxFolder.getName());
+        setDescription(boxFolder.getDescription());
+
+        // If parent id has been updated -> move the document
+        if (!doc.getParentRef().equals(boxFolder.getParent().getId())) {
+            session.move(new IdRef(doc.getId()), new IdRef(boxFolder.getParent().getId()), boxFolder.getName());
+        }
+        setCreator(boxFolder.getOwnedBy().getId());
+
+        TagService tagService = Framework.getLocalService(TagService.class);
+        if (tagService != null) {
+            tagService.removeTags(session, doc.getId());
+            for (String tag : boxFolder.getTags()) {
+                tagService.tag(session, doc.getId(), tag, session.getPrincipal().getName());
+            }
+        }
+
+        session.saveDocument(doc);
+        session.save();
     }
 
     public BoxFolder getBoxFolder() {
         return boxFolder;
     }
+
+    public void setTitle(String value) throws ClientException {
+        doc.setPropertyValue("dc:title", value);
+    }
+
+    public void setDescription(String value) throws ClientException {
+        doc.setPropertyValue("dc:description", value);
+    }
+
+    public void setCreator(String value) throws ClientException {
+        doc.setPropertyValue("dc:creator", value);
+    }
+
 }
