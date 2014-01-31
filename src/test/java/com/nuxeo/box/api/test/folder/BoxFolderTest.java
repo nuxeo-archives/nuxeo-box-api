@@ -78,7 +78,8 @@ public class BoxFolderTest extends BoxBaseTest {
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
         StringBuilder builder = new StringBuilder();
         for (String line = null; (line = reader.readLine()) != null; ) {
             builder.append(line).append("\n");
@@ -91,17 +92,21 @@ public class BoxFolderTest extends BoxBaseTest {
     @Ignore
     @Test
     //TODO NXIO-65: activate it after OAuth testing
-    public void itCanFetchABoxFolderWithBoxClient() throws BoxServerException, AuthFatalFailureException, BoxRestException, ClientException {
+    public void itCanFetchABoxFolderWithBoxClient() throws
+            BoxServerException, AuthFatalFailureException, BoxRestException,
+            ClientException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
         // Fetching the folder through Box Client
-        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
+        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder
+                ("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
         assertNotNull(boxFolder);
     }
 
     @Test
-    public void itCanPostABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+    public void itCanPostABoxFolder() throws ClientException,
+            BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
@@ -114,11 +119,14 @@ public class BoxFolderTest extends BoxBaseTest {
 
         BoxFolder newBoxFolder = new BoxFolder(parameters);
 
-        ClientResponse response = service.path("folders").post(ClientResponse.class, newBoxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub())));
+        ClientResponse response = service.path("folders").post(ClientResponse
+                .class, newBoxFolder.toJSONString(new BoxJSONParser(new
+                BoxResourceHub())));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
         StringBuilder builder = new StringBuilder();
         for (String line = null; (line = reader.readLine()) != null; ) {
             builder.append(line).append("\n");
@@ -129,11 +137,13 @@ public class BoxFolderTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanUpdateABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+    public void itCanUpdateABoxFolder() throws ClientException,
+            BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
+        BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter
+                .class);
         BoxFolder boxFolderUpdated = folderAdapter.newBoxInstance(session);
 
         // Default name checking
@@ -142,11 +152,15 @@ public class BoxFolderTest extends BoxBaseTest {
         // Update the name of the folder
         boxFolderUpdated.put("name", "newName");
 
-        final ClientResponse response = service.path("folders/" + folder.getId()).put(ClientResponse.class, boxFolderUpdated.toJSONString(new BoxJSONParser(new BoxResourceHub())));
+        final ClientResponse response = service.path("folders/" + folder
+                .getId()).put(ClientResponse.class,
+                boxFolderUpdated.toJSONString(new BoxJSONParser(new
+                        BoxResourceHub())));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
         StringBuilder builder = new StringBuilder();
         for (String line = null; (line = reader.readLine()) != null; ) {
             builder.append(line).append("\n");
@@ -161,12 +175,15 @@ public class BoxFolderTest extends BoxBaseTest {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
         //Call delete on this folder
-        ClientResponse response = service.path("folders/" + folder.getId()).delete(ClientResponse.class);
+        ClientResponse response = service.path("folders/" + folder.getId())
+                .delete(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
+                response.getStatus());
         // Checking if folder is removed
         response = getResponse(BoxBaseTest.RequestType.GET,
                 "folders/" + folder.getId());
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
+                response.getStatus());
     }
 }

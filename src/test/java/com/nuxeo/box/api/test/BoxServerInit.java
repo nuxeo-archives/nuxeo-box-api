@@ -34,6 +34,21 @@ import java.io.File;
  */
 public class BoxServerInit implements RepositoryInit {
 
+    public static DocumentModel getFolder(int index, CoreSession session)
+            throws ClientException {
+        return session.getDocument(new PathRef("/folder_" + index));
+    }
+
+    public static DocumentModel getNote(int index, CoreSession session)
+            throws ClientException {
+        return session.getDocument(new PathRef("/folder_1/note_" + index));
+    }
+
+    public static DocumentModel getFile(int index, CoreSession session)
+            throws ClientException {
+        return session.getDocument(new PathRef("/folder_2/file"));
+    }
+
     @Override
     public void populate(CoreSession session) throws ClientException {
         // Create some docs
@@ -59,7 +74,8 @@ public class BoxServerInit implements RepositoryInit {
         doc.setPropertyValue("dc:title", "File");
         doc = session.createDocument(doc);
         // upload file blob
-        File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob.json");
+        File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob" +
+                ".json");
         FileBlob fb = new FileBlob(fieldAsJsonFile);
         fb.setMimeType("image/jpeg");
         DocumentHelper.addBlob(doc.getProperty("file:content"), fb);
@@ -67,21 +83,6 @@ public class BoxServerInit implements RepositoryInit {
 
         session.save();
 
-    }
-
-    public static DocumentModel getFolder(int index, CoreSession session)
-            throws ClientException {
-        return session.getDocument(new PathRef("/folder_" + index));
-    }
-
-    public static DocumentModel getNote(int index, CoreSession session)
-            throws ClientException {
-        return session.getDocument(new PathRef("/folder_1/note_" + index));
-    }
-
-    public static DocumentModel getFile(int index, CoreSession session)
-            throws ClientException {
-        return session.getDocument(new PathRef("/folder_2/file"));
     }
 
 }
