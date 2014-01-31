@@ -73,9 +73,15 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         // Create box folder from json payload
         BoxFolder boxFolder = new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
         // Fetching its parent to get parent id
-        final DocumentModel parentDoc = session.getDocument(new IdRef(boxFolder.getParent().getId()));
+        String parentId = boxFolder.getParent().getId();
+        DocumentModel documentParent;
+        if ("0".equals(parentId)) {
+            documentParent = session.getRootDocument();
+        } else {
+            documentParent = session.getDocument(new IdRef(boxFolder.getParent().getId()));
+        }
         // Create the nx document from box folder information
-        DocumentModel newFolder = session.createDocumentModel(parentDoc.getPathAsString(), boxFolder.getId(), "Folder");
+        DocumentModel newFolder = session.createDocumentModel(documentParent.getPathAsString(), boxFolder.getId(), "Folder");
         newFolder = session.createDocument(newFolder);
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter folderAdapter = newFolder.getAdapter(BoxFolderAdapter.class);
@@ -85,18 +91,20 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @PUT
-    public Object doPutFolder(@PathParam("folderId") final String folderId, String jsonBoxFolder) throws ClientException, BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
+    @Path("{folderId}")
+    public Object doPutFolder(@PathParam("folderId") String folderId, String jsonBoxFolder) throws ClientException, BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document with given id
-        final DocumentModel nxDoc = session.getDocument(new IdRef(folderId));
+        final DocumentModel nxDocument = session.getDocument(new IdRef(folderId));
         // Create box folder from json payload
-        BoxFolder boxFolder = new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+        BoxFolder boxFolderUpdated = new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter folderAdapter = nxDoc.getAdapter(BoxFolderAdapter.class);
-        folderAdapter.newBoxInstance(session);
+        final BoxFolderAdapter nxDocumentAdapter = nxDocument.getAdapter(BoxFolderAdapter.class);
+        nxDocumentAdapter.newBoxInstance(session);
         // Update both nx document and box folder adapter
-        folderAdapter.save(session, boxFolder);
+        nxDocumentAdapter.setBoxFolder(boxFolderUpdated);
+        nxDocumentAdapter.save(session);
         // Return the new box folder json
-        return folderAdapter.getJSONBoxFolder();
+        return nxDocumentAdapter.getJSONBoxFolder();
     }
 }

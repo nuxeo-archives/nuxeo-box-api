@@ -23,8 +23,8 @@ import com.box.boxjavalibv2.exceptions.BoxServerException;
 import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.box.restclientv2.exceptions.BoxRestException;
-import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
+import com.nuxeo.box.api.folder.io.BoxFolderAdapter;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
@@ -48,6 +48,8 @@ import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -101,19 +103,18 @@ public class BoxFolderTest extends BoxBaseTest {
     @Test
     public void itCanPostABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
-        final DocumentModel folder = BoxServerInit.getFolder(1, session);
+        DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        @SuppressWarnings("unchecked") // safe map as keys are string constants
-        final ImmutableMap.Builder<String, Object> parentParams = new ImmutableMap.Builder()
-                .put("id", folder.getId());
-        final BoxFolder parentBoxFolder = new BoxFolder(parentParams.build());
-        @SuppressWarnings("unchecked") // safe map as keys are string constants
-        final ImmutableMap.Builder<String, Object> parameters = new ImmutableMap.Builder()
-                .put("id", "new_child_folder")
-                .put("parent", parentBoxFolder);
-        final BoxFolder newBoxFolder = new BoxFolder(parameters.build());
+        Map<String, Object> parameters = new HashMap<>();
+        Map<String, Object> parentParams = new HashMap<>();
+        parentParams.put("id", folder.getId());
+        BoxFolder parentBoxFolder = new BoxFolder(parentParams);
+        parameters.put("parent", parentBoxFolder);
+        parameters.put("name", "new_child_folder");
 
-        final ClientResponse response = service.path("folders").post(ClientResponse.class, newBoxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub())));
+        BoxFolder newBoxFolder = new BoxFolder(parameters);
+
+        ClientResponse response = service.path("folders").post(ClientResponse.class, newBoxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub())));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -132,10 +133,14 @@ public class BoxFolderTest extends BoxBaseTest {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        @SuppressWarnings("unchecked") // safe map as keys are string constants
-        final ImmutableMap.Builder<String, Object> parameters = new ImmutableMap.Builder()
-                .put("id", "newName");
-        final BoxFolder boxFolderUpdated = new BoxFolder(parameters.build());
+        BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
+        BoxFolder boxFolderUpdated = folderAdapter.newBoxInstance(session);
+
+        // Default name checking
+        assertEquals(boxFolderUpdated.getName(), "folder_1");
+
+        // Update the name of the folder
+        boxFolderUpdated.put("name", "newName");
 
         final ClientResponse response = service.path("folders/" + folder.getId()).put(ClientResponse.class, boxFolderUpdated.toJSONString(new BoxJSONParser(new BoxResourceHub())));
 
@@ -148,6 +153,6 @@ public class BoxFolderTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
-        assertEquals(finalResult.getString("id"), "newName");
+        assertEquals(finalResult.getString("name"), "newName");
     }
 }

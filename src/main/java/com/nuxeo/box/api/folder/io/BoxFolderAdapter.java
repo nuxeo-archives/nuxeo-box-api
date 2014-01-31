@@ -25,7 +25,6 @@ import com.box.boxjavalibv2.dao.BoxUser;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
-import org.apache.commons.beanutils.BeanUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -44,7 +43,6 @@ import org.nuxeo.runtime.api.Framework;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +55,9 @@ import java.util.Map;
  */
 public class BoxFolderAdapter {
 
-    protected BoxFolder boxFolder;
-
     protected final DocumentModel doc;
+
+    protected BoxFolder boxFolder;
 
     protected String JSONBoxFolder;
 
@@ -70,11 +68,9 @@ public class BoxFolderAdapter {
     /**
      * Instantiate a new Box Folder from Nuxeo Document and load its properties into json format
      *
-     * @param session
-     * @throws ClientException
-     * @throws BoxJSONException
+     * @return The Box Folder
      */
-    public void newBoxInstance(CoreSession session) throws ClientException, BoxJSONException {
+    public BoxFolder newBoxInstance(CoreSession session) throws ClientException, BoxJSONException {
         final Map<String, Object> boxProperties = new HashMap<>();
 
         boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
@@ -96,12 +92,22 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ? quotaAwareDocument.getInnerSize() : -1.0);
 
         // path_collection
-        final DocumentModel parentDoc = session.getParentDocument(doc.getParentRef());
-        final Map<String, Object> boxCollectionProperties = new HashMap<>();
-        boxCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length - 1);
-        boxCollectionProperties.put(BoxCollection.FIELD_ENTRIES, getParentsHierarchy(session, parentDoc));
-        BoxCollection boxCollection = new BoxCollection(Collections.unmodifiableMap(boxCollectionProperties));
-        boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxCollection);
+        final DocumentModel parentDoc = session.getDocument(doc.getParentRef());
+        final Map<String, Object> pathCollection = new HashMap<>();
+        pathCollection.put(BoxCollection.FIELD_TOTAL_COUNT, doc.getPathAsString().split("\\\\").length);
+        pathCollection.put(BoxCollection.FIELD_ENTRIES, getParentsHierarchy(session, parentDoc));
+        BoxCollection boxPathCollection = new BoxCollection(Collections.unmodifiableMap(pathCollection));
+        boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxPathCollection);
+
+        // parent
+        final Map<String, Object> parentProperties = new HashMap<>();
+        parentProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
+        parentProperties.put(BoxItem.FIELD_TYPE, parentDoc.getType());
+        parentProperties.put(BoxItem.FIELD_NAME, parentDoc.getName());
+        parentProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
+        parentProperties.put(BoxItem.FIELD_ETAG, "-1");
+        BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap(parentProperties));
+        boxProperties.put(BoxItem.FIELD_PARENT, parentFolder);
 
         // Users
         // Creator
@@ -145,11 +151,12 @@ public class BoxFolderAdapter {
 
         boxFolder = new BoxFolder(Collections.unmodifiableMap(boxProperties));
         JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub()));
+        return boxFolder;
     }
 
     protected List<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc) throws ClientException {
         final List<BoxTypedObject> pathCollection = new ArrayList<>();
-        while (session.getRootDocument().equals(parentDoc)) {
+        while (parentDoc != null) {
             final Map<String, Object> parentCollectionProperties = new HashMap<>();
             parentCollectionProperties.put(BoxItem.FIELD_TYPE, parentDoc.getType());
             parentCollectionProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
@@ -220,17 +227,18 @@ public class BoxFolderAdapter {
     /**
      * Update the document (nx/box sides) thanks to a box folder
      */
-    public void save(CoreSession session, BoxFolder boxFolder) throws ClientException, ParseException, InvocationTargetException, IllegalAccessException {
-        // Let copy new properties into box folder
-        BeanUtils.copyProperties(this.boxFolder, boxFolder);
+    public void save(CoreSession session) throws ClientException, ParseException, InvocationTargetException, IllegalAccessException, BoxJSONException {
 
         // Update nx document with new box folder properties
         setTitle(boxFolder.getName());
         setDescription(boxFolder.getDescription());
 
         // If parent id has been updated -> move the document
-        if (!doc.getParentRef().equals(boxFolder.getParent().getId())) {
-            session.move(new IdRef(doc.getId()), new IdRef(boxFolder.getParent().getId()), boxFolder.getName());
+        String newParentId = boxFolder.getParent().getId();
+        IdRef documentIdRef = new IdRef(doc.getId());
+        String oldParentId = session.getParentDocument(documentIdRef).getId();
+        if (!oldParentId.equals(newParentId)) {
+            session.move(documentIdRef, new IdRef(newParentId), boxFolder.getName());
         }
         setCreator(boxFolder.getOwnedBy().getId());
 
@@ -242,12 +250,17 @@ public class BoxFolderAdapter {
             }
         }
 
+        JSONBoxFolder = boxFolder.toJSONString(new BoxJSONParser(new BoxResourceHub()));
         session.saveDocument(doc);
         session.save();
     }
 
     public BoxFolder getBoxFolder() {
         return boxFolder;
+    }
+
+    public void setBoxFolder(BoxFolder boxFolder) {
+        this.boxFolder = boxFolder;
     }
 
     public void setTitle(String value) throws ClientException {
@@ -261,5 +274,4 @@ public class BoxFolderAdapter {
     public void setCreator(String value) throws ClientException {
         doc.setPropertyValue("dc:creator", value);
     }
-
 }
