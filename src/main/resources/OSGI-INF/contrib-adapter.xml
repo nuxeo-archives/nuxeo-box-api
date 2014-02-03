@@ -3,11 +3,8 @@
   <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService"
              point="adapters">
     <adapter
-            class="com.nuxeo.box.api.folder.adapter.BoxFolderAdapter"
-            factory="com.nuxeo.box.api.folder.adapter.BoxFolderFactory"/>
-    <adapter
-            class="com.nuxeo.box.api.file.adapter.BoxFileAdapter"
-            factory="com.nuxeo.box.api.file.adapter.BoxFileFactory"/>
+            class="com.nuxeo.box.api.BoxAdapter"
+            factory="com.nuxeo.box.api.BoxAdapterFactory"/>
   </extension>
 
 </component>

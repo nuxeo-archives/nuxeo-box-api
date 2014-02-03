@@ -20,6 +20,7 @@ package com.nuxeo.box.api.folder.item;
 import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.google.common.base.Objects;
+import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -54,7 +55,8 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             String folderId = (String) args[0];
             CoreSession session = ctx.getCoreSession();
             DocumentModel folder = session.getDocument(new IdRef(folderId));
-            folderAdapter = folder.getAdapter(BoxFolderAdapter.class);
+            folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter
+                    .class);
         } catch (Exception e) {
             throw WebException.wrap(e);
         }
@@ -67,7 +69,6 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             fields) throws
             BoxJSONException, ClientException {
         CoreSession session = ctx.getCoreSession();
-        folderAdapter.newBoxInstance(session);
         BoxCollection itemCollection = folderAdapter.getItemCollection
                 (session, Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT)
                         , Objects.firstNonNull(offset,

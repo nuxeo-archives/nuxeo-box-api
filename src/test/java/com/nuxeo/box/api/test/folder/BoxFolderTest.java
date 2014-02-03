@@ -24,6 +24,7 @@ import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.box.restclientv2.exceptions.BoxRestException;
 import com.google.inject.Inject;
+import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
@@ -142,9 +143,9 @@ public class BoxFolderTest extends BoxBaseTest {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        BoxFolderAdapter folderAdapter = folder.getAdapter(BoxFolderAdapter
-                .class);
-        BoxFolder boxFolderUpdated = folderAdapter.newBoxInstance(session);
+        BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder.getAdapter
+                (BoxAdapter.class);
+        BoxFolder boxFolderUpdated = folderAdapter.getBoxFolder();
 
         // Default name checking
         assertEquals(boxFolderUpdated.getName(), "folder_1");

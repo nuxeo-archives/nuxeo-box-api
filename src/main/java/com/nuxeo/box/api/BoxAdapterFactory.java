@@ -14,22 +14,34 @@
  * Contributors:
  *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
+package com.nuxeo.box.api;
 
-package com.nuxeo.box.api.folder.adapter;
-
+import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
 
 /**
+ * Box Adapter Factory - instantiate implementations related to document
+ * type
+ *
  * @since 5.9.2
  */
-public class BoxFolderFactory implements DocumentAdapterFactory {
+public class BoxAdapterFactory implements DocumentAdapterFactory {
 
     @Override
     public Object getAdapter(final DocumentModel doc, final Class<?> itf) {
-        if (doc.isFolder()) {
-            return new BoxFolderAdapter(doc);
-        } else {
+        try {
+            if (!doc.isFolder()) {
+                return new BoxFileAdapter(doc);
+            } else if (doc.isFolder()) {
+                return new BoxFolderAdapter(doc);
+            } else {
+                return null;
+            }
+        } catch (ClientException e) {
+            //TODO NXIO-62 Box Exception management
             return null;
         }
     }

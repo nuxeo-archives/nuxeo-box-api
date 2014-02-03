@@ -21,6 +21,7 @@ import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
 import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -64,9 +65,8 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel folder = session.getDocument(new IdRef(folderId));
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter folderAdapter = folder.getAdapter
-                (BoxFolderAdapter.class);
-        folderAdapter.newBoxInstance(session);
+        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder
+                .getAdapter(BoxAdapter.class);
         return folderAdapter.toJSONString(folderAdapter.getBoxFolder());
     }
 
@@ -91,9 +91,9 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
                 .getPathAsString(), boxFolder.getId(), "Folder");
         newFolder = session.createDocument(newFolder);
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter folderAdapter = newFolder.getAdapter
-                (BoxFolderAdapter.class);
-        folderAdapter.newBoxInstance(session);
+        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) newFolder
+                .getAdapter
+                        (BoxAdapter.class);
         // Return the new box folder json
         return folderAdapter.toJSONString(folderAdapter.getBoxFolder());
     }
@@ -111,9 +111,9 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         BoxFolder boxFolderUpdated = new BoxJSONParser(new BoxResourceHub())
                 .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter nxDocumentAdapter = nxDocument.getAdapter
-                (BoxFolderAdapter.class);
-        nxDocumentAdapter.newBoxInstance(session);
+        final BoxFolderAdapter nxDocumentAdapter = (BoxFolderAdapter)
+                nxDocument.getAdapter
+                        (BoxAdapter.class);
         // Update both nx document and box folder adapter
         nxDocumentAdapter.setBoxFolder(boxFolderUpdated);
         nxDocumentAdapter.save(session);

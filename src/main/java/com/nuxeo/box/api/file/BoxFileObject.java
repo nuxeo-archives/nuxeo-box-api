@@ -17,6 +17,7 @@
 package com.nuxeo.box.api.file;
 
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -55,9 +56,8 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel file = session.getDocument(new IdRef(fileId));
         // Adapt nx document to box folder adapter
-        final BoxFileAdapter fileAdapter = file.getAdapter
-                (BoxFileAdapter.class);
-        fileAdapter.newBoxInstance(session);
+        final BoxFileAdapter fileAdapter = (BoxFileAdapter) file.getAdapter
+                (BoxAdapter.class);
         return fileAdapter.toJSONString(fileAdapter.getBoxFile());
     }
 
