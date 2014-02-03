@@ -14,7 +14,7 @@
  * Contributors:
  *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
-package com.nuxeo.box.api.test.item;
+package com.nuxeo.box.api.test.file;
 
 import com.google.inject.Inject;
 import com.nuxeo.box.api.test.BoxBaseTest;
@@ -46,18 +46,20 @@ import static org.junit.Assert.assertEquals;
 @Features({ BoxServerFeature.class })
 @Jetty(port = 18090)
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
-public class BoxItemTest extends BoxBaseTest {
+public class BoxFileTest extends BoxBaseTest {
 
     @Inject
     CoreSession session;
 
     @Test
-    public void itCanFetchAllBoxItemsWithAllProperties() throws Exception {
-        // Fetching the folder in Nuxeo way
-        DocumentModel folder = BoxServerInit.getFolder(1, session);
+    public void itCanFetchABoxFile() throws Exception {
 
-        ClientResponse response = service.path("folders/" + folder.getId() +
-                "/items").get(ClientResponse.class);
+        // Fetching the file in Nuxeo way
+        DocumentModel file = BoxServerInit.getFile(1, session);
+
+        // Fetching the file through NX Box API
+        ClientResponse response = getResponse(RequestType.GET,
+                "files/" + file.getId());
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -69,8 +71,7 @@ public class BoxItemTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
-        assertEquals(finalResult.getString("total_count"), "5");
+        assertEquals(finalResult.getString("item_status"), "project");
     }
-
 
 }

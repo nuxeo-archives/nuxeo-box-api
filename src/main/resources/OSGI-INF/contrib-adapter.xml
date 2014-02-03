@@ -5,6 +5,9 @@
     <adapter
             class="com.nuxeo.box.api.folder.adapter.BoxFolderAdapter"
             factory="com.nuxeo.box.api.folder.adapter.BoxFolderFactory"/>
+    <adapter
+            class="com.nuxeo.box.api.file.adapter.BoxFileAdapter"
+            factory="com.nuxeo.box.api.file.adapter.BoxFileFactory"/>
   </extension>
 
 </component>

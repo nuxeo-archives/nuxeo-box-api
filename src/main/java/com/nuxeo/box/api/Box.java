@@ -62,6 +62,11 @@ public class Box extends ModuleRoot {
         return newObject("folder");
     }
 
+    @Path("/files")
+    public Object doGetFile() {
+        return newObject("file");
+    }
+
     @Override
     public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {
