@@ -102,9 +102,10 @@ public class BoxFolderAdapter {
         boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
         boxProperties.put(BoxItem.FIELD_ID, doc.getId());
 
-        // Etag and Sequence ID
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
-        boxProperties.put(BoxItem.FIELD_ETAG, "-1");
+        // Etag and Sequence ID - SHA1 is missing in Box client
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, doc.getCacheKey());
+        boxProperties.put(BoxItem.FIELD_ETAG, doc.getCacheKey() + doc
+                .getVersionLabel());
 
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT,
