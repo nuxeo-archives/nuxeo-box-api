@@ -28,6 +28,7 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -61,4 +62,12 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         return fileAdapter.toJSONString(fileAdapter.getBoxFile());
     }
 
+    @DELETE
+    @Path("{fileId}")
+    public void doDeleteFile(@PathParam("fileId") String fileId) throws
+            ClientException {
+        final CoreSession session = ctx.getCoreSession();
+        session.removeDocument(new IdRef(fileId));
+        session.save();
+    }
 }

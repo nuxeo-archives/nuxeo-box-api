@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -74,4 +75,20 @@ public class BoxFileTest extends BoxBaseTest {
         assertEquals(finalResult.getString("item_status"), "project");
     }
 
+    @Test
+    public void itCanDeleteABoxFile() throws ClientException {
+        // Fetching the file in Nuxeo way
+        final DocumentModel file = BoxServerInit.getFile(1, session);
+        //Call delete on this file
+        ClientResponse response = service.path("files/" + file.getId())
+                .delete(ClientResponse.class);
+        // Checking response consistency
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
+                response.getStatus());
+        // Checking if folder is removed
+        response = getResponse(BoxBaseTest.RequestType.GET,
+                "files/" + file.getId());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
+                response.getStatus());
+    }
 }
