@@ -17,12 +17,26 @@
 package com.nuxeo.box.api.file.adapter;
 
 import com.box.boxjavalibv2.dao.BoxFile;
+import com.box.boxjavalibv2.dao.BoxItem;
+import com.box.boxjavalibv2.dao.BoxLock;
+import com.box.boxjavalibv2.dao.BoxUser;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.BoxConstants;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.Lock;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.blobholder.SimpleBlobHolder;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.runtime.api.Framework;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Box File Adapter
@@ -39,8 +53,35 @@ public class BoxFileAdapter extends BoxAdapter {
      */
     public BoxFileAdapter(DocumentModel doc) throws ClientException {
         super(doc);
-        CoreSession session = doc.getCoreSession();
-        //boxProperties.put(BoxFile.FIELD_SHA1, doc.getBlo
+
+        //MD5
+        Blob blob = (Blob) doc.getPropertyValue("file:content");
+        if (blob != null) {
+            SimpleBlobHolder blobHolder = new SimpleBlobHolder(blob);
+            boxProperties.put(BoxFile.FIELD_SHA1, blobHolder.getHash());
+        }
+
+        // Lock
+        Map<String, Object> boxLockProperties = new HashMap<>();
+        Lock lockInfo = doc.getLockInfo();
+        if (lockInfo != null) {
+            boxLockProperties.put(BoxItem.FIELD_TYPE, BoxLock.FIELD_LOCK_TYPE);
+            boxLockProperties.put(BoxItem.FIELD_ID, "-1");
+            final UserManager userManager = Framework.getLocalService
+                    (UserManager.class);
+            final NuxeoPrincipal lockCreator = userManager.getPrincipal(lockInfo
+                    .getOwner());
+            final BoxUser boxLockCreator = fillUser(lockCreator);
+            boxLockProperties.put(BoxItem.FIELD_CREATED_BY, boxLockCreator);
+            boxLockProperties.put(BoxItem.FIELD_CREATED_AT,
+                    ISODateTimeFormat.dateTime().print(
+                            new DateTime(lockInfo.getCreated())));
+            boxLockProperties.put(BoxLock.FIELD_EXPIRES_AT, "-1");
+            boxLockProperties.put(BoxLock.FIELD_IS_DOWNLOAD_PREVENTED, false);
+            BoxLock boxLock = new BoxLock(boxLockProperties);
+            boxProperties.put(BoxConstants.BOX_LOCK, boxLock);
+        }
+
         boxFile = new BoxFile(Collections.unmodifiableMap(boxProperties));
 
     }

@@ -26,4 +26,6 @@ public class BoxConstants {
     public static final String BOX_OFFSET = "0";
 
     public static final String BOX_FIELDS = "*";
+
+    public static final String BOX_LOCK = "lock";
 }
