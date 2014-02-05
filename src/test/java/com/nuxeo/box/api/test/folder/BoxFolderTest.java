@@ -145,7 +145,7 @@ public class BoxFolderTest extends BoxBaseTest {
 
         BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder.getAdapter
                 (BoxAdapter.class);
-        BoxFolder boxFolderUpdated = folderAdapter.getBoxFolder();
+        BoxFolder boxFolderUpdated = (BoxFolder) folderAdapter.getBoxItem();
 
         // Default name checking
         assertEquals(boxFolderUpdated.getName(), "folder_1");

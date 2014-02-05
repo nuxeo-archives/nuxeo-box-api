@@ -67,7 +67,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder
                 .getAdapter(BoxAdapter.class);
-        return folderAdapter.toJSONString(folderAdapter.getBoxFolder());
+        return folderAdapter.toJSONString(folderAdapter.getBoxItem());
     }
 
     @POST
@@ -95,7 +95,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
                 .getAdapter
                         (BoxAdapter.class);
         // Return the new box folder json
-        return folderAdapter.toJSONString(folderAdapter.getBoxFolder());
+        return folderAdapter.toJSONString(folderAdapter.getBoxItem());
     }
 
     @PUT
@@ -115,10 +115,10 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
                 nxDocument.getAdapter
                         (BoxAdapter.class);
         // Update both nx document and box folder adapter
-        nxDocumentAdapter.setBoxFolder(boxFolderUpdated);
+        nxDocumentAdapter.setBoxItem(boxFolderUpdated);
         nxDocumentAdapter.save(session);
         // Return the new box folder json
-        return nxDocumentAdapter.toJSONString(nxDocumentAdapter.getBoxFolder());
+        return nxDocumentAdapter.toJSONString(nxDocumentAdapter.getBoxItem());
     }
 
     @DELETE

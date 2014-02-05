@@ -30,6 +30,7 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.tag.Tag;
 import org.nuxeo.ecm.platform.tag.TagService;
@@ -38,6 +39,8 @@ import org.nuxeo.ecm.quota.size.QuotaAware;
 import org.nuxeo.ecm.quota.size.QuotaAwareDocument;
 import org.nuxeo.runtime.api.Framework;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +57,8 @@ public abstract class BoxAdapter {
     protected final DocumentModel doc;
 
     protected final Map<String, Object> boxProperties = new HashMap<>();
+
+    protected BoxItem boxItem;
 
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
@@ -134,6 +139,18 @@ public abstract class BoxAdapter {
 
     }
 
+    public BoxItem getBoxItem() {
+        return boxItem;
+    }
+
+    public void setBoxItem(BoxItem boxItem) {
+        this.boxItem = boxItem;
+    }
+
+    public DocumentModel getDoc() {
+        return doc;
+    }
+
     protected List<BoxTypedObject> getParentsHierarchy(CoreSession session,
             DocumentModel parentDoc) throws ClientException {
         final List<BoxTypedObject> pathCollection = new ArrayList<>();
@@ -166,6 +183,39 @@ public abstract class BoxAdapter {
             index++;
         }
         return tagNames;
+    }
+
+    /**
+     * Update the document (nx/box sides) thanks to a box item
+     */
+    public void save(CoreSession session) throws ClientException,
+            ParseException, InvocationTargetException,
+            IllegalAccessException, BoxJSONException {
+
+        // Update nx document with new box item properties
+        setTitle(boxItem.getName());
+        setDescription(boxItem.getDescription());
+
+        // If parent id has been updated -> move the document
+        String newParentId = boxItem.getParent().getId();
+        IdRef documentIdRef = new IdRef(doc.getId());
+        String oldParentId = session.getParentDocument(documentIdRef).getId();
+        if (!oldParentId.equals(newParentId)) {
+            session.move(documentIdRef, new IdRef(newParentId),
+                    boxItem.getName());
+        }
+        setCreator(boxItem.getOwnedBy().getId());
+
+        TagService tagService = Framework.getLocalService(TagService.class);
+        if (tagService != null) {
+            tagService.removeTags(session, doc.getId());
+            for (String tag : boxItem.getTags()) {
+                tagService.tag(session, doc.getId(), tag,
+                        session.getPrincipal().getName());
+            }
+        }
+        session.saveDocument(doc);
+        session.save();
     }
 
     /**

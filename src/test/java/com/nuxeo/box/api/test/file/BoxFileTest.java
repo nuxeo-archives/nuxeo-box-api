@@ -108,7 +108,7 @@ public class BoxFileTest extends BoxBaseTest {
 
         BoxFileAdapter FileAdapter = (BoxFileAdapter) File.getAdapter
                 (BoxAdapter.class);
-        BoxFile boxFileUpdated = FileAdapter.getBoxFile();
+        BoxFile boxFileUpdated = (BoxFile) FileAdapter.getBoxItem();
 
         // Default name checking
         assertEquals(boxFileUpdated.getName(), "file");
