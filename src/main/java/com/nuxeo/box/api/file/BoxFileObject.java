@@ -57,7 +57,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{fileId}")
-    public Object doGetFile(@PathParam("fileId")
+    public String doGetFile(@PathParam("fileId")
     final String fileId) throws NoSuchDocumentException, ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();

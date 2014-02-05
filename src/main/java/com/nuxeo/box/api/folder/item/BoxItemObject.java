@@ -64,7 +64,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public Object doGetItems(@QueryParam("offset") String offset,
+    public String doGetItems(@QueryParam("offset") String offset,
             @QueryParam("limit") String limit, @QueryParam("fields") String
             fields) throws
             BoxJSONException, ClientException {

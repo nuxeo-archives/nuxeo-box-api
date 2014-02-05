@@ -59,7 +59,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{folderId}")
-    public Object doGetFolder(@PathParam("folderId")
+    public String doGetFolder(@PathParam("folderId")
     final String folderId) throws NoSuchDocumentException, ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
@@ -71,7 +71,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public Object doPostFolder(String jsonBoxFolder) throws ClientException,
+    public String doPostFolder(String jsonBoxFolder) throws ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         // Create box folder from json payload
@@ -100,7 +100,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{folderId}")
-    public Object doPutFolder(@PathParam("folderId") String folderId,
+    public String doPutFolder(@PathParam("folderId") String folderId,
             String jsonBoxFolder) throws ClientException, BoxJSONException,
             ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
