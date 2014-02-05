@@ -91,6 +91,10 @@ public class BoxBaseTest {
         boxConfig.setApiUrlPath("/nuxeo/site/box/2.0");
         boxConfig.setApiUrlAuthority("10.213.3.200:8080");
 
+        boxConfig.setUploadUrlAuthority("/nuxeo");
+        boxConfig.setUploadUrlScheme("http");
+        boxConfig.setUploadUrlPath("/nuxeo/site/box/2.0");
+
         boxClient = getAuthenticatedClient(code);
 
     }
