@@ -16,7 +16,10 @@
  */
 package com.nuxeo.box.api.file;
 
+import com.box.boxjavalibv2.dao.BoxFile;
 import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
+import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -30,10 +33,13 @@ import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 
 /**
  * WebObject for a Box File
@@ -69,5 +75,28 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(fileId));
         session.save();
+    }
+
+    @PUT
+    @Path("{fileId}")
+    public String doUpdateFile(@PathParam("fileId") String fileId,
+            String jsonBoxFile) throws ClientException, BoxJSONException,
+            ParseException, IllegalAccessException, InvocationTargetException {
+        final CoreSession session = ctx.getCoreSession();
+        // Fetch the nx document with given id
+        final DocumentModel nxDocument = session.getDocument(new IdRef
+                (fileId));
+        // Create box File from json payload
+        BoxFile boxFileUpdated = new BoxJSONParser(new BoxResourceHub())
+                .parseIntoBoxObject(jsonBoxFile, BoxFile.class);
+        // Adapt nx document to box File adapter
+        final BoxFileAdapter nxDocumentAdapter = (BoxFileAdapter)
+                nxDocument.getAdapter
+                        (BoxAdapter.class);
+        // Update both nx document and box File adapter
+        nxDocumentAdapter.setBoxFile(boxFileUpdated);
+        nxDocumentAdapter.save(session);
+        // Return the new box File json
+        return nxDocumentAdapter.toJSONString(nxDocumentAdapter.getBoxFile());
     }
 }

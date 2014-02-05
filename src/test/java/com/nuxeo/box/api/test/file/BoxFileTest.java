@@ -16,11 +16,18 @@
  */
 package com.nuxeo.box.api.test.file;
 
+import com.box.boxjavalibv2.dao.BoxFile;
+import com.box.boxjavalibv2.exceptions.BoxJSONException;
+import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
+import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.google.inject.Inject;
+import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.Test;
@@ -36,6 +43,7 @@ import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
@@ -90,5 +98,39 @@ public class BoxFileTest extends BoxBaseTest {
                 "files/" + file.getId());
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
                 response.getStatus());
+    }
+
+    @Test
+    public void itCanUpdateABoxFile() throws ClientException,
+            BoxJSONException, IOException, JSONException {
+        // Fetching the File in Nuxeo way
+        final DocumentModel File = BoxServerInit.getFile(1, session);
+
+        BoxFileAdapter FileAdapter = (BoxFileAdapter) File.getAdapter
+                (BoxAdapter.class);
+        BoxFile boxFileUpdated = FileAdapter.getBoxFile();
+
+        // Default name checking
+        assertEquals(boxFileUpdated.getName(), "file");
+
+        // Update the name of the File
+        boxFileUpdated.put("name", "newName");
+
+        final ClientResponse response = service.path("files/" + File
+                .getId()).put(ClientResponse.class,
+                boxFileUpdated.toJSONString(new BoxJSONParser(new
+                        BoxResourceHub())));
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("name"), "newName");
     }
 }
