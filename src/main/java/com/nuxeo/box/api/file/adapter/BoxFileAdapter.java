@@ -29,7 +29,6 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.Lock;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.core.api.blobholder.SimpleBlobHolder;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
@@ -54,8 +53,7 @@ public class BoxFileAdapter extends BoxAdapter {
         //MD5
         Blob blob = (Blob) doc.getPropertyValue("file:content");
         if (blob != null) {
-            SimpleBlobHolder blobHolder = new SimpleBlobHolder(blob);
-            boxProperties.put(BoxFile.FIELD_SHA1, blobHolder.getHash());
+            boxProperties.put(BoxFile.FIELD_SHA1, blob.getDigest());
         }
 
         // Lock
