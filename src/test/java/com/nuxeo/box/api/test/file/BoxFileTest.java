@@ -27,6 +27,9 @@ import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -41,8 +44,11 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -132,5 +138,38 @@ public class BoxFileTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("name"), "newName");
+    }
+
+    @Test
+    public void itCanCreateABoxFile() throws ClientException, IOException,
+            JSONException {
+        // Setting the parent
+        DocumentModel folder = BoxServerInit.getFolder(1, session);
+        FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
+        formDataMultiPart.field("parent_id", folder.getId());
+        // Setting the blob and name
+        File file = org.nuxeo.common.utils.FileUtils
+                .getResourceFileFromContext("blob.json");
+        formDataMultiPart.field("filename", file.getName());
+        FormDataBodyPart bodyPart = new FormDataBodyPart("file",
+                new ByteArrayInputStream(FileUtils.readFileToByteArray(file)),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        formDataMultiPart.bodyPart(bodyPart);
+
+        final ClientResponse response = service.path("files/content").type
+                (MediaType
+                        .MULTIPART_FORM_DATA)
+                .post(ClientResponse.class, formDataMultiPart);
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("name"), "blob.json");
     }
 }
