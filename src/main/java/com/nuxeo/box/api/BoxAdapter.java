@@ -63,7 +63,6 @@ public abstract class BoxAdapter {
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
         CoreSession session = doc.getCoreSession();
-        boxProperties.put(BoxItem.FIELD_TYPE, doc.getType());
         boxProperties.put(BoxItem.FIELD_ID, doc.getId());
 
         // Etag / Sequence ID
@@ -101,7 +100,6 @@ public abstract class BoxAdapter {
         // parent
         final Map<String, Object> parentProperties = new HashMap<>();
         parentProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
-        parentProperties.put(BoxItem.FIELD_TYPE, parentDoc.getType());
         parentProperties.put(BoxItem.FIELD_NAME, parentDoc.getName());
         parentProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
         parentProperties.put(BoxItem.FIELD_ETAG, "-1");
@@ -157,8 +155,6 @@ public abstract class BoxAdapter {
         while (parentDoc != null) {
             final Map<String, Object> parentCollectionProperties = new
                     HashMap<>();
-            parentCollectionProperties.put(BoxItem.FIELD_TYPE,
-                    parentDoc.getType());
             parentCollectionProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
             parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
@@ -226,11 +222,10 @@ public abstract class BoxAdapter {
      */
     protected BoxUser fillUser(NuxeoPrincipal creator) {
         final Map<String, Object> mapUser = new HashMap<>();
-        mapUser.put("type", "user");
-        mapUser.put("id", creator.getPrincipalId());
-        mapUser.put("name", creator.getFirstName() + " " + creator
+        mapUser.put(BoxItem.FIELD_ID, creator.getPrincipalId());
+        mapUser.put(BoxItem.FIELD_NAME, creator.getFirstName() + " " + creator
                 .getLastName());
-        mapUser.put("login", creator.getName());
+        mapUser.put(BoxUser.FIELD_LOGIN, creator.getName());
         return new BoxUser(Collections.unmodifiableMap(mapUser));
     }
 
