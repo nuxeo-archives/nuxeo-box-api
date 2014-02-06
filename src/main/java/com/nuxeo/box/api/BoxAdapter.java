@@ -17,6 +17,7 @@
 package com.nuxeo.box.api;
 
 import com.box.boxjavalibv2.dao.BoxCollection;
+import com.box.boxjavalibv2.dao.BoxFile;
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.dao.BoxItem;
 import com.box.boxjavalibv2.dao.BoxObject;
@@ -160,8 +161,18 @@ public abstract class BoxAdapter {
             parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_NAME,
                     parentDoc.getName());
-            pathCollection.add(new BoxTypedObject(Collections.unmodifiableMap
-                    (parentCollectionProperties)));
+            BoxTypedObject boxParent;
+            // This different instantiation is related to the param type
+            // which is automatically added in json payload by Box marshaller
+            // following the box object type
+            if (parentDoc.isFolder()) {
+                boxParent = new BoxFolder(Collections
+                        .unmodifiableMap(parentCollectionProperties));
+            } else {
+                boxParent = new BoxFile(Collections
+                        .unmodifiableMap(parentCollectionProperties));
+            }
+            pathCollection.add(boxParent);
             parentDoc = session.getParentDocument(parentDoc.getParentRef());
         }
         return pathCollection;
@@ -222,10 +233,13 @@ public abstract class BoxAdapter {
      */
     protected BoxUser fillUser(NuxeoPrincipal creator) {
         final Map<String, Object> mapUser = new HashMap<>();
-        mapUser.put(BoxItem.FIELD_ID, creator.getPrincipalId());
-        mapUser.put(BoxItem.FIELD_NAME, creator.getFirstName() + " " + creator
-                .getLastName());
-        mapUser.put(BoxUser.FIELD_LOGIN, creator.getName());
+        mapUser.put(BoxItem.FIELD_ID, creator != null ? creator
+                .getPrincipalId() : "system");
+        mapUser.put(BoxItem.FIELD_NAME, creator != null ? creator
+                .getFirstName() + " " + creator
+                .getLastName() : "system");
+        mapUser.put(BoxUser.FIELD_LOGIN, creator != null ? creator.getName()
+                : "system");
         return new BoxUser(Collections.unmodifiableMap(mapUser));
     }
 

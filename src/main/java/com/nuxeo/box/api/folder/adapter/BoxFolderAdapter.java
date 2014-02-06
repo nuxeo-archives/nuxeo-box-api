@@ -18,6 +18,7 @@ package com.nuxeo.box.api.folder.adapter;
 
 import com.box.boxjavalibv2.dao.BoxCollection;
 import com.box.boxjavalibv2.dao.BoxEmail;
+import com.box.boxjavalibv2.dao.BoxFile;
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.dao.BoxItem;
 import com.box.boxjavalibv2.dao.BoxTypedObject;
@@ -83,10 +84,9 @@ public class BoxFolderAdapter extends BoxAdapter {
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
         boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 children.size());
-        final List<BoxTypedObject> boxTypedObjects = new ArrayList<>();
+        final List<BoxTypedObject> boxChildren = new ArrayList<>();
         for (DocumentModel child : children) {
             final Map<String, Object> childrenProperties = new HashMap<>();
-            childrenProperties.put(BoxTypedObject.FIELD_TYPE, child.getType());
             childrenProperties.put(BoxTypedObject.FIELD_ID, child.getId());
             childrenProperties.put(BoxTypedObject.FIELD_CREATED_AT,
                     ISODateTimeFormat.dateTime().print(
@@ -96,11 +96,21 @@ public class BoxFolderAdapter extends BoxAdapter {
                     ISODateTimeFormat.dateTime().print(
                             new DateTime(child.getPropertyValue
                                     ("dc:modified"))));
-            boxTypedObjects.add(new BoxTypedObject(Collections
-                    .unmodifiableMap(childrenProperties)));
+            BoxTypedObject boxChild;
+            // This different instantiation is related to the param type
+            // which is automatically added in json payload by Box marshaller
+            // following the box object type
+            if (child.isFolder()) {
+                boxChild = new BoxFolder(Collections
+                        .unmodifiableMap(childrenProperties));
+            } else {
+                boxChild = new BoxFile(Collections
+                        .unmodifiableMap(childrenProperties));
+            }
+            boxChildren.add(boxChild);
         }
         boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxTypedObjects);
+                boxChildren);
         return new BoxCollection(Collections.unmodifiableMap
                 (boxItemCollectionProperties));
     }

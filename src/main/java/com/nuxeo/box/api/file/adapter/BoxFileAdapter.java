@@ -60,7 +60,6 @@ public class BoxFileAdapter extends BoxAdapter {
         Map<String, Object> boxLockProperties = new HashMap<>();
         Lock lockInfo = doc.getLockInfo();
         if (lockInfo != null) {
-            boxLockProperties.put(BoxItem.FIELD_TYPE, BoxLock.FIELD_LOCK_TYPE);
             boxLockProperties.put(BoxItem.FIELD_ID, "-1");
             final UserManager userManager = Framework.getLocalService
                     (UserManager.class);
