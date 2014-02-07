@@ -96,6 +96,7 @@ public class BoxFolderAdapter extends BoxAdapter {
                     ISODateTimeFormat.dateTime().print(
                             new DateTime(child.getPropertyValue
                                     ("dc:modified"))));
+            childrenProperties.put(BoxItem.FIELD_NAME, child.getName());
             BoxTypedObject boxChild;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller

@@ -161,7 +161,7 @@ public abstract class BoxAdapter {
             parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
             parentCollectionProperties.put(BoxItem.FIELD_NAME,
-                    parentDoc.getName());
+                    parentDoc.getName() != null ? parentDoc.getName() : "/");
             BoxTypedObject boxParent;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller
