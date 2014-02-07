@@ -17,13 +17,12 @@
  */
 package com.nuxeo.box.api.folder;
 
-import com.box.boxjavalibv2.dao.BoxFolder;
-import com.box.boxjavalibv2.dao.BoxItem;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
-import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
-import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.dao.BoxItem;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -109,9 +108,9 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         final DocumentModel nxDocument = session.getDocument(new IdRef
                 (folderId));
         // Create box folder from json payload
-        BoxFolder boxFolderUpdated = new BoxJSONParser(new
+        BoxItem boxFolderUpdated = new BoxJSONParser(new
                 BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+                .parseIntoBoxObject(jsonBoxFolder, BoxItem.class);
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter nxDocumentAdapter = (BoxFolderAdapter)
                 nxDocument.getAdapter

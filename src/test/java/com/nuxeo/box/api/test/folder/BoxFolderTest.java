@@ -16,16 +16,13 @@
  */
 package com.nuxeo.box.api.test.folder;
 
-import com.box.boxjavalibv2.dao.BoxFolder;
-import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
-import com.box.boxjavalibv2.exceptions.BoxServerException;
-import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
-import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
-import com.box.restclientv2.exceptions.BoxRestException;
 import com.google.inject.Inject;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.dao.BoxFolder;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
@@ -33,7 +30,6 @@ import com.sun.jersey.api.client.ClientResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -53,7 +49,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @since 5.9.2
@@ -88,21 +83,6 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("item_status"), "project");
-    }
-
-    @Ignore
-    @Test
-    //TODO NXIO-65: activate it after OAuth testing
-    public void itCanFetchABoxFolderWithBoxClient() throws
-            BoxServerException, AuthFatalFailureException, BoxRestException,
-            ClientException {
-        // Fetching the folder in Nuxeo way
-        DocumentModel folder = BoxServerInit.getFolder(1, session);
-
-        // Fetching the folder through Box Client
-        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder
-                ("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
-        assertNotNull(boxFolder);
     }
 
     @Test

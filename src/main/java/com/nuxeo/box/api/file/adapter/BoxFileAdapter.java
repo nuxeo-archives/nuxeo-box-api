@@ -16,12 +16,12 @@
  */
 package com.nuxeo.box.api.file.adapter;
 
-import com.box.boxjavalibv2.dao.BoxFile;
-import com.box.boxjavalibv2.dao.BoxItem;
-import com.box.boxjavalibv2.dao.BoxLock;
-import com.box.boxjavalibv2.dao.BoxUser;
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.dao.BoxItem;
+import com.nuxeo.box.api.dao.BoxLock;
+import com.nuxeo.box.api.dao.BoxUser;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.Blob;

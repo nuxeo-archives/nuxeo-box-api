@@ -16,13 +16,13 @@
  */
 package com.nuxeo.box.api.test.file;
 
-import com.box.boxjavalibv2.dao.BoxFile;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
-import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
-import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.google.inject.Inject;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
+import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;

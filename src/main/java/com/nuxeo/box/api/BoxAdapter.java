@@ -16,16 +16,16 @@
  */
 package com.nuxeo.box.api;
 
-import com.box.boxjavalibv2.dao.BoxCollection;
-import com.box.boxjavalibv2.dao.BoxFile;
-import com.box.boxjavalibv2.dao.BoxFolder;
-import com.box.boxjavalibv2.dao.BoxItem;
-import com.box.boxjavalibv2.dao.BoxObject;
-import com.box.boxjavalibv2.dao.BoxTypedObject;
-import com.box.boxjavalibv2.dao.BoxUser;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
-import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
-import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.dao.BoxCollection;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.dao.BoxFolder;
+import com.nuxeo.box.api.dao.BoxItem;
+import com.nuxeo.box.api.dao.BoxObject;
+import com.nuxeo.box.api.dao.BoxTypedObject;
+import com.nuxeo.box.api.dao.BoxUser;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -101,7 +101,8 @@ public abstract class BoxAdapter {
         // parent
         final Map<String, Object> parentProperties = new HashMap<>();
         parentProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
-        parentProperties.put(BoxItem.FIELD_NAME, parentDoc.getName());
+        parentProperties.put(BoxItem.FIELD_NAME, parentDoc.getName() != null
+                ? parentDoc.getName() : "/");
         parentProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
         parentProperties.put(BoxItem.FIELD_ETAG, "-1");
         BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap

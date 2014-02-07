@@ -16,12 +16,12 @@
  */
 package com.nuxeo.box.api.file;
 
-import com.box.boxjavalibv2.dao.BoxFile;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
-import com.box.boxjavalibv2.jsonparsing.BoxJSONParser;
-import com.box.boxjavalibv2.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
+import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.sun.jersey.multipart.FormDataParam;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -35,7 +35,6 @@ import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;

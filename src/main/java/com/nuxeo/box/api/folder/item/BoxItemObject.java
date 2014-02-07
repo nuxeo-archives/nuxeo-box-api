@@ -17,11 +17,11 @@
  */
 package com.nuxeo.box.api.folder.item;
 
-import com.box.boxjavalibv2.dao.BoxCollection;
-import com.box.boxjavalibv2.exceptions.BoxJSONException;
 import com.google.common.base.Objects;
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.dao.BoxCollection;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;

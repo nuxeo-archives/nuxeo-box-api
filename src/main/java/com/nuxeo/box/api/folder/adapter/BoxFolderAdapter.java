@@ -16,13 +16,13 @@
  */
 package com.nuxeo.box.api.folder.adapter;
 
-import com.box.boxjavalibv2.dao.BoxCollection;
-import com.box.boxjavalibv2.dao.BoxEmail;
-import com.box.boxjavalibv2.dao.BoxFile;
-import com.box.boxjavalibv2.dao.BoxFolder;
-import com.box.boxjavalibv2.dao.BoxItem;
-import com.box.boxjavalibv2.dao.BoxTypedObject;
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.dao.BoxCollection;
+import com.nuxeo.box.api.dao.BoxEmail;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.dao.BoxFolder;
+import com.nuxeo.box.api.dao.BoxItem;
+import com.nuxeo.box.api.dao.BoxTypedObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
