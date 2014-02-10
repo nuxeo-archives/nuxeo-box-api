@@ -17,6 +17,7 @@
 package com.nuxeo.box.api.folder.adapter;
 
 import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.dao.BoxEmail;
 import com.nuxeo.box.api.dao.BoxFile;
@@ -60,7 +61,8 @@ public class BoxFolderAdapter extends BoxAdapter {
 
         // Children
         boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION,
-                getItemCollection(session, "100", "0", "*"));
+                getItemCollection(session, BoxConstants.BOX_LIMIT,
+                        BoxConstants.BOX_OFFSET, BoxConstants.BOX_FIELDS));
 
         boxItem = new BoxFolder(Collections.unmodifiableMap(boxProperties));
     }
@@ -99,11 +101,13 @@ public class BoxFolderAdapter extends BoxAdapter {
                 boxChild = new BoxFolder(Collections
                         .unmodifiableMap(childrenProperties));
             } else {
-                //MD5
-                Blob blob = (Blob) child.getPropertyValue("file:content");
-                if (blob != null) {
-                    childrenProperties.put(BoxFile.FIELD_SHA1,
-                            blob.getDigest());
+                //NX MD5 -> Box SHA1
+                if (child.hasSchema("file")) {
+                    Blob blob = (Blob) child.getPropertyValue("file:content");
+                    if (blob != null) {
+                        childrenProperties.put(BoxFile.FIELD_SHA1,
+                                blob.getDigest());
+                    }
                 }
                 boxChild = new BoxFile(Collections
                         .unmodifiableMap(childrenProperties));

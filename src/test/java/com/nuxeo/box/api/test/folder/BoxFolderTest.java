@@ -82,7 +82,15 @@ public class BoxFolderTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("sequence_id"),
+                finalResult.getString("id"));
         assertEquals(finalResult.getString("item_status"), "project");
+        assertEquals(finalResult.getJSONObject("parent").getString("name"),
+                "/");
+        assertEquals(finalResult.getJSONObject("parent").getString("etag"),
+                "null");
+        assertEquals(finalResult.getJSONObject("parent").getString
+                ("sequence_id"), "null");
     }
 
     @Test
