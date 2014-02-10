@@ -1,6 +1,7 @@
 package com.nuxeo.box.api.dao;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -110,6 +111,8 @@ public class BoxItem extends BoxTypedObject {
      *
      * @return sequence id
      */
+    // NXIO-45: don't skip null value to fit to Box json payload response
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_SEQUENCE_ID)
     public String getSequenceId() {
         return (String) getValue(FIELD_SEQUENCE_ID);
@@ -295,6 +298,8 @@ public class BoxItem extends BoxTypedObject {
      *
      * @return etag
      */
+    // NXIO-45: don't skip null value to fit to Box json payload response
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_ETAG)
     public String getEtag() {
         return (String) getValue(FIELD_ETAG);
