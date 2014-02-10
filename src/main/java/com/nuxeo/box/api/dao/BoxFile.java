@@ -2,6 +2,7 @@ package com.nuxeo.box.api.dao;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.nuxeo.box.api.utils.ISO8601DateParser;
 
 import java.util.Date;
@@ -10,6 +11,8 @@ import java.util.Map;
 /**
  * Box File object
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "type", defaultImpl = BoxFile.class)
 public class BoxFile extends BoxItem {
 
     public final static String FIELD_SHA1 = "sha1";
