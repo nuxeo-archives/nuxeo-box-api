@@ -2,12 +2,15 @@ package com.nuxeo.box.api.dao;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Map;
 
 /**
  * Box folder.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "type", defaultImpl = BoxFolder.class)
 public class BoxFolder extends BoxItem {
 
     public static final String FIELD_FOLDER_UPLOAD_EMAIL =

@@ -164,8 +164,15 @@ public abstract class BoxAdapter {
         return boxItem;
     }
 
+    /**
+     * Update the box item properties
+     *
+     * @param boxItem containing values updated
+     */
     public void setBoxItem(BoxItem boxItem) {
-        this.boxItem = boxItem;
+        for (String field : boxItem.getKeySet()) {
+            this.boxItem.put(field, boxItem.getValue(field));
+        }
     }
 
     public DocumentModel getDoc() {
@@ -224,26 +231,36 @@ public abstract class BoxAdapter {
             ParseException, InvocationTargetException,
             IllegalAccessException, BoxJSONException {
 
-        // Update nx document with new box item properties
-        setTitle(boxItem.getName());
         setDescription(boxItem.getDescription());
-
-        // If parent id has been updated -> move the document
-        String newParentId = boxItem.getParent().getId();
-        IdRef documentIdRef = new IdRef(doc.getId());
-        String oldParentId = session.getParentDocument(documentIdRef).getId();
-        if (!oldParentId.equals(newParentId)) {
-            session.move(documentIdRef, new IdRef(newParentId),
-                    boxItem.getName());
-        }
         setCreator(boxItem.getOwnedBy().getId());
 
+        String id = boxItem.getParent().getId();
+        // check if id is root's one
+        String newParentId = "0".equals(id) ? session.getRootDocument().getId
+                () : id;
+        IdRef documentIdRef = new IdRef(doc.getId());
+
+        // If the name has changed, update location in Nuxeo repository
+        // OR if parent id has been updated -> move the document
+        String oldParentId = session.getParentDocument(documentIdRef).getId();
+        if (!oldParentId.equals(newParentId) || !doc.getName().equals(boxItem
+                .getName())) {
+
+            session.move(documentIdRef, new IdRef(newParentId),
+                    boxItem.getName());
+            // Title and name are same here
+            setTitle(boxItem.getName());
+        }
+
+        // Tags
         TagService tagService = Framework.getLocalService(TagService.class);
         if (tagService != null) {
-            tagService.removeTags(session, doc.getId());
-            for (String tag : boxItem.getTags()) {
-                tagService.tag(session, doc.getId(), tag,
-                        session.getPrincipal().getName());
+            if (boxItem.getTags().length != 0) {
+                tagService.removeTags(session, doc.getId());
+                for (String tag : boxItem.getTags()) {
+                    tagService.tag(session, doc.getId(), tag,
+                            session.getPrincipal().getName());
+                }
             }
         }
         session.saveDocument(doc);

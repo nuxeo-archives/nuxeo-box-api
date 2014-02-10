@@ -2,12 +2,14 @@ package com.nuxeo.box.api.dao;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nuxeo.box.api.jsonentities.DefaultJSONStringEntity;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class BoxObject extends DefaultJSONStringEntity {
 
@@ -156,5 +158,15 @@ public class BoxObject extends DefaultJSONStringEntity {
         if (value instanceof String) {
             extraMap.put(key, value);
         }
+    }
+
+    /**
+     * Added to introspect the map to update document
+     *
+     * @since 5.9.2
+     */
+    @JsonIgnore
+    public Set<String> getKeySet() {
+        return map.keySet();
     }
 }
