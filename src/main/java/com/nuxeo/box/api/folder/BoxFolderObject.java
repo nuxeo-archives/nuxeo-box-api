@@ -63,7 +63,8 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     final String folderId) throws NoSuchDocumentException, ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
-        final DocumentModel folder = session.getDocument(new IdRef(folderId));
+        final DocumentModel folder = "0".equals(folderId) ? session
+                .getRootDocument() : session.getDocument(new IdRef(folderId));
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder
                 .getAdapter(BoxAdapter.class);

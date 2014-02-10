@@ -64,12 +64,9 @@ public abstract class BoxAdapter {
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
         CoreSession session = doc.getCoreSession();
-        boxProperties.put(BoxItem.FIELD_ID, doc.getId());
-
-        // Etag / Sequence ID
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, doc.getCacheKey());
-        boxProperties.put(BoxItem.FIELD_ETAG, doc.getCacheKey() + doc
-                .getVersionLabel());
+        boxProperties.put(BoxItem.FIELD_ID, getBoxId(doc));
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, getBoxSequenceId(doc));
+        boxProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(doc));
 
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT,
@@ -91,7 +88,7 @@ public abstract class BoxAdapter {
         final DocumentModel parentDoc = session.getDocument(doc.getParentRef());
         final Map<String, Object> pathCollection = new HashMap<>();
         pathCollection.put(BoxCollection.FIELD_TOTAL_COUNT,
-                doc.getPathAsString().split("\\\\").length);
+                doc.getPathAsString().split("/").length);
         pathCollection.put(BoxCollection.FIELD_ENTRIES,
                 getParentsHierarchy(session, parentDoc));
         BoxCollection boxPathCollection = new BoxCollection(Collections
@@ -100,11 +97,11 @@ public abstract class BoxAdapter {
 
         // parent
         final Map<String, Object> parentProperties = new HashMap<>();
-        parentProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
-        parentProperties.put(BoxItem.FIELD_NAME, parentDoc.getName() != null
-                ? parentDoc.getName() : "/");
-        parentProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
-        parentProperties.put(BoxItem.FIELD_ETAG, "-1");
+        parentProperties.put(BoxItem.FIELD_ID, getBoxId(parentDoc));
+        parentProperties.put(BoxItem.FIELD_SEQUENCE_ID,
+                getBoxSequenceId(parentDoc));
+        parentProperties.put(BoxItem.FIELD_NAME, getBoxName(parentDoc));
+        parentProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(parentDoc));
         BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap
                 (parentProperties));
         boxProperties.put(BoxItem.FIELD_PARENT, parentFolder);
@@ -139,6 +136,30 @@ public abstract class BoxAdapter {
 
     }
 
+    /**
+     * Helpers to get Ids for sequence, etag and id itself.
+     * In case of root, sequence and etag are null and id = 0 according to
+     * the box
+     * documentation.
+     */
+
+    protected String getBoxId(DocumentModel doc) {
+        return doc.getName() != null ? doc.getId() : "0";
+    }
+
+    protected String getBoxSequenceId(DocumentModel doc) {
+        return doc.getName() != null ? doc.getId() : null;
+    }
+
+    protected String getBoxEtag(DocumentModel doc) {
+        return doc.getName() != null ? doc.getId() + "_" + doc
+                .getVersionLabel() : null;
+    }
+
+    protected String getBoxName(DocumentModel doc) {
+        return doc.getName() != null ? doc.getName() : "/";
+    }
+
     public BoxItem getBoxItem() {
         return boxItem;
     }
@@ -157,11 +178,14 @@ public abstract class BoxAdapter {
         while (parentDoc != null) {
             final Map<String, Object> parentCollectionProperties = new
                     HashMap<>();
-            parentCollectionProperties.put(BoxItem.FIELD_ID, parentDoc.getId());
-            parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, "-1");
-            parentCollectionProperties.put(BoxItem.FIELD_ETAG, "-1");
+            parentCollectionProperties.put(BoxItem.FIELD_ID,
+                    getBoxId(parentDoc));
+            parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID,
+                    getBoxSequenceId(parentDoc));
+            parentCollectionProperties.put(BoxItem.FIELD_ETAG,
+                    getBoxEtag(parentDoc));
             parentCollectionProperties.put(BoxItem.FIELD_NAME,
-                    parentDoc.getName() != null ? parentDoc.getName() : "/");
+                    getBoxName(parentDoc));
             BoxTypedObject boxParent;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller

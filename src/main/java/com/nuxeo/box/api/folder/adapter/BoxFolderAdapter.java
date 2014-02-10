@@ -23,8 +23,7 @@ import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxItem;
 import com.nuxeo.box.api.dao.BoxTypedObject;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
+import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -87,16 +86,11 @@ public class BoxFolderAdapter extends BoxAdapter {
         final List<BoxTypedObject> boxChildren = new ArrayList<>();
         for (DocumentModel child : children) {
             final Map<String, Object> childrenProperties = new HashMap<>();
-            childrenProperties.put(BoxTypedObject.FIELD_ID, child.getId());
-            childrenProperties.put(BoxTypedObject.FIELD_CREATED_AT,
-                    ISODateTimeFormat.dateTime().print(
-                            new DateTime(child.getPropertyValue("dc:created")
-                            )));
-            childrenProperties.put(BoxItem.FIELD_MODIFIED_AT,
-                    ISODateTimeFormat.dateTime().print(
-                            new DateTime(child.getPropertyValue
-                                    ("dc:modified"))));
-            childrenProperties.put(BoxItem.FIELD_NAME, child.getName());
+            childrenProperties.put(BoxTypedObject.FIELD_ID, getBoxId(child));
+            childrenProperties.put(BoxItem.FIELD_SEQUENCE_ID,
+                    getBoxSequenceId(child));
+            childrenProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(child));
+            childrenProperties.put(BoxItem.FIELD_NAME, getBoxName(child));
             BoxTypedObject boxChild;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller
@@ -105,6 +99,12 @@ public class BoxFolderAdapter extends BoxAdapter {
                 boxChild = new BoxFolder(Collections
                         .unmodifiableMap(childrenProperties));
             } else {
+                //MD5
+                Blob blob = (Blob) child.getPropertyValue("file:content");
+                if (blob != null) {
+                    childrenProperties.put(BoxFile.FIELD_SHA1,
+                            blob.getDigest());
+                }
                 boxChild = new BoxFile(Collections
                         .unmodifiableMap(childrenProperties));
             }
