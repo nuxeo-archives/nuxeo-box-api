@@ -122,7 +122,7 @@ public class BoxFileTest extends BoxBaseTest {
         // Update the name of the File
         boxFileUpdated.put("name", "newName");
 
-        final ClientResponse response = service.path("files/" + File
+        ClientResponse response = service.path("files/" + File
                 .getId()).put(ClientResponse.class,
                 boxFileUpdated.toJSONString(new BoxJSONParser(new
                         BoxResourceHub())));
