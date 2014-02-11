@@ -120,6 +120,10 @@ public class BoxObject extends DefaultJSONStringEntity {
         map.put(key, value);
     }
 
+    public void putAll(Map<String, Object> newMap) {
+        map.putAll(newMap);
+    }
+
     public Object getValue(String key) {
         return map.get(key);
     }

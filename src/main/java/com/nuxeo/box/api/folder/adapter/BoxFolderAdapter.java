@@ -93,24 +93,27 @@ public class BoxFolderAdapter extends BoxAdapter {
                     getBoxSequenceId(child));
             childrenProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(child));
             childrenProperties.put(BoxItem.FIELD_NAME, getBoxName(child));
-            BoxTypedObject boxChild;
+            //NX MD5 -> Box SHA1
+            if (child.hasSchema("file")) {
+                Blob blob = (Blob) child.getPropertyValue("file:content");
+                if (blob != null) {
+                    childrenProperties.put(BoxFile.FIELD_SHA1,
+                            blob.getDigest());
+                }
+            }
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller
             // following the box object type
-            if (child.isFolder()) {
-                boxChild = new BoxFolder(Collections
-                        .unmodifiableMap(childrenProperties));
-            } else {
-                //NX MD5 -> Box SHA1
-                if (child.hasSchema("file")) {
-                    Blob blob = (Blob) child.getPropertyValue("file:content");
-                    if (blob != null) {
-                        childrenProperties.put(BoxFile.FIELD_SHA1,
-                                blob.getDigest());
-                    }
+            BoxTypedObject boxChild;
+            boxChild = child.isFolder() ? new BoxFolder() : new BoxFile();
+            // Depending of fields filter provided in the REST call:
+            // Properties setup (* -> all)
+            if (!"*".equals(fields)) {
+                for (String field : fields.split(",")) {
+                    boxChild.put(field, childrenProperties.get(field));
                 }
-                boxChild = new BoxFile(Collections
-                        .unmodifiableMap(childrenProperties));
+            } else {
+                boxChild.putAll(childrenProperties);
             }
             boxChildren.add(boxChild);
         }
