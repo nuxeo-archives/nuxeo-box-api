@@ -138,6 +138,12 @@ public class BoxFileTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("name"), "newName");
+
+        // Putting with few properties
+        response = service.path("files/" + File.getId()).put(ClientResponse
+                .class, "{\"name\":\"new name.jpg\"}");
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test

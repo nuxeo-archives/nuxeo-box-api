@@ -70,6 +70,33 @@ public class BoxItemTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("total_count"), "5");
+        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
+        ).get("etag"), ((JSONObject) finalResult.getJSONArray("entries").get
+                (0)).get("sequence_id") + "_0.0");
+    }
+
+    @Test
+    public void itCanFetchAllBoxItemsWithOptions() throws Exception {
+        // Fetching the folder in Nuxeo way
+        DocumentModel folder = BoxServerInit.getFolder(1, session);
+
+        ClientResponse response = service.path("folders/" + folder.getId() +
+                "/items").queryParam("limit", "2").queryParam("fields",
+                "name").get(ClientResponse.class);
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        assertEquals(finalResult.getString("total_count"), "2");
+        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
+        ).get("etag"), null);
     }
 
 

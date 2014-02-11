@@ -63,7 +63,7 @@ public class BoxFolderTest extends BoxBaseTest {
     CoreSession session;
 
     @Test
-    public void itCanFetchABoxFolderWithCommonClient() throws Exception {
+    public void itCanFetchABoxFolder() throws Exception {
 
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
@@ -123,6 +123,14 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("item_status"), "project");
+
+        // Posting with few properties
+        response = service.path("folders").post(ClientResponse
+                .class, "{\"name\":\"New Folder\", \"parent\": {\"id\": " +
+                "\"0\"}}");
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
