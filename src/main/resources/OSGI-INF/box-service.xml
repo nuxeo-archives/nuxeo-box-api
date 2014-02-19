@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.activity.ActivityStreamService">
+
+  <documentation>
+    Service managing Box objects like collection
+
+    @author Vladimir Pasquier (vpasquier@nuxeo.com)
+  </documentation>
+
+  <implementation class="com.nuxeo.box.api.service.BoxServiceImpl"/>
+
+  <service>
+    <provide interface="com.nuxeo.box.api.service.BoxService"/>
+  </service>
+</component>
