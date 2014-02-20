@@ -17,11 +17,11 @@
  */
 package com.nuxeo.box.api.search;
 
+import com.google.common.base.Objects;
+import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
@@ -54,12 +54,11 @@ public class BoxSearchObject extends AbstractResource<ResourceTypeImpl> {
             @QueryParam("limit") String limit) throws ClientException,
             BoxJSONException,
             ParseException, IllegalAccessException, InvocationTargetException {
-        final CoreSession session = ctx.getCoreSession();
-        DocumentModelList documentModelList = session.query("SELECT * FROM " +
-                "Document where ecm:fulltext='" + query + "'");
         BoxService boxService = Framework.getLocalService(BoxService.class);
-        return boxService.toJSONString(boxService.getBoxCollection
-                (documentModelList));
+        return boxService.toJSONString(boxService.searchBox(query,
+                ctx.getCoreSession(), Objects.firstNonNull(limit,
+                BoxConstants.BOX_LIMIT), Objects.firstNonNull(offset,
+                BoxConstants.BOX_OFFSET)));
     }
 
 }

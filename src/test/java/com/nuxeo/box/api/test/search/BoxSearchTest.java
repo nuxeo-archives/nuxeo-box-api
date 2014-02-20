@@ -47,10 +47,9 @@ public class BoxSearchTest extends BoxBaseTest {
 
     @Test
     public void itCanSearch() throws Exception {
-        // Fetching the file through NX Box API
+        // Searching in fulltext 'file' term
         ClientResponse response = service.path("search/").queryParam("query",
-                "title_1").queryParam("limit",
-                "2").queryParam("fields",
+                "file").queryParam("limit", "2").queryParam("fields",
                 "name").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -62,7 +61,8 @@ public class BoxSearchTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
-        assertEquals(finalResult.getString("total_count"), 1);
+        // Checking result
+        assertEquals("1", finalResult.getString("total_count"));
     }
 
 }

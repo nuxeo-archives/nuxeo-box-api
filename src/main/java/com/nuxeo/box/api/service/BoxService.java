@@ -18,8 +18,14 @@ package com.nuxeo.box.api.service;
 
 import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.dao.BoxObject;
+import com.nuxeo.box.api.dao.BoxTypedObject;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+
+import java.util.List;
 
 /**
  * Box Service Utils
@@ -28,7 +34,19 @@ import org.nuxeo.ecm.core.api.DocumentModelList;
  */
 public interface BoxService {
 
-    BoxCollection getBoxCollection(DocumentModelList documentModelList);
+    BoxCollection searchBox(String term, CoreSession session,
+            String limit, String offset) throws ClientException;
+
+    List<BoxTypedObject> getBoxCollection(DocumentModelList
+            documentModels, String fields) throws ClientException;
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
+
+    String getBoxId(DocumentModel doc);
+
+    String getBoxSequenceId(DocumentModel doc);
+
+    String getBoxEtag(DocumentModel doc);
+
+    String getBoxName(DocumentModel doc);
 }

@@ -20,20 +20,14 @@ import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.dao.BoxEmail;
-import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
-import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxTypedObject;
-import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +44,6 @@ public class BoxFolderAdapter extends BoxAdapter {
     public BoxFolderAdapter(DocumentModel doc) throws ClientException {
         super(doc);
         CoreSession session = doc.getCoreSession();
-
         // Email update
         final Map<String, Object> boxEmailProperties = new HashMap<>();
         boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "-1");
@@ -75,52 +68,19 @@ public class BoxFolderAdapter extends BoxAdapter {
     public BoxCollection getItemCollection(CoreSession session,
             String limit, String offset, String fields) throws
             ClientException {
-        final Map<String, Object> boxItemCollectionProperties = new HashMap<>();
-
+        final Map<String, Object> collectionProperties = new HashMap<>();
         // Fetch items
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM Document WHERE ecm:parentId=");
         query.append("'" + doc.getId() + "'");
         DocumentModelList children = session.query(query.toString(),
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
-        boxItemCollectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
+                boxService.getBoxCollection(children, fields));
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 children.size());
-        final List<BoxTypedObject> boxChildren = new ArrayList<>();
-        for (DocumentModel child : children) {
-            final Map<String, Object> childrenProperties = new HashMap<>();
-            childrenProperties.put(BoxTypedObject.FIELD_ID, getBoxId(child));
-            childrenProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                    getBoxSequenceId(child));
-            childrenProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(child));
-            childrenProperties.put(BoxItem.FIELD_NAME, getBoxName(child));
-            //NX MD5 -> Box SHA1
-            if (child.hasSchema("file")) {
-                Blob blob = (Blob) child.getPropertyValue("file:content");
-                if (blob != null) {
-                    childrenProperties.put(BoxFile.FIELD_SHA1,
-                            blob.getDigest());
-                }
-            }
-            // This different instantiation is related to the param type
-            // which is automatically added in json payload by Box marshaller
-            // following the box object type
-            BoxTypedObject boxChild;
-            boxChild = child.isFolder() ? new BoxFolder() : new BoxFile();
-            // Depending of fields filter provided in the REST call:
-            // Properties setup (* -> all)
-            if (!"*".equals(fields)) {
-                for (String field : fields.split(",")) {
-                    boxChild.put(field, childrenProperties.get(field));
-                }
-            } else {
-                boxChild.putAll(childrenProperties);
-            }
-            boxChildren.add(boxChild);
-        }
-        boxItemCollectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxChildren);
         return new BoxCollection(Collections.unmodifiableMap
-                (boxItemCollectionProperties));
+                (collectionProperties));
     }
 
 }

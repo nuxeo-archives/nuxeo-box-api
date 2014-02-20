@@ -26,6 +26,7 @@ import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -61,12 +62,16 @@ public abstract class BoxAdapter {
 
     protected BoxItem boxItem;
 
+    protected final BoxService boxService = Framework.getLocalService(BoxService.class);
+
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
         CoreSession session = doc.getCoreSession();
-        boxProperties.put(BoxItem.FIELD_ID, getBoxId(doc));
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, getBoxSequenceId(doc));
-        boxProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(doc));
+
+        boxProperties.put(BoxItem.FIELD_ID, boxService.getBoxId(doc));
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID,
+                boxService.getBoxSequenceId(doc));
+        boxProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag(doc));
 
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT,
@@ -97,11 +102,13 @@ public abstract class BoxAdapter {
 
         // parent
         final Map<String, Object> parentProperties = new HashMap<>();
-        parentProperties.put(BoxItem.FIELD_ID, getBoxId(parentDoc));
+        parentProperties.put(BoxItem.FIELD_ID, boxService.getBoxId(parentDoc));
         parentProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                getBoxSequenceId(parentDoc));
-        parentProperties.put(BoxItem.FIELD_NAME, getBoxName(parentDoc));
-        parentProperties.put(BoxItem.FIELD_ETAG, getBoxEtag(parentDoc));
+                boxService.getBoxSequenceId(parentDoc));
+        parentProperties.put(BoxItem.FIELD_NAME, boxService.getBoxName
+                (parentDoc));
+        parentProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag
+                (parentDoc));
         BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap
                 (parentProperties));
         boxProperties.put(BoxItem.FIELD_PARENT, parentFolder);
@@ -136,30 +143,6 @@ public abstract class BoxAdapter {
 
     }
 
-    /**
-     * Helpers to get Ids for sequence, etag and id itself.
-     * In case of root, sequence and etag are null and id = 0 according to
-     * the box
-     * documentation.
-     */
-
-    protected String getBoxId(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() : "0";
-    }
-
-    protected String getBoxSequenceId(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() : null;
-    }
-
-    protected String getBoxEtag(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() + "_" + doc
-                .getVersionLabel() : null;
-    }
-
-    protected String getBoxName(DocumentModel doc) {
-        return doc.getName() != null ? doc.getName() : "/";
-    }
-
     public BoxItem getBoxItem() {
         return boxItem;
     }
@@ -186,13 +169,13 @@ public abstract class BoxAdapter {
             final Map<String, Object> parentCollectionProperties = new
                     HashMap<>();
             parentCollectionProperties.put(BoxItem.FIELD_ID,
-                    getBoxId(parentDoc));
+                    boxService.getBoxId(parentDoc));
             parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                    getBoxSequenceId(parentDoc));
+                    boxService.getBoxSequenceId(parentDoc));
             parentCollectionProperties.put(BoxItem.FIELD_ETAG,
-                    getBoxEtag(parentDoc));
+                    boxService.getBoxEtag(parentDoc));
             parentCollectionProperties.put(BoxItem.FIELD_NAME,
-                    getBoxName(parentDoc));
+                    boxService.getBoxName(parentDoc));
             BoxTypedObject boxParent;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller

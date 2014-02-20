@@ -84,13 +84,13 @@ public class BoxFolderTest extends BoxBaseTest {
         JSONObject finalResult = new JSONObject(tokener);
         assertEquals(finalResult.getString("sequence_id"),
                 finalResult.getString("id"));
-        assertEquals(finalResult.getString("item_status"), "project");
-        assertEquals(finalResult.getJSONObject("parent").getString("name"),
-                "/");
-        assertEquals(finalResult.getJSONObject("parent").getString("etag"),
-                "null");
-        assertEquals(finalResult.getJSONObject("parent").getString
-                ("sequence_id"), "null");
+        assertEquals("project", finalResult.getString("item_status"));
+        assertEquals("/", finalResult.getJSONObject("parent").getString
+                ("name"));
+        assertEquals("null", finalResult.getJSONObject("parent").getString
+                ("etag"));
+        assertEquals("null", finalResult.getJSONObject("parent").getString
+                ("sequence_id"));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class BoxFolderTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
-        assertEquals(finalResult.getString("item_status"), "project");
+        assertEquals("project", finalResult.getString("item_status"));
 
         // Posting with few properties
         response = service.path("folders").post(ClientResponse
@@ -144,7 +144,7 @@ public class BoxFolderTest extends BoxBaseTest {
         BoxFolder boxFolderUpdated = (BoxFolder) folderAdapter.getBoxItem();
 
         // Default name checking
-        assertEquals(boxFolderUpdated.getName(), "folder_1");
+        assertEquals("folder_1", boxFolderUpdated.getName());
 
         // Update the name of the folder
         boxFolderUpdated.put("name", "newName");
@@ -164,7 +164,7 @@ public class BoxFolderTest extends BoxBaseTest {
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
-        assertEquals(finalResult.getString("name"), "newName");
+        assertEquals("newName", finalResult.getString("name"));
     }
 
     @Test
