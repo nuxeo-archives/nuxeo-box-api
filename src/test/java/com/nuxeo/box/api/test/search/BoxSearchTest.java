@@ -47,10 +47,9 @@ public class BoxSearchTest extends BoxBaseTest {
 
     @Test
     public void itCanSearch() throws Exception {
-        // Searching in fulltext 'file' term
+        // Searching in fulltext 'folder' term
         ClientResponse response = service.path("search/").queryParam("query",
-                "file").queryParam("limit", "2").queryParam("fields",
-                "name").get(ClientResponse.class);
+                "folder").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         BufferedReader reader = new BufferedReader(new InputStreamReader
@@ -62,7 +61,28 @@ public class BoxSearchTest extends BoxBaseTest {
         JSONTokener tokener = new JSONTokener(builder.toString());
         JSONObject finalResult = new JSONObject(tokener);
         // Checking result
-        assertEquals("1", finalResult.getString("total_count"));
+        assertEquals("5", finalResult.getString("total_count"));
+    }
+
+    @Test
+    public void itCanSearchWithLimit() throws Exception {
+        // Searching in fulltext 'folder' term and limit @ 2
+        ClientResponse response = service.path("search/").queryParam("query",
+                "folder").queryParam("limit",
+                "2").queryParam("offset",
+                "0").get(ClientResponse.class);
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        JSONObject finalResult = new JSONObject(tokener);
+        // Checking result
+        assertEquals("2", finalResult.getString("total_count"));
     }
 
 }
