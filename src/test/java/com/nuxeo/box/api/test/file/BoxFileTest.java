@@ -21,8 +21,7 @@ import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.service.BoxService;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
@@ -32,7 +31,6 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -46,11 +44,9 @@ import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -66,6 +62,9 @@ public class BoxFileTest extends BoxBaseTest {
     @Inject
     CoreSession session;
 
+    @Inject
+    BoxService boxService;
+
     @Test
     public void itCanFetchABoxFile() throws Exception {
 
@@ -78,14 +77,7 @@ public class BoxFileTest extends BoxBaseTest {
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("item_status"), "project");
     }
 
@@ -123,20 +115,12 @@ public class BoxFileTest extends BoxBaseTest {
         boxFileUpdated.put("name", "newName");
 
         ClientResponse response = service.path("files/" + File
-                .getId()).put(ClientResponse.class,
-                boxFileUpdated.toJSONString(new BoxJSONParser(new
-                        BoxResourceHub())));
+                .getId()).put(ClientResponse.class, boxService.getJSONFromBox
+                (boxFileUpdated));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("name"), "newName");
 
         // Putting with few properties
@@ -168,14 +152,7 @@ public class BoxFileTest extends BoxBaseTest {
                 .post(ClientResponse.class, formDataMultiPart);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("name"), "blob.json");
     }
 }

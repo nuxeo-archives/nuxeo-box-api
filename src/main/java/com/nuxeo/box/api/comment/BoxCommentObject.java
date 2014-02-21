@@ -34,10 +34,13 @@ import org.nuxeo.runtime.api.Framework;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 
 /**
  * WebObject for a Box Comment
@@ -101,4 +104,25 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
         return boxService.toJSONString(commentAdapter.getBoxComment());
     }
 
+    @PUT
+    @Path("{commentId}")
+    public String doPutFolder(@PathParam("commentId") String commentId,
+            String jsonBoxComment) throws ClientException, BoxJSONException,
+            ParseException, IllegalAccessException, InvocationTargetException {
+        final CoreSession session = ctx.getCoreSession();
+        // Fetch the nx document with given id
+        final DocumentModel nxDocument = session.getDocument(new IdRef
+                (commentId));
+        // Create box folder from json payload
+        BoxComment boxCommentUpdated = boxService.getBoxComment(jsonBoxComment);
+        // Adapt nx document to box folder adapter
+        final BoxCommentAdapter nxDocumentAdapter = nxDocument.getAdapter
+                (BoxCommentAdapter.class);
+        // Update both nx document and box folder adapter
+//        nxDocumentAdapter.setBoxItem(boxCommentUpdated);
+//        nxDocumentAdapter.save(session);
+//        // Return the new box folder json
+//        return boxService.toJSONString(nxDocumentAdapter.getBoxItem());
+        return null;
+    }
 }

@@ -65,4 +65,7 @@ public interface BoxService {
 
     BoxComment getBoxComment(String jsonBoxComment) throws
             BoxJSONException;
+
+    String getJSONFromBox(BoxTypedObject boxTypedObject) throws
+            BoxJSONException;
 }

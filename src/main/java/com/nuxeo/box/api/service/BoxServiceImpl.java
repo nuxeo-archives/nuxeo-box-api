@@ -185,4 +185,10 @@ public class BoxServiceImpl implements BoxService {
                 .parseIntoBoxObject(jsonBoxComment, BoxComment.class);
     }
 
+    @Override
+    public String getJSONFromBox(BoxTypedObject boxTypedObject) throws
+            BoxJSONException {
+        return boxTypedObject.toJSONString(new BoxJSONParser(new
+                BoxResourceHub()));
+    }
 }

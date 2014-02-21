@@ -16,16 +16,13 @@
  */
 package com.nuxeo.box.api.test.folder.item;
 
-import com.google.inject.Inject;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -34,8 +31,6 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,9 +43,6 @@ import static org.junit.Assert.assertEquals;
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
 public class BoxItemTest extends BoxBaseTest {
 
-    @Inject
-    CoreSession session;
-
     @Test
     public void itCanFetchAllBoxItemsWithAllProperties() throws Exception {
         // Fetching the folder in Nuxeo way
@@ -61,14 +53,7 @@ public class BoxItemTest extends BoxBaseTest {
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("total_count"), "5");
         assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
         ).get("etag"), ((JSONObject) finalResult.getJSONArray("entries").get
@@ -86,14 +71,7 @@ public class BoxItemTest extends BoxBaseTest {
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("total_count"), "2");
         assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
         ).get("etag"), null);
