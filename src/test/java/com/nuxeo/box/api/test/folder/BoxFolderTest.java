@@ -62,6 +62,8 @@ public class BoxFolderTest extends BoxBaseTest {
     @Inject
     CoreSession session;
 
+
+
     @Test
     public void itCanFetchABoxFolder() throws Exception {
 

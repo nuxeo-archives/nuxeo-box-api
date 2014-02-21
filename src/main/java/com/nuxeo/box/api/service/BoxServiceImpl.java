@@ -17,11 +17,13 @@
 package com.nuxeo.box.api.service;
 
 import com.nuxeo.box.api.dao.BoxCollection;
+import com.nuxeo.box.api.dao.BoxComment;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxItem;
 import com.nuxeo.box.api.dao.BoxObject;
 import com.nuxeo.box.api.dao.BoxTypedObject;
+import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
@@ -30,6 +32,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,6 +108,9 @@ public class BoxServiceImpl implements BoxService {
         return boxObject;
     }
 
+    /**
+     * Marshalling the box object to JSON
+     */
     public String toJSONString(BoxObject boxObject) throws BoxJSONException {
         BoxJSONParser boxJSONParser = new BoxJSONParser(new
                 BoxResourceHub());
@@ -138,4 +144,45 @@ public class BoxServiceImpl implements BoxService {
     public String getBoxName(DocumentModel doc) {
         return doc.getName() != null ? doc.getName() : "/";
     }
+
+    /**
+     * Fill box object user
+     *
+     * @param creator
+     * @return a box User
+     */
+    @Override
+    public BoxUser fillUser(NuxeoPrincipal creator) {
+        final Map<String, Object> mapUser = new HashMap<>();
+        mapUser.put(BoxItem.FIELD_ID, creator != null ? creator
+                .getPrincipalId() : "system");
+        mapUser.put(BoxItem.FIELD_NAME, creator != null ? creator
+                .getFirstName() + " " + creator
+                .getLastName() : "system");
+        mapUser.put(BoxUser.FIELD_LOGIN, creator != null ? creator.getName()
+                : "system");
+        return new BoxUser(Collections.unmodifiableMap(mapUser));
+    }
+
+    @Override
+    public BoxFolder getBoxFolder(String jsonBoxFolder) throws
+            BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub())
+                .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+    }
+
+    @Override
+    public BoxFile getBoxFile(String jsonBoxFile) throws
+            BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub())
+                .parseIntoBoxObject(jsonBoxFile, BoxFile.class);
+    }
+
+    @Override
+    public BoxComment getBoxComment(String jsonBoxComment) throws
+            BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub())
+                .parseIntoBoxObject(jsonBoxComment, BoxComment.class);
+    }
+
 }

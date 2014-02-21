@@ -72,6 +72,11 @@ public class Box extends ModuleRoot {
         return newObject("search");
     }
 
+    @Path("/comments")
+    public Object doGetComment() {
+        return newObject("comment");
+    }
+
     @Override
     public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {

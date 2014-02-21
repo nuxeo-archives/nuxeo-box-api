@@ -20,8 +20,7 @@ import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.service.BoxService;
 import com.sun.jersey.multipart.FormDataParam;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -32,6 +31,7 @@ import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
+import org.nuxeo.runtime.api.Framework;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -56,9 +56,16 @@ import java.text.ParseException;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
+    BoxService boxService;
+
     @GET
     public Object doGet() {
         return getView("index");
+    }
+
+    @Override
+    public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
     }
 
     @GET
@@ -71,7 +78,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         // Adapt nx document to box folder adapter
         final BoxFileAdapter fileAdapter = (BoxFileAdapter) file.getAdapter
                 (BoxAdapter.class);
-        return fileAdapter.toJSONString(fileAdapter.getBoxItem());
+        return boxService.toJSONString(fileAdapter.getBoxItem());
     }
 
     @DELETE
@@ -93,8 +100,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         final DocumentModel nxDocument = session.getDocument(new IdRef
                 (fileId));
         // Create box File from json payload
-        BoxFile boxFileUpdated = new BoxJSONParser(new BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxFile, BoxFile.class);
+        BoxFile boxFileUpdated = boxService.getBoxFile(jsonBoxFile);
         // Adapt nx document to box File adapter
         final BoxFileAdapter nxDocumentAdapter = (BoxFileAdapter)
                 nxDocument.getAdapter
@@ -103,7 +109,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         nxDocumentAdapter.setBoxItem(boxFileUpdated);
         nxDocumentAdapter.save(session);
         // Return the new box File json
-        return nxDocumentAdapter.toJSONString(nxDocumentAdapter.getBoxItem());
+        return boxService.toJSONString(nxDocumentAdapter.getBoxItem());
     }
 
     @POST
@@ -132,7 +138,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
                 .getAdapter
                         (BoxAdapter.class);
         // Return the new box folder json
-        return fileAdapter.toJSONString(fileAdapter.getBoxItem());
+        return boxService.toJSONString(fileAdapter.getBoxItem());
     }
 
 }
