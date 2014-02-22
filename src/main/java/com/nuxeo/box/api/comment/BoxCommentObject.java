@@ -17,8 +17,8 @@
 package com.nuxeo.box.api.comment;
 
 import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
-import com.nuxeo.box.api.dao.BoxComment;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxComment;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;

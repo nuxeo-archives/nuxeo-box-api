@@ -17,8 +17,8 @@
 package com.nuxeo.box.api.file;
 
 import com.nuxeo.box.api.BoxAdapter;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import com.nuxeo.box.api.service.BoxService;
 import com.sun.jersey.multipart.FormDataParam;

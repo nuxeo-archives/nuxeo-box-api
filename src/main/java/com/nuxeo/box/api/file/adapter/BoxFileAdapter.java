@@ -18,10 +18,10 @@ package com.nuxeo.box.api.file.adapter;
 
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxLock;
-import com.nuxeo.box.api.dao.BoxUser;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.dao.BoxItem;
+import com.nuxeo.box.api.marshalling.dao.BoxLock;
+import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.Blob;

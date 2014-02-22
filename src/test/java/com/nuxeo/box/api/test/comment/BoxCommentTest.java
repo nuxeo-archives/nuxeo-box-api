@@ -16,8 +16,8 @@
  */
 package com.nuxeo.box.api.test.comment;
 
-import com.nuxeo.box.api.dao.BoxComment;
-import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.dao.BoxComment;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;

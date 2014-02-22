@@ -16,13 +16,13 @@
  */
 package com.nuxeo.box.api;
 
-import com.nuxeo.box.api.dao.BoxCollection;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.dao.BoxFolder;
-import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxTypedObject;
-import com.nuxeo.box.api.dao.BoxUser;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxCollection;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxItem;
+import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
+import com.nuxeo.box.api.marshalling.dao.BoxUser;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;

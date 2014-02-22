@@ -1,7 +1,7 @@
 package com.nuxeo.box.api.utils;
 
 
-import com.nuxeo.box.api.dao.BoxResourceType;
+import com.nuxeo.box.api.marshalling.dao.BoxResourceType;
 
 /**
  * Utils class.

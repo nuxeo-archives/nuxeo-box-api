@@ -18,11 +18,11 @@
 package com.nuxeo.box.api.folder;
 
 import com.nuxeo.box.api.BoxAdapter;
-import com.nuxeo.box.api.dao.BoxFolder;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
+import com.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;

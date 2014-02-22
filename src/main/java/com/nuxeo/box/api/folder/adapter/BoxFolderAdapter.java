@@ -18,9 +18,9 @@ package com.nuxeo.box.api.folder.adapter;
 
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
-import com.nuxeo.box.api.dao.BoxCollection;
-import com.nuxeo.box.api.dao.BoxEmail;
-import com.nuxeo.box.api.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxCollection;
+import com.nuxeo.box.api.marshalling.dao.BoxEmail;
+import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
