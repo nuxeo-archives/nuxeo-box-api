@@ -23,6 +23,7 @@ import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
+import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -31,6 +32,7 @@ import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
+import org.nuxeo.runtime.api.Framework;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -52,6 +54,13 @@ import java.text.ParseException;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
+    BoxService boxService;
+
+    @Override
+    public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
+    }
+
     @GET
     public Object doGet() {
         return getView("index");
@@ -68,15 +77,14 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder
                 .getAdapter(BoxAdapter.class);
-        return folderAdapter.toJSONString(folderAdapter.getBoxItem());
+        return boxService.toJSONString(folderAdapter.getBoxItem());
     }
 
     @POST
     public String doPostFolder(String jsonBoxFolder) throws ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
-        BoxFolder boxFolder = new BoxJSONParser(new BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+        BoxFolder boxFolder = boxService.getBoxFolder(jsonBoxFolder);
         // Fetching its parent to get parent id
         String parentId = boxFolder.getParent().getId();
         DocumentModel documentParent;
@@ -95,7 +103,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) newFolder
                 .getAdapter(BoxAdapter.class);
         // Return the new box folder json
-        return folderAdapter.toJSONString(folderAdapter.getBoxItem());
+        return boxService.toJSONString(folderAdapter.getBoxItem());
     }
 
     @PUT
@@ -117,7 +125,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         nxDocumentAdapter.setBoxItem(boxFolderUpdated);
         nxDocumentAdapter.save(session);
         // Return the new box folder json
-        return nxDocumentAdapter.toJSONString(nxDocumentAdapter.getBoxItem());
+        return boxService.toJSONString(nxDocumentAdapter.getBoxItem());
     }
 
     @DELETE

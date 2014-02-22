@@ -23,6 +23,7 @@ import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -31,6 +32,7 @@ import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
+import org.nuxeo.runtime.api.Framework;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
@@ -48,8 +50,11 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
 
     BoxFolderAdapter folderAdapter;
 
+    BoxService boxService;
+
     @Override
     public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
         assert args != null && args.length == 1;
         try {
             String folderId = (String) args[0];
@@ -74,7 +79,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
                         , Objects.firstNonNull(offset,
                         BoxConstants.BOX_OFFSET), Objects.firstNonNull
                         (fields, BoxConstants.BOX_FIELDS));
-        return folderAdapter.toJSONString(itemCollection);
+        return boxService.toJSONString(itemCollection);
     }
 
 }

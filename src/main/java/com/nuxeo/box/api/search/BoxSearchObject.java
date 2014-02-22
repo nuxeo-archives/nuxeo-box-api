@@ -31,8 +31,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
 
 /**
  * WebObject for a Box Search
@@ -43,6 +41,13 @@ import java.text.ParseException;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxSearchObject extends AbstractResource<ResourceTypeImpl> {
 
+    BoxService boxService;
+
+    @Override
+    public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
+    }
+
     /**
      * The string in query to search for; can be matched against item names,
      * descriptions, text content of a file, and other fields of the
@@ -52,9 +57,7 @@ public class BoxSearchObject extends AbstractResource<ResourceTypeImpl> {
     public String doSearch(@QueryParam("query") String query,
             @QueryParam("offset") String offset,
             @QueryParam("limit") String limit) throws ClientException,
-            BoxJSONException,
-            ParseException, IllegalAccessException, InvocationTargetException {
-        BoxService boxService = Framework.getLocalService(BoxService.class);
+            BoxJSONException {
         return boxService.toJSONString(boxService.searchBox(query,
                 ctx.getCoreSession(), Objects.firstNonNull(limit,
                 BoxConstants.BOX_LIMIT), Objects.firstNonNull(offset,

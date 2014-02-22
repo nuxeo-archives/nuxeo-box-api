@@ -21,7 +21,6 @@ import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
@@ -31,8 +30,6 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import static org.junit.Assert.assertEquals;
 
@@ -52,14 +49,7 @@ public class BoxSearchTest extends BoxBaseTest {
                 "folder").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         // Checking result
         assertEquals("5", finalResult.getString("total_count"));
     }
@@ -73,14 +63,7 @@ public class BoxSearchTest extends BoxBaseTest {
                 "0").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         // Checking result
         assertEquals("2", finalResult.getString("total_count"));
     }

@@ -1,12 +1,15 @@
 package com.nuxeo.box.api.dao;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.util.Map;
 
 /**
  * Comment.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "type", defaultImpl = BoxComment.class)
 public class BoxComment extends BoxTypedObject {
 
     public static final String FIELD_IS_REPLY_COMMENT = "is_reply_comment";

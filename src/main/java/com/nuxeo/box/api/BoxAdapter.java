@@ -20,12 +20,9 @@ import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxObject;
 import com.nuxeo.box.api.dao.BoxTypedObject;
 import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -62,7 +59,8 @@ public abstract class BoxAdapter {
 
     protected BoxItem boxItem;
 
-    protected final BoxService boxService = Framework.getLocalService(BoxService.class);
+    protected final BoxService boxService = Framework.getLocalService
+            (BoxService.class);
 
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
@@ -84,8 +82,12 @@ public abstract class BoxAdapter {
                 doc.getPropertyValue("dc:description"));
 
         // size
-        final QuotaAwareDocument quotaAwareDocument = (QuotaAwareDocument)
-                doc.getAdapter(QuotaAware.class);
+        QuotaAwareDocument quotaAwareDocument = null;
+        if (Framework.getRuntime().getBundle("org.nuxeo.ecm.quota.core") !=
+                null) {
+            quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter
+                    (QuotaAware.class);
+        }
         boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ?
                 quotaAwareDocument.getInnerSize() : -1.0);
 
@@ -119,13 +121,13 @@ public abstract class BoxAdapter {
                 .class);
         final NuxeoPrincipal creator = userManager.getPrincipal((String) doc
                 .getPropertyValue("dc:creator"));
-        final BoxUser boxCreator = fillUser(creator);
+        final BoxUser boxCreator = boxService.fillUser(creator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
         //Last Contributor
         final NuxeoPrincipal lastContributor = userManager.getPrincipal(
                 (String) doc.getPropertyValue("dc:lastContributor"));
-        final BoxUser boxContributor = fillUser(lastContributor);
+        final BoxUser boxContributor = boxService.fillUser(lastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 
         // Owner
@@ -250,24 +252,6 @@ public abstract class BoxAdapter {
         session.save();
     }
 
-    /**
-     * Fill box object user
-     *
-     * @param creator
-     * @return a box User
-     */
-    protected BoxUser fillUser(NuxeoPrincipal creator) {
-        final Map<String, Object> mapUser = new HashMap<>();
-        mapUser.put(BoxItem.FIELD_ID, creator != null ? creator
-                .getPrincipalId() : "system");
-        mapUser.put(BoxItem.FIELD_NAME, creator != null ? creator
-                .getFirstName() + " " + creator
-                .getLastName() : "system");
-        mapUser.put(BoxUser.FIELD_LOGIN, creator != null ? creator.getName()
-                : "system");
-        return new BoxUser(Collections.unmodifiableMap(mapUser));
-    }
-
     public void setTitle(String value) throws ClientException {
         doc.setPropertyValue("dc:title", value);
     }
@@ -278,11 +262,5 @@ public abstract class BoxAdapter {
 
     public void setCreator(String value) throws ClientException {
         doc.setPropertyValue("dc:creator", value);
-    }
-
-    public String toJSONString(BoxObject boxObject) throws BoxJSONException {
-        BoxJSONParser boxJSONParser = new BoxJSONParser(new
-                BoxResourceHub());
-        return boxObject.toJSONString(boxJSONParser);
     }
 }

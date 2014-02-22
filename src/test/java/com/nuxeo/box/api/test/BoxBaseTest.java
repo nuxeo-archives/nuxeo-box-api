@@ -24,6 +24,8 @@ import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
 import com.box.boxjavalibv2.exceptions.BoxServerException;
 import com.box.boxjavalibv2.requests.requestobjects.BoxOAuthRequestObject;
 import com.box.restclientv2.exceptions.BoxRestException;
+import com.google.inject.Inject;
+import com.nuxeo.box.api.service.BoxService;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -35,7 +37,11 @@ import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.junit.Before;
+import org.nuxeo.ecm.core.api.CoreSession;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -49,6 +55,12 @@ import java.net.Socket;
  * @since 5.9.2
  */
 public class BoxBaseTest {
+
+    @Inject
+    protected CoreSession session;
+
+    @Inject
+    protected BoxService boxService;
 
     public static final int PORT = 4000;
 
@@ -185,6 +197,18 @@ public class BoxBaseTest {
 
     protected static enum RequestType {
         GET, POST, DELETE, PUT, POSTREQUEST
+    }
+
+    protected JSONObject getJSONFromResponse(ClientResponse response) throws
+            IOException, JSONException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader
+                (response.getEntityInputStream()));
+        StringBuilder builder = new StringBuilder();
+        for (String line = null; (line = reader.readLine()) != null; ) {
+            builder.append(line).append("\n");
+        }
+        JSONTokener tokener = new JSONTokener(builder.toString());
+        return new JSONObject(tokener);
     }
 
 }

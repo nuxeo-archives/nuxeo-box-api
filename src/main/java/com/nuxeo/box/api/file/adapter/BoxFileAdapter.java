@@ -65,7 +65,7 @@ public class BoxFileAdapter extends BoxAdapter {
                     (UserManager.class);
             final NuxeoPrincipal lockCreator = userManager.getPrincipal(lockInfo
                     .getOwner());
-            final BoxUser boxLockCreator = fillUser(lockCreator);
+            final BoxUser boxLockCreator = boxService.fillUser(lockCreator);
             boxLockProperties.put(BoxItem.FIELD_CREATED_BY, boxLockCreator);
             boxLockProperties.put(BoxItem.FIELD_CREATED_AT,
                     ISODateTimeFormat.dateTime().print(

@@ -16,6 +16,7 @@
  */
 package com.nuxeo.box.api;
 
+import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -33,15 +34,17 @@ public class BoxAdapterFactory implements DocumentAdapterFactory {
     @Override
     public Object getAdapter(final DocumentModel doc, final Class<?> itf) {
         try {
-            if (!doc.isFolder()) {
+            if ("File".equals(doc.getType())) {
                 return new BoxFileAdapter(doc);
             } else if (doc.isFolder()) {
                 return new BoxFolderAdapter(doc);
+            } else if ("Comment".equals(doc.getType())) {
+                return new BoxCommentAdapter(doc);
             } else {
                 return null;
             }
-        } catch (ClientException e) {
             //TODO NXIO-62 Box Exception management
+        } catch (ClientException e) {
             return null;
         }
     }

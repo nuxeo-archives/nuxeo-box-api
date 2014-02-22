@@ -16,24 +16,19 @@
  */
 package com.nuxeo.box.api.test.folder;
 
-import com.google.inject.Inject;
 import com.nuxeo.box.api.BoxAdapter;
 import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -42,9 +37,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,9 +52,6 @@ import static org.junit.Assert.assertEquals;
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
 public class BoxFolderTest extends BoxBaseTest {
 
-    @Inject
-    CoreSession session;
-
     @Test
     public void itCanFetchABoxFolder() throws Exception {
 
@@ -74,14 +64,7 @@ public class BoxFolderTest extends BoxBaseTest {
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("sequence_id"),
                 finalResult.getString("id"));
         assertEquals("project", finalResult.getString("item_status"));
@@ -109,19 +92,11 @@ public class BoxFolderTest extends BoxBaseTest {
         BoxFolder newBoxFolder = new BoxFolder(parameters);
 
         ClientResponse response = service.path("folders").post(ClientResponse
-                .class, newBoxFolder.toJSONString(new BoxJSONParser(new
-                BoxResourceHub())));
+                .class, boxService.getJSONFromBox(newBoxFolder));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals("project", finalResult.getString("item_status"));
 
         // Posting with few properties
@@ -151,19 +126,11 @@ public class BoxFolderTest extends BoxBaseTest {
 
         final ClientResponse response = service.path("folders/" + folder
                 .getId()).put(ClientResponse.class,
-                boxFolderUpdated.toJSONString(new BoxJSONParser(new
-                        BoxResourceHub())));
+                boxService.getJSONFromBox(boxFolderUpdated));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
-        StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
-            builder.append(line).append("\n");
-        }
-        JSONTokener tokener = new JSONTokener(builder.toString());
-        JSONObject finalResult = new JSONObject(tokener);
+        JSONObject finalResult = getJSONFromResponse(response);
         assertEquals("newName", finalResult.getString("name"));
     }
 

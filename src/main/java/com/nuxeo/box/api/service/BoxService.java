@@ -17,13 +17,18 @@
 package com.nuxeo.box.api.service;
 
 import com.nuxeo.box.api.dao.BoxCollection;
+import com.nuxeo.box.api.dao.BoxComment;
+import com.nuxeo.box.api.dao.BoxFile;
+import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxObject;
 import com.nuxeo.box.api.dao.BoxTypedObject;
+import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 
 import java.util.List;
 
@@ -49,4 +54,18 @@ public interface BoxService {
     String getBoxEtag(DocumentModel doc);
 
     String getBoxName(DocumentModel doc);
+
+    BoxUser fillUser(NuxeoPrincipal creator);
+
+    BoxFolder getBoxFolder(String jsonBoxFolder) throws
+            BoxJSONException;
+
+    BoxFile getBoxFile(String jsonBoxFile) throws
+            BoxJSONException;
+
+    BoxComment getBoxComment(String jsonBoxComment) throws
+            BoxJSONException;
+
+    String getJSONFromBox(BoxTypedObject boxTypedObject) throws
+            BoxJSONException;
 }
