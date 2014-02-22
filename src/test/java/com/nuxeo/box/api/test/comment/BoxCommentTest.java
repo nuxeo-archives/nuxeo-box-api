@@ -79,8 +79,8 @@ public class BoxCommentTest extends BoxBaseTest {
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
-        assertEquals("message", finalResult.getString("A new comment on the " +
-                "file"));
+        assertEquals("A new comment on the file", finalResult.getString
+                ("message"));
 
         // Posting with few properties
         response = service.path("comments").post(ClientResponse

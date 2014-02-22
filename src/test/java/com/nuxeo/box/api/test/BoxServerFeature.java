@@ -25,8 +25,7 @@ import org.nuxeo.runtime.test.runner.SimpleFeature;
  * @since 5.9.2
  */
 @Features({ WebEngineFeature.class })
-@Deploy({ "com.nuxeo.box.api", "org.nuxeo.ecm.platform.tag",
-        "org.nuxeo.ecm.platform.comment.api" })
+@Deploy({ "com.nuxeo.box.api", "org.nuxeo.ecm.platform.tag" })
 public class BoxServerFeature extends SimpleFeature {
 
 }

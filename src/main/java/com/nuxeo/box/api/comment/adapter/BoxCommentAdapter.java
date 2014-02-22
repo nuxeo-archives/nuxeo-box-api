@@ -19,6 +19,7 @@ package com.nuxeo.box.api.comment.adapter;
 import com.nuxeo.box.api.dao.BoxComment;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
+import com.nuxeo.box.api.dao.BoxItem;
 import com.nuxeo.box.api.dao.BoxTypedObject;
 import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.service.BoxService;
@@ -26,13 +27,11 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.comment.api.CommentManager;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,22 +75,24 @@ public class BoxCommentAdapter {
                 doc.getPropertyValue("comment:text"));
         boxProperties.put(BoxComment.FIELD_IS_REPLY_COMMENT, null);
         boxProperties.put(BoxComment.FIELD_ITEM, fillItem(doc));
-
+        boxComment = new BoxComment(boxProperties);
     }
 
-    private List<BoxTypedObject> fillItem(DocumentModel doc) throws
+    private BoxTypedObject fillItem(DocumentModel doc) throws
             ClientException {
-        List<BoxTypedObject> boxTypedObjects = new ArrayList<>();
         CommentManager commentManager = Framework.getLocalService
                 (CommentManager.class);
-        DocumentModelList targetList = (DocumentModelList) commentManager
+        List<DocumentModel> targetList = commentManager
                 .getDocumentsForComment(doc);
-        for (DocumentModel target : targetList) {
-            BoxTypedObject boxItem = target.isFolder() ? new BoxFolder() : new
-                    BoxFile();
-            boxTypedObjects.add(boxItem);
+        BoxTypedObject boxItem = null;
+        if (!targetList.isEmpty()) {
+            DocumentModel target = targetList.get(0);
+            Map<String, Object> itemProperties = new HashMap<>();
+            itemProperties.put(BoxItem.FIELD_ID, target.getId());
+            boxItem = targetList.get(0).isFolder() ? new BoxFolder
+                    (itemProperties) : new BoxFile(itemProperties);
         }
-        return boxTypedObjects;
+        return boxItem;
     }
 
     public BoxComment getBoxComment() {

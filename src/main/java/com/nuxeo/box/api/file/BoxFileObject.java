@@ -58,15 +58,16 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     BoxService boxService;
 
+    @Override
+    public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
+    }
+
     @GET
     public Object doGet() {
         return getView("index");
     }
 
-    @Override
-    public void initialize(Object... args) {
-        boxService = Framework.getLocalService(BoxService.class);
-    }
 
     @GET
     @Path("{fileId}")

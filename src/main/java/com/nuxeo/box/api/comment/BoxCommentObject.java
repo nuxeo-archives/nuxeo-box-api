@@ -32,6 +32,7 @@ import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 import org.nuxeo.runtime.api.Framework;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -41,6 +42,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * WebObject for a Box Comment
@@ -51,9 +53,10 @@ import java.text.ParseException;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
-    BoxService boxService;
 
     CommentManager commentManager;
+
+    BoxService boxService;
 
     @Override
     public void initialize(Object... args) {
@@ -92,10 +95,9 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
         DocumentModel comment = session.createDocumentModel
                 (CommentsConstants.COMMENT_DOC_TYPE);
         comment.setProperty("comment", "text", boxComment.getMessage());
-        comment.setProperty("comment", "author", boxComment.getCreatedBy()
+        comment.setProperty("comment", "author", session.getPrincipal()
                 .getName());
-        comment.setProperty("comment", "creationDate",
-                boxComment.getCreatedAt());
+        comment.setProperty("comment", "creationDate", new Date());
         // create the comment
         DocumentModel newComment = commentManager.createComment(target,
                 comment);
@@ -124,5 +126,14 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 //        // Return the new box folder json
 //        return boxService.toJSONString(nxDocumentAdapter.getBoxItem());
         return null;
+    }
+
+    @DELETE
+    @Path("{commentId}")
+    public void doDeleteComment(@PathParam("commentId") String commentId) throws
+            ClientException {
+        final CoreSession session = ctx.getCoreSession();
+        session.removeDocument(new IdRef(commentId));
+        session.save();
     }
 }
