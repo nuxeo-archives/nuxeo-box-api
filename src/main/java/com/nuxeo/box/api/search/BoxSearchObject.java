@@ -19,7 +19,7 @@ package com.nuxeo.box.api.search;
 
 import com.google.common.base.Objects;
 import com.nuxeo.box.api.BoxConstants;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.webengine.model.WebObject;

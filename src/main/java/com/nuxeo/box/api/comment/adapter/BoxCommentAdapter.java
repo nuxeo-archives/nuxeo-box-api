@@ -16,12 +16,12 @@
  */
 package com.nuxeo.box.api.comment.adapter;
 
-import com.nuxeo.box.api.dao.BoxComment;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxTypedObject;
-import com.nuxeo.box.api.dao.BoxUser;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxComment;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.dao.BoxItem;
+import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
+import com.nuxeo.box.api.marshalling.dao.BoxUser;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -29,7 +29,6 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.comment.api.CommentManager;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;

@@ -18,8 +18,8 @@ package com.nuxeo.box.api.test.file;
 
 import com.google.inject.Inject;
 import com.nuxeo.box.api.BoxAdapter;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
 import com.nuxeo.box.api.service.BoxService;
 import com.nuxeo.box.api.test.BoxBaseTest;

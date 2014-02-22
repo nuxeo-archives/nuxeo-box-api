@@ -16,14 +16,14 @@
  */
 package com.nuxeo.box.api.service;
 
-import com.nuxeo.box.api.dao.BoxCollection;
-import com.nuxeo.box.api.dao.BoxComment;
-import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.dao.BoxFolder;
-import com.nuxeo.box.api.dao.BoxObject;
-import com.nuxeo.box.api.dao.BoxTypedObject;
-import com.nuxeo.box.api.dao.BoxUser;
-import com.nuxeo.box.api.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.dao.BoxCollection;
+import com.nuxeo.box.api.marshalling.dao.BoxComment;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
+import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxObject;
+import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
+import com.nuxeo.box.api.marshalling.dao.BoxUser;
+import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
