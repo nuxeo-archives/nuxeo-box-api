@@ -18,20 +18,24 @@ package com.nuxeo.box.api.comment.adapter;
 
 import com.nuxeo.box.api.dao.BoxComment;
 import com.nuxeo.box.api.dao.BoxFile;
-import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxItem;
 import com.nuxeo.box.api.dao.BoxTypedObject;
 import com.nuxeo.box.api.dao.BoxUser;
+import com.nuxeo.box.api.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.comment.api.CommentManager;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,12 +51,16 @@ public class BoxCommentAdapter {
 
     protected final Map<String, Object> boxProperties = new HashMap<>();
 
+    protected DocumentModel comment;
+
     /**
      * Instantiate the adapter and the Box Comment from Nuxeo Document and
      * load its properties into json format
      */
     public BoxCommentAdapter(DocumentModel doc) throws ClientException {
         BoxService boxService = Framework.getLocalService(BoxService.class);
+
+        comment = doc;
 
         boxProperties.put(BoxComment.FIELD_ID, doc.getId());
         boxProperties.put(BoxComment.FIELD_CREATED_AT,
@@ -78,21 +86,37 @@ public class BoxCommentAdapter {
         boxComment = new BoxComment(boxProperties);
     }
 
+    public void setBoxComment(BoxComment boxComment) {
+        this.boxComment = boxComment;
+    }
+
     private BoxTypedObject fillItem(DocumentModel doc) throws
             ClientException {
         CommentManager commentManager = Framework.getLocalService
                 (CommentManager.class);
         List<DocumentModel> targetList = commentManager
                 .getDocumentsForComment(doc);
-        BoxTypedObject boxItem = null;
-        if (!targetList.isEmpty()) {
-            DocumentModel target = targetList.get(0);
-            Map<String, Object> itemProperties = new HashMap<>();
-            itemProperties.put(BoxItem.FIELD_ID, target.getId());
-            boxItem = targetList.get(0).isFolder() ? new BoxFolder
-                    (itemProperties) : new BoxFile(itemProperties);
+        if (targetList.isEmpty()) {
+//            throw new NoSuchDocumentException("Cannot find any document bound" +
+//                    " to the comment " + doc.getId());
+            return null;
         }
+        DocumentModel target = targetList.get(0);
+        Map<String, Object> itemProperties = new HashMap<>();
+        itemProperties.put(BoxItem.FIELD_ID, target.getId());
+        BoxTypedObject boxItem = new BoxFile(itemProperties);
         return boxItem;
+    }
+
+    /**
+     * Update the comment (nx/box sides)
+     */
+    public void save(CoreSession session) throws ClientException,
+            ParseException, InvocationTargetException,
+            IllegalAccessException, BoxJSONException {
+        comment.setPropertyValue("comment:text", boxComment.getMessage());
+        session.saveDocument(comment);
+        session.save();
     }
 
     public BoxComment getBoxComment() {

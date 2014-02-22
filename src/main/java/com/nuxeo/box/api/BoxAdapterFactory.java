@@ -43,8 +43,8 @@ public class BoxAdapterFactory implements DocumentAdapterFactory {
             } else {
                 return null;
             }
-        } catch (ClientException e) {
             //TODO NXIO-62 Box Exception management
+        } catch (ClientException e) {
             return null;
         }
     }

@@ -108,24 +108,24 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{commentId}")
-    public String doPutFolder(@PathParam("commentId") String commentId,
+    public String doPutComment(@PathParam("commentId") String commentId,
             String jsonBoxComment) throws ClientException, BoxJSONException,
-            ParseException, IllegalAccessException, InvocationTargetException {
+            ParseException, IllegalAccessException,
+            InvocationTargetException, NoSuchDocumentException {
         final CoreSession session = ctx.getCoreSession();
-        // Fetch the nx document with given id
-        final DocumentModel nxDocument = session.getDocument(new IdRef
+        // Fetch the nx document comment
+        final DocumentModel nxComment = session.getDocument(new IdRef
                 (commentId));
-        // Create box folder from json payload
+        // Create box comment from json payload
         BoxComment boxCommentUpdated = boxService.getBoxComment(jsonBoxComment);
-        // Adapt nx document to box folder adapter
-        final BoxCommentAdapter nxDocumentAdapter = nxDocument.getAdapter
+        // Adapt nx document to box comment adapter
+        final BoxCommentAdapter nxDocumentAdapter = nxComment.getAdapter
                 (BoxCommentAdapter.class);
-        // Update both nx document and box folder adapter
-//        nxDocumentAdapter.setBoxItem(boxCommentUpdated);
-//        nxDocumentAdapter.save(session);
-//        // Return the new box folder json
-//        return boxService.toJSONString(nxDocumentAdapter.getBoxItem());
-        return null;
+        // Update both nx document and box comment adapter
+        nxDocumentAdapter.setBoxComment(boxCommentUpdated);
+        nxDocumentAdapter.save(session);
+        // Return the new box comment json
+        return boxService.toJSONString(nxDocumentAdapter.getBoxComment());
     }
 
     @DELETE

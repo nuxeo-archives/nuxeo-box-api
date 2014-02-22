@@ -85,7 +85,8 @@ public class BoxCommentTest extends BoxBaseTest {
         // Posting with few properties
         response = service.path("comments").post(ClientResponse
                 .class, "{\"item\": {\"type\": \"file\", " +
-                "\"id\": \"" + file.getId() + "\"}, " +
+                "\"id\": \"" + file.getId() + "\"}," +
+                " " +
                 "\"message\": \"YOUR_MESSAGE\"}");
 
         // Checking response consistency
@@ -107,8 +108,8 @@ public class BoxCommentTest extends BoxBaseTest {
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(commentId, finalResult.getString("id"));
         assertEquals("YOUR_MESSAGE", finalResult.getString("message"));
-        assertEquals(file.getId(), finalResult.getJSONObject
-                ("item").getString("id"));
+        assertEquals(file.getId(),
+                finalResult.getJSONObject("item").getString("id"));
     }
 
     public void itCanUpdateComment(String commentId) throws Exception {
@@ -127,7 +128,7 @@ public class BoxCommentTest extends BoxBaseTest {
         assertEquals(finalResult.getString("message"), "COMMENT_UPDATE");
 
         // Posting with few properties
-        response = service.path("folders").post(ClientResponse
+        response = service.path("comments/" + commentId).put(ClientResponse
                 .class, "{\"message\":\"My New Message\"}");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

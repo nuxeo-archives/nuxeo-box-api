@@ -20,12 +20,9 @@ import com.nuxeo.box.api.dao.BoxCollection;
 import com.nuxeo.box.api.dao.BoxFile;
 import com.nuxeo.box.api.dao.BoxFolder;
 import com.nuxeo.box.api.dao.BoxItem;
-import com.nuxeo.box.api.dao.BoxObject;
 import com.nuxeo.box.api.dao.BoxTypedObject;
 import com.nuxeo.box.api.dao.BoxUser;
 import com.nuxeo.box.api.exceptions.BoxJSONException;
-import com.nuxeo.box.api.jsonparsing.BoxJSONParser;
-import com.nuxeo.box.api.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -85,8 +82,12 @@ public abstract class BoxAdapter {
                 doc.getPropertyValue("dc:description"));
 
         // size
-        final QuotaAwareDocument quotaAwareDocument = (QuotaAwareDocument)
-                doc.getAdapter(QuotaAware.class);
+        QuotaAwareDocument quotaAwareDocument = null;
+        if (Framework.getRuntime().getBundle("org.nuxeo.ecm.quota.core") !=
+                null) {
+            quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter
+                    (QuotaAware.class);
+        }
         boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ?
                 quotaAwareDocument.getInnerSize() : -1.0);
 
