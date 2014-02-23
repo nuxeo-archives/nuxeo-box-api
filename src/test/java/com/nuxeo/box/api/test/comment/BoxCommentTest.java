@@ -28,9 +28,11 @@ import org.junit.runner.RunWith;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
+import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
+import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
@@ -43,6 +45,12 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(FeaturesRunner.class)
 @Features({ BoxServerFeature.class })
+@Deploy({ "org.nuxeo.ecm.platform.comment", "org.nuxeo.ecm.platform.comment" +
+        ".api", "org.nuxeo.ecm.relations.api", "org.nuxeo.ecm.relations",
+        "org.nuxeo.ecm.relations.jena", "org.nuxeo.ecm.relations.io",
+        "org.nuxeo.ecm.relations.core" +
+        ".listener", "org.nuxeo.ecm.platform.comment.api" })
+@LocalDeploy({ "com.nuxeo.box.api:comment-jena-contrib.xml" })
 @Jetty(port = 18090)
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
 public class BoxCommentTest extends BoxBaseTest {
