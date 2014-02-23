@@ -14,7 +14,7 @@
  * Contributors:
  *     Vladimir Pasquier <vpasquier@nuxeo.com>
  */
-package com.nuxeo.box.api;
+package com.nuxeo.box.api.adapter;
 
 import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;

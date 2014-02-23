@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<fragment version="1">
+
+  <extension target="web#SERVLET">
+    <servlet>
+      <servlet-name>Nuxeo BOX API Forward servlet</servlet-name>
+      <servlet-class>
+        com.nuxeo.box.api.BoxServlet
+      </servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>Nuxeo BOX API Forward servlet</servlet-name>
+      <url-pattern>/box/*</url-pattern>
+    </servlet-mapping>
+  </extension>
+</fragment>

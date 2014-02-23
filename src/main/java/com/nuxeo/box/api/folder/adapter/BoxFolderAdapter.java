@@ -16,7 +16,7 @@
  */
 package com.nuxeo.box.api.folder.adapter;
 
-import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxEmail;

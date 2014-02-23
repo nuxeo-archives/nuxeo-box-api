@@ -17,7 +17,7 @@
  */
 package com.nuxeo.box.api.folder;
 
-import com.nuxeo.box.api.BoxAdapter;
+import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
