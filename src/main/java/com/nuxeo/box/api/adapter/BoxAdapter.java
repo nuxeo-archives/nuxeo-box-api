@@ -119,15 +119,22 @@ public abstract class BoxAdapter {
         // Creator
         final UserManager userManager = Framework.getLocalService(UserManager
                 .class);
-        final NuxeoPrincipal creator = userManager.getPrincipal((String) doc
-                .getPropertyValue("dc:creator"));
-        final BoxUser boxCreator = boxService.fillUser(creator);
+        String creator = doc.getPropertyValue("dc:creator") != null
+                ? (String) doc.getPropertyValue("dc:creator") : "system";
+        NuxeoPrincipal principalCreator = userManager.getPrincipal(creator);
+        final BoxUser boxCreator = boxService.fillUser(principalCreator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
         //Last Contributor
-        final NuxeoPrincipal lastContributor = userManager.getPrincipal(
-                (String) doc.getPropertyValue("dc:lastContributor"));
-        final BoxUser boxContributor = boxService.fillUser(lastContributor);
+        String lastContributor = doc.getPropertyValue("dc:lastContributor")
+                != null
+                ? (String) doc.getPropertyValue("dc:lastContributor") :
+                "system";
+        final NuxeoPrincipal principalLastContributor = userManager
+                .getPrincipal(
+                        lastContributor);
+        final BoxUser boxContributor = boxService.fillUser
+                (principalLastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 
         // Owner
