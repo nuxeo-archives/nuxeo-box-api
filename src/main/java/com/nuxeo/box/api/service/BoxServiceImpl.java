@@ -16,6 +16,7 @@
  */
 package com.nuxeo.box.api.service;
 
+import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
@@ -33,6 +34,9 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.ACL;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -190,5 +194,22 @@ public class BoxServiceImpl implements BoxService {
             BoxJSONException {
         return boxTypedObject.toJSONString(new BoxJSONParser(new
                 BoxResourceHub()));
+    }
+
+    @Override
+    public Object fillUsers(DocumentModel doc, UserManager userManager)
+            throws ClientException {
+        final Map<String, Object> mapUsers = new HashMap<>();
+        for (ACL acl : doc.getACP().getACLs()) {
+            for (ACE ace : acl.getACEs()) {
+                if (ace.isGranted()) {
+                    NuxeoPrincipal principalCreator = userManager
+                            .getPrincipal(ace.getUsername());
+                    BoxUser boxCreator = fillUser(principalCreator);
+                    mapUsers.put(BoxCollaboration.FIELD_CREATED_BY, boxCreator);
+                }
+            }
+        }
+        return mapUsers;
     }
 }

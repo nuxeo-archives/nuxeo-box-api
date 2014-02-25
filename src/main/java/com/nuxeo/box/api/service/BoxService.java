@@ -29,6 +29,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 
 import java.util.List;
 
@@ -68,4 +69,6 @@ public interface BoxService {
 
     String getJSONFromBox(BoxTypedObject boxTypedObject) throws
             BoxJSONException;
+
+    Object fillUsers(DocumentModel doc, UserManager userManager) throws ClientException;
 }

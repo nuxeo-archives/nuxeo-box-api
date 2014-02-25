@@ -18,9 +18,9 @@
 package com.nuxeo.box.api.folder;
 
 import com.nuxeo.box.api.adapter.BoxAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
-import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
 import com.nuxeo.box.api.service.BoxService;
@@ -140,5 +140,10 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     @Path("{folderId}/items")
     public Object doGetItems(@PathParam("folderId") String folderId) {
         return newObject("item", folderId);
+    }
+
+    @Path("{folderId}/collaboration")
+    public Object doGetCollaboration(@PathParam("folderId") String folderId) {
+        return newObject("collaboration", folderId);
     }
 }

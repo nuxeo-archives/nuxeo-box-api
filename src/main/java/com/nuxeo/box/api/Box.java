@@ -80,6 +80,7 @@ public class Box extends ModuleRoot {
         return newObject("comment");
     }
 
+
     /**
      * Return a Box compat Exception Response in JSON
      */

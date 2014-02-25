@@ -16,8 +16,8 @@
  */
 package com.nuxeo.box.api.file.adapter;
 
-import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxItem;
 import com.nuxeo.box.api.marshalling.dao.BoxLock;
@@ -60,7 +60,7 @@ public class BoxFileAdapter extends BoxAdapter {
         Map<String, Object> boxLockProperties = new HashMap<>();
         Lock lockInfo = doc.getLockInfo();
         if (lockInfo != null) {
-            boxLockProperties.put(BoxItem.FIELD_ID, "-1");
+            boxLockProperties.put(BoxItem.FIELD_ID, null);
             final UserManager userManager = Framework.getLocalService
                     (UserManager.class);
             final NuxeoPrincipal lockCreator = userManager.getPrincipal(lockInfo
@@ -70,7 +70,7 @@ public class BoxFileAdapter extends BoxAdapter {
             boxLockProperties.put(BoxItem.FIELD_CREATED_AT,
                     ISODateTimeFormat.dateTime().print(
                             new DateTime(lockInfo.getCreated())));
-            boxLockProperties.put(BoxLock.FIELD_EXPIRES_AT, "-1");
+            boxLockProperties.put(BoxLock.FIELD_EXPIRES_AT, null);
             boxLockProperties.put(BoxLock.FIELD_IS_DOWNLOAD_PREVENTED, false);
             BoxLock boxLock = new BoxLock(boxLockProperties);
             boxProperties.put(BoxConstants.BOX_LOCK, boxLock);
@@ -78,6 +78,16 @@ public class BoxFileAdapter extends BoxAdapter {
 
         boxItem = new BoxFile(Collections.unmodifiableMap(boxProperties));
 
+    }
+
+    @Override
+    public BoxItem getMiniItem() {
+        Map<String, Object> boxProperties = new HashMap<>();
+        boxProperties.put(BoxItem.FIELD_ID, boxItem.getId());
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, boxItem.getSequenceId());
+        boxProperties.put(BoxItem.FIELD_NAME, boxItem.getName());
+        boxProperties.put(BoxItem.FIELD_ETAG, boxItem.getEtag());
+        return new BoxFile(boxProperties);
     }
 
 }
