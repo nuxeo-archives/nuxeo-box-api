@@ -18,6 +18,9 @@
 
 package com.nuxeo.box.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nuxeo.box.api.marshalling.exceptions.NXBoxJsonException;
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
@@ -77,17 +80,49 @@ public class Box extends ModuleRoot {
         return newObject("comment");
     }
 
+    /**
+     * Return a Box compat Exception Response in JSON
+     */
     @Override
     public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {
-            return Response.status(401).entity("not authorized").type(
-                    "text/plain").build();
+            return Response.status(Response.Status.UNAUTHORIZED.getStatusCode
+                    ()).entity
+                    (getJSONBoxException(e, Response.Status.UNAUTHORIZED
+                            .getStatusCode())).type(
+                    "json/application").build();
         } else if (e instanceof WebResourceNotFoundException) {
-            return Response.status(404).entity(e.getMessage()).type(
-                    "text/plain").build();
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
+                    .entity
+                            (getJSONBoxException(e, Response.Status.NOT_FOUND
+                                    .getStatusCode())).type(
+                            "json/application").build();
         } else {
-            return super.handleError(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR
+                    .getStatusCode()).entity
+                    (getJSONBoxException(e,
+                            Response.Status.INTERNAL_SERVER_ERROR
+                                    .getStatusCode())).type(
+                    "json/application").build();
         }
+    }
+
+    protected String getJSONBoxException(Exception e, int status) {
+        NXBoxJsonException boxException = new NXBoxJsonException();
+        // Message
+        boxException.setCode(e.getMessage());
+        //Detailed Message
+        boxException.setMessage(e.getCause() != null ? e.getCause()
+                .getMessage() : null);
+        boxException.setStatus(status);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonExceptionResponse = StringUtils.EMPTY;
+        try {
+            jsonExceptionResponse = mapper.writeValueAsString(boxException);
+        } catch (JsonProcessingException e1) {
+            return "error when marshalling server exception:" + e.getMessage();
+        }
+        return jsonExceptionResponse;
     }
 
 }
