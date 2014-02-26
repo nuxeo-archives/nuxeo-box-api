@@ -24,6 +24,7 @@ import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
@@ -36,8 +37,11 @@ import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
 import org.nuxeo.runtime.api.Framework;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -73,14 +77,44 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetCollaboration() throws NoSuchDocumentException,
+    public String doGetCollaborations() throws NoSuchDocumentException,
             ClientException,
             BoxJSONException {
         return boxService.toJSONString(boxFolder.getCollaborations());
     }
 
+    @GET
+    @Path("/{folderId}")
+    public String doGetCollaborations(@PathParam("folderId") String folderId)
+            throws NoSuchDocumentException,
+            ClientException,
+            BoxJSONException {
+        CoreSession session = ctx.getCoreSession();
+        DocumentModel folder = session.getDocument(new IdRef(folderId));
+        boxFolder = (BoxFolderAdapter) folder.getAdapter
+                (BoxAdapter.class);
+        return doGetCollaborations();
+    }
+
+    /**
+     * Delete all local ACLs for a given folder id
+     */
+    @DELETE
+    @Path("/{folderId}")
+    public void doRemoveCollaboration(@PathParam("folderId") String
+            folderId) throws NoSuchDocumentException,
+            ClientException,
+            BoxJSONException {
+        CoreSession session = ctx.getCoreSession();
+        DocumentRef docRef = new IdRef(folderId);
+        ACP acp = session.getACP(docRef);
+        acp.removeACL(ACL.LOCAL_ACL);
+        session.setACP(docRef, acp, true);
+        session.save();
+    }
+
     @POST
-    public String doPostFolder(String jsonBoxCollaboration) throws
+    public String doPostCollaboration(String jsonBoxCollaboration) throws
             ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();

@@ -92,6 +92,33 @@ public class BoxCollaborationTest extends BoxBaseTest {
         assertEquals("members", ((JSONObject) finalResult.getJSONArray
                 ("entries").get(0)).getJSONObject("accessible_by").getString
                 ("login"));
+        assertEquals("3", finalResult.getString("total_count"));
+    }
+
+    /**
+     * This test remove all local ACLs of related folder
+     */
+    @Test
+    public void itCanDeleteCollaborations() throws ClientException,
+            IOException, JSONException, BoxJSONException {
+        // Adding ACL
+        itCanPostACollaboration();
+        // Fetching the folder in Nuxeo way
+        final DocumentModel folder = BoxServerInit.getFolder(1, session);
+        ClientResponse response = service.path("collaborations/" + folder
+                .getId())
+                .delete(ClientResponse.class);
+        // Checking response consistency
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
+                response.getStatus());
+        // Checking if no more local ACLs
+        response = getResponse(BoxBaseTest.RequestType.GET,
+                "collaborations/" + folder.getId());
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        JSONObject finalResult = getJSONFromResponse(response);
+        assertEquals("2", finalResult.getString("total_count"));
     }
 
 }
