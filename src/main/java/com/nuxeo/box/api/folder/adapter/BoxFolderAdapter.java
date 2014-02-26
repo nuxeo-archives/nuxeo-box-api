@@ -28,9 +28,9 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
-import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.ArrayList;
@@ -110,10 +110,12 @@ public class BoxFolderAdapter extends BoxAdapter {
         BoxService boxService = Framework.getLocalService(BoxService.class);
         List<BoxCollaboration> boxCollaborations = new ArrayList<>();
         Map<String, Object> collectionProperties = new HashMap<>();
-        for (ACL acl : doc.getACP().getACLs()) {
+        CoreSession session = doc.getCoreSession();
+        for (ACL acl : session.getACP(new IdRef(doc.getId())).getACLs()) {
             for (ACE ace : acl.getACEs()) {
                 if (ace.isGranted()) {
-                    boxCollaborations.add(boxService.getBoxCollaboration(this, boxService, ace));
+                    boxCollaborations.add(boxService.getBoxCollaboration
+                            (this, ace));
                 }
             }
         }

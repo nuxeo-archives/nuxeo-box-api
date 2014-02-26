@@ -18,11 +18,11 @@
 package com.nuxeo.box.api.folder.item;
 
 import com.google.common.base.Objects;
-import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.adapter.BoxAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
-import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -55,7 +55,6 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
     @Override
     public void initialize(Object... args) {
         boxService = Framework.getLocalService(BoxService.class);
-        assert args != null && args.length == 1;
         try {
             String folderId = (String) args[0];
             CoreSession session = ctx.getCoreSession();

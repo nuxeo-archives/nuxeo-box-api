@@ -18,6 +18,8 @@ package com.nuxeo.box.api.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaborationRole;
@@ -25,6 +27,7 @@ import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxGroup;
 import com.nuxeo.box.api.marshalling.dao.BoxItem;
 import com.nuxeo.box.api.marshalling.dao.BoxObject;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
@@ -39,6 +42,7 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoGroup;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
@@ -61,10 +65,15 @@ public class BoxServiceImpl implements BoxService {
     /**
      * The mapping between Nuxeo ACLs and Box Collaboration
      */
-    protected final Map<String, String> nxBoxRole;
+    protected final BiMap<String, String> nxBoxRole;
+
+    @Override
+    public BiMap<String, String> getNxBoxRole() {
+        return nxBoxRole;
+    }
 
     public BoxServiceImpl() {
-        nxBoxRole = new HashMap<>();
+        nxBoxRole = HashBiMap.create();
         nxBoxRole.put(SecurityConstants.EVERYTHING,
                 BoxCollaborationRole.EDITOR);
         nxBoxRole.put(SecurityConstants.READ, BoxCollaborationRole.VIEWER);
@@ -143,18 +152,16 @@ public class BoxServiceImpl implements BoxService {
 
     /**
      * @param boxFolderAdapter the related box folder
-     * @param boxService       the box service
      * @param ace              the specific ACE for this collaboration
      * @return a box collaboration
      */
     @Override
     public BoxCollaboration getBoxCollaboration(BoxFolderAdapter
-            boxFolderAdapter, BoxService
-            boxService,
-            ACE ace) throws ClientException {
+            boxFolderAdapter, ACE ace) throws ClientException {
         Map<String, Object> boxCollabProperties = new HashMap<>();
         // Nuxeo acl doesn't provide id yet
-        boxCollabProperties.put(BoxCollaboration.FIELD_ID, null);
+        boxCollabProperties.put(BoxCollaboration.FIELD_ID,
+                boxFolderAdapter.getBoxItem().getId());
         // Nuxeo acl doesn't provide created date yet
         boxCollabProperties.put(BoxCollaboration
                 .FIELD_CREATED_AT, null);
@@ -185,11 +192,12 @@ public class BoxServiceImpl implements BoxService {
         boxCollabProperties.put(BoxCollaboration.FIELD_FOLDER,
                 boxFolderAdapter.getMiniItem());
 
-        // User whom can access to the document
+        // User or Group whom can access to the document
+        NuxeoPrincipal user = userManager.getPrincipal(ace.getUsername());
+        NuxeoGroup group = userManager.getGroup(ace.getUsername());
         boxCollabProperties.put(BoxCollaboration
-                .FIELD_ACCESSIBLE_BY,
-                boxService.fillUser(userManager.getPrincipal(ace
-                        .getUsername())));
+                .FIELD_ACCESSIBLE_BY, user != null ? fillUser(user) :
+                fillGroup(group));
 
         // Box Role
         boxCollabProperties.put(BoxCollaboration.FIELD_ROLE,
@@ -235,10 +243,7 @@ public class BoxServiceImpl implements BoxService {
     }
 
     /**
-     * Fill box object user
-     *
-     * @param creator
-     * @return a box User
+     * Return a box user from a Nuxeo user metamodel
      */
     @Override
     public BoxUser fillUser(NuxeoPrincipal creator) {
@@ -252,6 +257,22 @@ public class BoxServiceImpl implements BoxService {
                 : "system");
         return new BoxUser(Collections.unmodifiableMap(mapUser));
     }
+
+    /**
+     * Return a box group from a Nuxeo user metamodel
+     */
+    @Override
+    public BoxGroup fillGroup(NuxeoGroup group) {
+        final Map<String, Object> mapGroup = new HashMap<>();
+        mapGroup.put(BoxItem.FIELD_ID, group != null ? group
+                .getName() : "system");
+        mapGroup.put(BoxItem.FIELD_NAME, group != null ? group.getLabel() :
+                "system");
+        mapGroup.put(BoxUser.FIELD_LOGIN, group != null ? group.getName() :
+                "system");
+        return new BoxGroup(Collections.unmodifiableMap(mapGroup));
+    }
+
 
     @Override
     public BoxFolder getBoxFolder(String jsonBoxFolder) throws
@@ -272,6 +293,14 @@ public class BoxServiceImpl implements BoxService {
             BoxJSONException {
         return new BoxJSONParser(new BoxResourceHub())
                 .parseIntoBoxObject(jsonBoxComment, BoxComment.class);
+    }
+
+    @Override
+    public BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration)
+            throws BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub())
+                .parseIntoBoxObject(jsonBoxCollaboration,
+                        BoxCollaboration.class);
     }
 
     @Override

@@ -60,6 +60,10 @@
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.box.boxjavalibv2</groupId>
       <artifactId>BoxJavaLibraryV2</artifactId>
       <version>1.0</version>

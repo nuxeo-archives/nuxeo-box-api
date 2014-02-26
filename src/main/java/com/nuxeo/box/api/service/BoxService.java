@@ -16,13 +16,14 @@
  */
 package com.nuxeo.box.api.service;
 
+import com.google.common.collect.BiMap;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
-import com.nuxeo.box.api.marshalling.dao.BoxItem;
+import com.nuxeo.box.api.marshalling.dao.BoxGroup;
 import com.nuxeo.box.api.marshalling.dao.BoxObject;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
@@ -31,9 +32,9 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.NuxeoGroup;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.security.ACE;
-import org.nuxeo.ecm.platform.usermanager.UserManager;
 
 import java.util.List;
 
@@ -44,13 +45,15 @@ import java.util.List;
  */
 public interface BoxService {
 
+    BiMap<String, String> getNxBoxRole();
+
     BoxCollection searchBox(String term, CoreSession session,
             String limit, String offset) throws ClientException;
 
     List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList
             documentModels, String fields) throws ClientException;
 
-    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem, BoxService boxService,
+    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem,
             ACE ace) throws ClientException;
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
@@ -65,6 +68,8 @@ public interface BoxService {
 
     BoxUser fillUser(NuxeoPrincipal creator);
 
+    BoxGroup fillGroup(NuxeoGroup group);
+
     BoxFolder getBoxFolder(String jsonBoxFolder) throws
             BoxJSONException;
 
@@ -72,6 +77,9 @@ public interface BoxService {
             BoxJSONException;
 
     BoxComment getBoxComment(String jsonBoxComment) throws
+            BoxJSONException;
+
+    BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration) throws
             BoxJSONException;
 
     String getJSONFromBox(BoxTypedObject boxTypedObject) throws

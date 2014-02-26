@@ -2,6 +2,7 @@ package com.nuxeo.box.api.marshalling.dao;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.nuxeo.box.api.utils.ISO8601DateParser;
 
 import java.text.ParseException;
@@ -11,6 +12,8 @@ import java.util.Map;
 /**
  * Data for collaboration.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
+        property = "type", defaultImpl = BoxCollaboration.class)
 public class BoxCollaboration extends BoxTypedObject {
 
     public static final String FIELD_CREATED_BY = "created_by";

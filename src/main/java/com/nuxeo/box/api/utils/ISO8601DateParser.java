@@ -28,7 +28,7 @@ import java.util.TimeZone;
  *
  * @author <a href="mailto:burton@apache.org">Kevin A. Burton (burtonator)</a>
  * @version $Id: ISO8601DateParser.java,v 1.2 2005/06/03 20:25:29 snoopdave
- * Exp $
+ *          Exp $
  */
 public class ISO8601DateParser {
 
