@@ -142,8 +142,8 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         return newObject("item", folderId);
     }
 
-    @Path("{folderId}/collaboration")
+    @Path("{folderId}/collaborations")
     public Object doGetCollaboration(@PathParam("folderId") String folderId) {
-        return newObject("collaboration", folderId);
+        return newObject("collaborations", folderId);
     }
 }

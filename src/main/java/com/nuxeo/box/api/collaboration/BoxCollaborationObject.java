@@ -14,9 +14,10 @@
  * Contributors:
  *     vpasquier <vpasquier@nuxeo.com>
  */
-package com.nuxeo.box.api.collaboration.comment;
+package com.nuxeo.box.api.collaboration;
 
-import com.nuxeo.box.api.collaboration.comment.adapter.BoxCollaborationAdapter;
+import com.nuxeo.box.api.adapter.BoxAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -39,14 +40,14 @@ import javax.ws.rs.core.MediaType;
  *
  * @since 5.9.3
  */
-@WebObject(type = "collaboration")
+@WebObject(type = "collaborations")
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
 
 
     BoxService boxService;
 
-    DocumentModel folder;
+    BoxFolderAdapter boxFolder;
 
     @Override
     public void initialize(Object... args) {
@@ -55,7 +56,9 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
         try {
             String folderId = (String) args[0];
             CoreSession session = ctx.getCoreSession();
-            folder = session.getDocument(new IdRef(folderId));
+            DocumentModel folder = session.getDocument(new IdRef(folderId));
+            boxFolder = (BoxFolderAdapter) folder.getAdapter
+                    (BoxAdapter.class);
         } catch (Exception e) {
             throw WebException.wrap(e);
         }
@@ -66,11 +69,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     public String doGetCollaboration() throws NoSuchDocumentException,
             ClientException,
             BoxJSONException {
-        final CoreSession session = ctx.getCoreSession();
-        // Adapt nx document to box collaboration adapter
-        final BoxCollaborationAdapter boxCollaboration = folder.getAdapter
-                (BoxCollaborationAdapter.class);
-        return boxService.toJSONString(boxCollaboration.getBoxCollaboration());
+        return boxService.toJSONString(boxFolder.getCollaborations());
     }
 
 }

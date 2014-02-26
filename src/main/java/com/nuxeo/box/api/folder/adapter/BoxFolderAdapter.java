@@ -23,18 +23,20 @@ import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxEmail;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.dao.BoxItem;
-import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
-import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -92,49 +94,35 @@ public class BoxFolderAdapter extends BoxAdapter {
         DocumentModelList children = session.query(query.toString(),
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
         collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxService.getBoxCollection(children, fields));
+                boxService.getBoxDocumentCollection(children, fields));
         collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 children.size());
         return new BoxCollection(Collections.unmodifiableMap
                 (collectionProperties));
     }
 
-    public BoxCollaboration getBoxCollaboration(DocumentModel doc) throws ClientException {
+    /**
+     * @return the ACLs set as a BoxCollection containing box collaborations
+     * listing
+     */
+    public BoxCollection getCollaborations() throws
+            ClientException {
         BoxService boxService = Framework.getLocalService(BoxService.class);
-
-        // Nuxeo acl doesn't provide id yet
-        boxProperties.put(BoxCollaboration.FIELD_ID, null);
-        // Nuxeo acl doesn't provide created date yet
-        boxProperties.put(BoxCollaboration.FIELD_CREATED_AT, null);
-        // Nuxeo acl doesn't provide modified date yet
-        boxProperties.put(BoxCollaboration.FIELD_MODIFIED_AT, null);
-
-        // Creator
-        final UserManager userManager = Framework.getLocalService(UserManager
-                .class);
-        String creator = doc.getPropertyValue("dc:creator") != null
-                ? (String) doc.getPropertyValue("dc:creator") : "system";
-        NuxeoPrincipal principalCreator = userManager.getPrincipal(creator);
-        final BoxUser boxCreator = boxService.fillUser(principalCreator);
-        boxProperties.put(BoxCollaboration.FIELD_CREATED_BY, boxCreator);
-
-        // Nuxeo doesn't provide expiration date yet
-        boxProperties.put(BoxCollaboration.FIELD_EXPIRES_AT, null);
-        // Nuxeo doesn't provide status on ACL setup (accepted...)
-        boxProperties.put(BoxCollaboration.FIELD_STATUS, null);
-        // Nuxeo doesn't provide acknowledge date on status (see just above)
-        boxProperties.put(BoxCollaboration.FIELD_ACKNOWLEGED_AT, null);
-
-        // Document itself -> a mandatory folder
-        BoxFolderAdapter folderAdapter = (BoxFolderAdapter) doc.getAdapter
-                (BoxAdapter.class);
-        boxProperties.put(BoxCollaboration.FIELD_FOLDER,
-                folderAdapter.getMiniItem());
-
-        // User whom can access to the document
-        boxProperties.put(BoxCollaboration.FIELD_ACCESSIBLE_BY,
-                boxService.fillUsers(doc, userManager));
-
-        return new BoxCollaboration(boxProperties);
+        List<BoxCollaboration> boxCollaborations = new ArrayList<>();
+        Map<String, Object> collectionProperties = new HashMap<>();
+        for (ACL acl : doc.getACP().getACLs()) {
+            for (ACE ace : acl.getACEs()) {
+                if (ace.isGranted()) {
+                    boxCollaborations.add(boxService.getBoxCollaboration(this, boxService, ace));
+                }
+            }
+        }
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
+                boxCollaborations);
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
+                boxCollaborations.size());
+        return new BoxCollection(Collections.unmodifiableMap
+                (collectionProperties));
     }
+
 }
