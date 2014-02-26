@@ -96,7 +96,8 @@ public class BoxCommentAdapter {
         List<DocumentModel> targetList = commentManager
                 .getDocumentsForComment(doc);
         if (targetList.isEmpty()) {
-//            throw new NoSuchDocumentException("Cannot find any document bound" +
+//            throw new NoSuchDocumentException("Cannot find any document
+// bound" +
 //                    " to the comment " + doc.getId());
             return null;
         }

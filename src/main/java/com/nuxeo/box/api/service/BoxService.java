@@ -16,10 +16,13 @@
  */
 package com.nuxeo.box.api.service;
 
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxItem;
 import com.nuxeo.box.api.marshalling.dao.BoxObject;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
@@ -29,6 +32,8 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 
 import java.util.List;
 
@@ -42,8 +47,11 @@ public interface BoxService {
     BoxCollection searchBox(String term, CoreSession session,
             String limit, String offset) throws ClientException;
 
-    List<BoxTypedObject> getBoxCollection(DocumentModelList
+    List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList
             documentModels, String fields) throws ClientException;
+
+    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem, BoxService boxService,
+            ACE ace) throws ClientException;
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
 
@@ -68,4 +76,6 @@ public interface BoxService {
 
     String getJSONFromBox(BoxTypedObject boxTypedObject) throws
             BoxJSONException;
+
+    String getJSONBoxException(Exception e, int status);
 }

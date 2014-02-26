@@ -18,9 +18,7 @@
 
 package com.nuxeo.box.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nuxeo.box.api.marshalling.exceptions.NXBoxJsonException;
+import com.nuxeo.box.api.service.BoxService;
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
@@ -28,6 +26,7 @@ import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.ecm.webengine.model.exceptions.WebSecurityException;
 import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
+import org.nuxeo.runtime.api.Framework;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,6 +44,13 @@ import javax.ws.rs.core.Response;
 @Produces("text/html;charset=UTF-8")
 @WebObject(type = "box")
 public class Box extends ModuleRoot {
+
+    BoxService boxService;
+
+    @Override
+    public void initialize(Object... args) {
+        boxService = Framework.getLocalService(BoxService.class);
+    }
 
     @Path("/")
     public Object doGetRepository(@PathParam("repo")
@@ -80,6 +86,7 @@ public class Box extends ModuleRoot {
         return newObject("comment");
     }
 
+
     /**
      * Return a Box compat Exception Response in JSON
      */
@@ -88,41 +95,25 @@ public class Box extends ModuleRoot {
         if (e instanceof WebSecurityException) {
             return Response.status(Response.Status.UNAUTHORIZED.getStatusCode
                     ()).entity
-                    (getJSONBoxException(e, Response.Status.UNAUTHORIZED
+                    (boxService.getJSONBoxException(e, Response.Status
+                            .UNAUTHORIZED
                             .getStatusCode())).type(
                     "json/application").build();
         } else if (e instanceof WebResourceNotFoundException) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
                     .entity
-                            (getJSONBoxException(e, Response.Status.NOT_FOUND
-                                    .getStatusCode())).type(
+                            (boxService.getJSONBoxException(e,
+                                    Response.Status.NOT_FOUND
+                                            .getStatusCode())).type(
                             "json/application").build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR
                     .getStatusCode()).entity
-                    (getJSONBoxException(e,
+                    (boxService.getJSONBoxException(e,
                             Response.Status.INTERNAL_SERVER_ERROR
                                     .getStatusCode())).type(
                     "json/application").build();
         }
-    }
-
-    protected String getJSONBoxException(Exception e, int status) {
-        NXBoxJsonException boxException = new NXBoxJsonException();
-        // Message
-        boxException.setCode(e.getMessage());
-        //Detailed Message
-        boxException.setMessage(e.getCause() != null ? e.getCause()
-                .getMessage() : null);
-        boxException.setStatus(status);
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonExceptionResponse = StringUtils.EMPTY;
-        try {
-            jsonExceptionResponse = mapper.writeValueAsString(boxException);
-        } catch (JsonProcessingException e1) {
-            return "error when marshalling server exception:" + e.getMessage();
-        }
-        return jsonExceptionResponse;
     }
 
 }

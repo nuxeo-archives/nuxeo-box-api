@@ -156,6 +156,8 @@ public abstract class BoxAdapter {
         return boxItem;
     }
 
+    abstract public BoxItem getMiniItem();
+
     /**
      * Update the box item properties
      *

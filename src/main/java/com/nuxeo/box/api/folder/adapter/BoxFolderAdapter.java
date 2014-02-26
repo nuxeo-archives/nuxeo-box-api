@@ -16,18 +16,27 @@
  */
 package com.nuxeo.box.api.folder.adapter;
 
-import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.adapter.BoxAdapter;
+import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxEmail;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
+import com.nuxeo.box.api.marshalling.dao.BoxItem;
+import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.ACL;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.runtime.api.Framework;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,8 +55,8 @@ public class BoxFolderAdapter extends BoxAdapter {
         CoreSession session = doc.getCoreSession();
         // Email update
         final Map<String, Object> boxEmailProperties = new HashMap<>();
-        boxEmailProperties.put(BoxEmail.FIELD_ACCESS, "-1");
-        boxEmailProperties.put(BoxEmail.FIELD_EMAIL, "-1");
+        boxEmailProperties.put(BoxEmail.FIELD_ACCESS, null);
+        boxEmailProperties.put(BoxEmail.FIELD_EMAIL, null);
         final BoxEmail boxEmail = new BoxEmail(Collections.unmodifiableMap
                 (boxEmailProperties));
         boxProperties.put(BoxFolder.FIELD_FOLDER_UPLOAD_EMAIL, boxEmail);
@@ -58,6 +67,15 @@ public class BoxFolderAdapter extends BoxAdapter {
                         BoxConstants.BOX_OFFSET, BoxConstants.BOX_FIELDS));
 
         boxItem = new BoxFolder(Collections.unmodifiableMap(boxProperties));
+    }
+
+    @Override
+    public BoxItem getMiniItem() {
+        Map<String, Object> boxProperties = new HashMap<>();
+        boxProperties.put(BoxItem.FIELD_ID, boxItem.getId());
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, boxItem.getSequenceId());
+        boxProperties.put(BoxItem.FIELD_NAME, boxItem.getName());
+        return new BoxFolder(boxProperties);
     }
 
     /**
@@ -76,9 +94,33 @@ public class BoxFolderAdapter extends BoxAdapter {
         DocumentModelList children = session.query(query.toString(),
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
         collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxService.getBoxCollection(children, fields));
+                boxService.getBoxDocumentCollection(children, fields));
         collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 children.size());
+        return new BoxCollection(Collections.unmodifiableMap
+                (collectionProperties));
+    }
+
+    /**
+     * @return the ACLs set as a BoxCollection containing box collaborations
+     * listing
+     */
+    public BoxCollection getCollaborations() throws
+            ClientException {
+        BoxService boxService = Framework.getLocalService(BoxService.class);
+        List<BoxCollaboration> boxCollaborations = new ArrayList<>();
+        Map<String, Object> collectionProperties = new HashMap<>();
+        for (ACL acl : doc.getACP().getACLs()) {
+            for (ACE ace : acl.getACEs()) {
+                if (ace.isGranted()) {
+                    boxCollaborations.add(boxService.getBoxCollaboration(this, boxService, ace));
+                }
+            }
+        }
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
+                boxCollaborations);
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
+                boxCollaborations.size());
         return new BoxCollection(Collections.unmodifiableMap
                 (collectionProperties));
     }

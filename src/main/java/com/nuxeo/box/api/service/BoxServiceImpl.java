@@ -16,6 +16,11 @@
  */
 package com.nuxeo.box.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
+import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
+import com.nuxeo.box.api.marshalling.dao.BoxCollaborationRole;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
@@ -25,14 +30,20 @@ import com.nuxeo.box.api.marshalling.dao.BoxObject;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.NXBoxJsonException;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
+import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.runtime.api.Framework;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +58,28 @@ import java.util.Map;
  */
 public class BoxServiceImpl implements BoxService {
 
+    /**
+     * The mapping between Nuxeo ACLs and Box Collaboration
+     */
+    protected final Map<String, String> nxBoxRole;
+
+    public BoxServiceImpl() {
+        nxBoxRole = new HashMap<>();
+        nxBoxRole.put(SecurityConstants.EVERYTHING,
+                BoxCollaborationRole.EDITOR);
+        nxBoxRole.put(SecurityConstants.READ, BoxCollaborationRole.VIEWER);
+        nxBoxRole.put(SecurityConstants.WRITE, BoxCollaborationRole
+                .VIEWER_UPLOADER);
+        //nxBoxRole.put(SecurityConstants.EVERYTHING,
+        // BoxCollaborationRole.CO_OWNER);
+        //nxBoxRole.put(SecurityConstants.EVERYTHING,
+        // BoxCollaborationRole.PREVIEWER);
+        //nxBoxRole.put(SecurityConstants.EVERYTHING,
+        // BoxCollaborationRole.UPLOADER);
+        //nxBoxRole.put(SecurityConstants.EVERYTHING,
+        // BoxCollaborationRole.PREVIEWER_UPLOADER);
+    }
+
     @Override
     public BoxCollection searchBox(String term, CoreSession session,
             String limit, String offset) throws ClientException {
@@ -57,7 +90,7 @@ public class BoxServiceImpl implements BoxService {
         DocumentModelList documentModels = session.query(query.toString(),
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
         collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                getBoxCollection(documentModels, null));
+                getBoxDocumentCollection(documentModels, null));
         collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 documentModels.size());
         return new BoxCollection(Collections.unmodifiableMap
@@ -65,7 +98,7 @@ public class BoxServiceImpl implements BoxService {
     }
 
     @Override
-    public List<BoxTypedObject> getBoxCollection(DocumentModelList
+    public List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList
             documentModels, String fields) throws ClientException {
 
         final List<BoxTypedObject> boxObject = new ArrayList<>();
@@ -106,6 +139,62 @@ public class BoxServiceImpl implements BoxService {
             boxObject.add(boxChild);
         }
         return boxObject;
+    }
+
+    /**
+     * @param boxFolderAdapter the related box folder
+     * @param boxService       the box service
+     * @param ace              the specific ACE for this collaboration
+     * @return a box collaboration
+     */
+    @Override
+    public BoxCollaboration getBoxCollaboration(BoxFolderAdapter
+            boxFolderAdapter, BoxService
+            boxService,
+            ACE ace) throws ClientException {
+        Map<String, Object> boxCollabProperties = new HashMap<>();
+        // Nuxeo acl doesn't provide id yet
+        boxCollabProperties.put(BoxCollaboration.FIELD_ID, null);
+        // Nuxeo acl doesn't provide created date yet
+        boxCollabProperties.put(BoxCollaboration
+                .FIELD_CREATED_AT, null);
+        // Nuxeo acl doesn't provide modified date yet
+        boxCollabProperties.put(BoxCollaboration
+                .FIELD_MODIFIED_AT, null);
+
+        // Creator
+        final UserManager userManager = Framework.getLocalService
+                (UserManager
+                        .class);
+        boxCollabProperties.put(BoxCollaboration.FIELD_CREATED_BY,
+                boxFolderAdapter.getBoxItem().getCreatedBy());
+
+        // Nuxeo doesn't provide expiration date yet
+        boxCollabProperties.put(BoxCollaboration
+                .FIELD_EXPIRES_AT, null);
+        // Nuxeo doesn't provide status on ACL setup (accepted...)
+        boxCollabProperties.put(BoxCollaboration.FIELD_STATUS,
+                null);
+        // Nuxeo doesn't provide acknowledge date on status (see
+        // just above)
+        boxCollabProperties.put(BoxCollaboration
+                .FIELD_ACKNOWLEGED_AT,
+                null);
+
+        // Document itself -> a mandatory folder
+        boxCollabProperties.put(BoxCollaboration.FIELD_FOLDER,
+                boxFolderAdapter.getMiniItem());
+
+        // User whom can access to the document
+        boxCollabProperties.put(BoxCollaboration
+                .FIELD_ACCESSIBLE_BY,
+                boxService.fillUser(userManager.getPrincipal(ace
+                        .getUsername())));
+
+        // Box Role
+        boxCollabProperties.put(BoxCollaboration.FIELD_ROLE,
+                nxBoxRole.get(ace.getPermission()));
+        return new BoxCollaboration(boxCollabProperties);
     }
 
     /**
@@ -191,4 +280,27 @@ public class BoxServiceImpl implements BoxService {
         return boxTypedObject.toJSONString(new BoxJSONParser(new
                 BoxResourceHub()));
     }
+
+    /**
+     * Return a Box compat Exception Response in JSON
+     */
+    @Override
+    public String getJSONBoxException(Exception e, int status) {
+        NXBoxJsonException boxException = new NXBoxJsonException();
+        // Message
+        boxException.setCode(e.getMessage());
+        //Detailed Message
+        boxException.setMessage(e.getCause() != null ? e.getCause()
+                .getMessage() : null);
+        boxException.setStatus(status);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonExceptionResponse = StringUtils.EMPTY;
+        try {
+            jsonExceptionResponse = mapper.writeValueAsString(boxException);
+        } catch (JsonProcessingException e1) {
+            return "error when marshalling server exception:" + e.getMessage();
+        }
+        return jsonExceptionResponse;
+    }
+
 }

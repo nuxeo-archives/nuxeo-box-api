@@ -1,5 +1,6 @@
 package com.nuxeo.box.api.marshalling.dao;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nuxeo.box.api.utils.ISO8601DateParser;
 
@@ -72,6 +73,7 @@ public class BoxCollaboration extends BoxTypedObject {
      *
      * @return the created_by
      */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_CREATED_BY)
     public BoxUser getCreatedBy() {
         return (BoxUser) getValue(FIELD_CREATED_BY);
@@ -93,6 +95,7 @@ public class BoxCollaboration extends BoxTypedObject {
      *
      * @return the accessible_by
      */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_ACCESSIBLE_BY)
     public BoxUser getAccessibleBy() {
         return (BoxUser) getValue(FIELD_ACCESSIBLE_BY);
@@ -116,6 +119,7 @@ public class BoxCollaboration extends BoxTypedObject {
      *
      * @return the expires_at
      */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_EXPIRES_AT)
     public String getExpiresAt() {
         return (String) getValue(FIELD_EXPIRES_AT);
@@ -149,6 +153,7 @@ public class BoxCollaboration extends BoxTypedObject {
      *
      * @return the status
      */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_STATUS)
     public String getStatus() {
         return (String) getValue(FIELD_STATUS);
@@ -193,6 +198,7 @@ public class BoxCollaboration extends BoxTypedObject {
      *
      * @return the acknowledged_at
      */
+    @JsonInclude(JsonInclude.Include.ALWAYS)
     @JsonProperty(FIELD_ACKNOWLEGED_AT)
     public String getAcknowledgedAt() {
         return (String) getValue(FIELD_ACKNOWLEGED_AT);
