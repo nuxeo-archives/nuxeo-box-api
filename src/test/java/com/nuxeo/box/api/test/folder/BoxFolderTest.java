@@ -17,9 +17,9 @@
 package com.nuxeo.box.api.test.folder;
 
 import com.nuxeo.box.api.adapter.BoxAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
-import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
@@ -74,6 +74,19 @@ public class BoxFolderTest extends BoxBaseTest {
                 ("etag"));
         assertEquals("null", finalResult.getJSONObject("parent").getString
                 ("sequence_id"));
+    }
+
+    @Test
+    public void itCanFetchABoxRoot() throws Exception {
+
+        // Fetching the root through NX Box API
+        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
+                "folders/0");
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        JSONObject finalResult = getJSONFromResponse(response);
+        assertEquals("0", finalResult.getString("id"));
     }
 
     @Test

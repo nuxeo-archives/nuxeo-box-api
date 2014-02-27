@@ -223,23 +223,35 @@ public class BoxServiceImpl implements BoxService {
 
     @Override
     public String getBoxId(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() : "0";
+        if (doc != null) {
+            return doc.getName() != null ? doc.getId() : "0";
+        }
+        return null;
     }
 
     @Override
     public String getBoxSequenceId(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() : null;
+        if (doc != null) {
+            return doc.getName() != null ? doc.getId() : null;
+        }
+        return null;
     }
 
     @Override
     public String getBoxEtag(DocumentModel doc) {
-        return doc.getName() != null ? doc.getId() + "_" + doc
-                .getVersionLabel() : null;
+        if (doc != null) {
+            return doc.getName() != null ? doc.getId() + "_" + doc
+                    .getVersionLabel() : null;
+        }
+        return null;
     }
 
     @Override
     public String getBoxName(DocumentModel doc) {
-        return doc.getName() != null ? doc.getName() : "/";
+        if (doc != null) {
+            return doc.getName() != null ? doc.getName() : "/";
+        }
+        return null;
     }
 
     /**
