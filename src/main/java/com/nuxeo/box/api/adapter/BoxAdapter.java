@@ -92,12 +92,12 @@ public abstract class BoxAdapter {
                 quotaAwareDocument.getInnerSize() : -1.0);
 
         // path_collection
-        final DocumentModel parentDoc = session.getDocument(doc.getParentRef());
+        final DocumentModel parentDoc = session.getParentDocument(doc.getRef());
         final Map<String, Object> pathCollection = new HashMap<>();
-        pathCollection.put(BoxCollection.FIELD_TOTAL_COUNT,
-                doc.getPathAsString().split("/").length);
-        pathCollection.put(BoxCollection.FIELD_ENTRIES,
-                getParentsHierarchy(session, parentDoc));
+        List<BoxTypedObject> hierarchy = getParentsHierarchy(session,
+                parentDoc);
+        pathCollection.put(BoxCollection.FIELD_ENTRIES, hierarchy);
+        pathCollection.put(BoxCollection.FIELD_TOTAL_COUNT, hierarchy.size());
         BoxCollection boxPathCollection = new BoxCollection(Collections
                 .unmodifiableMap(pathCollection));
         boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxPathCollection);
@@ -199,7 +199,7 @@ public abstract class BoxAdapter {
                         .unmodifiableMap(parentCollectionProperties));
             }
             pathCollection.add(boxParent);
-            parentDoc = session.getParentDocument(parentDoc.getParentRef());
+            parentDoc = session.getParentDocument(parentDoc.getRef());
         }
         return pathCollection;
     }
