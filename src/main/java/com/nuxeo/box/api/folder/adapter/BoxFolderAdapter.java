@@ -112,10 +112,13 @@ public class BoxFolderAdapter extends BoxAdapter {
         Map<String, Object> collectionProperties = new HashMap<>();
         CoreSession session = doc.getCoreSession();
         for (ACL acl : session.getACP(new IdRef(doc.getId())).getACLs()) {
-            for (ACE ace : acl.getACEs()) {
-                if (ace.isGranted()) {
-                    boxCollaborations.add(boxService.getBoxCollaboration
-                            (this, ace));
+            if (!(ACL.LOCAL_ACL.equals(acl.getName()) || ACL.INHERITED_ACL
+                    .equals(acl.getName()))) {
+                for (ACE ace : acl.getACEs()) {
+                    if (ace.isGranted()) {
+                        boxCollaborations.add(boxService.getBoxCollaboration
+                                (this, ace, acl.getName()));
+                    }
                 }
             }
         }
@@ -127,4 +130,18 @@ public class BoxFolderAdapter extends BoxAdapter {
                 (collectionProperties));
     }
 
+    /**
+     * @return the related collaboration on a specific folder
+     */
+    public BoxCollaboration getCollaboration(String collaborationId) throws
+            ClientException {
+        CoreSession session = doc.getCoreSession();
+        ACL acl = session.getACP(new IdRef(doc.getId())).getACL
+                (collaborationId);
+        if (acl == null) {
+            return null;
+        }
+        return boxService.getBoxCollaboration(this, acl.getACEs()[0],
+                collaborationId);
+    }
 }

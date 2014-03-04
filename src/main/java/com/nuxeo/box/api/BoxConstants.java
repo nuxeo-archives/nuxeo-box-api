@@ -28,4 +28,7 @@ public class BoxConstants {
     public static final String BOX_FIELDS = "*";
 
     public static final String BOX_LOCK = "lock";
+
+    public static final String BOX_COLLAB_DELIM = "-BOX-";
+
 }

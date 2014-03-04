@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaborationRole;
@@ -47,6 +48,7 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
+import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.runtime.api.Framework;
 
 import java.util.ArrayList;
@@ -79,14 +81,6 @@ public class BoxServiceImpl implements BoxService {
         nxBoxRole.put(SecurityConstants.READ, BoxCollaborationRole.VIEWER);
         nxBoxRole.put(SecurityConstants.WRITE, BoxCollaborationRole
                 .VIEWER_UPLOADER);
-        //nxBoxRole.put(SecurityConstants.EVERYTHING,
-        // BoxCollaborationRole.CO_OWNER);
-        //nxBoxRole.put(SecurityConstants.EVERYTHING,
-        // BoxCollaborationRole.PREVIEWER);
-        //nxBoxRole.put(SecurityConstants.EVERYTHING,
-        // BoxCollaborationRole.UPLOADER);
-        //nxBoxRole.put(SecurityConstants.EVERYTHING,
-        // BoxCollaborationRole.PREVIEWER_UPLOADER);
     }
 
     @Override
@@ -157,11 +151,13 @@ public class BoxServiceImpl implements BoxService {
      */
     @Override
     public BoxCollaboration getBoxCollaboration(BoxFolderAdapter
-            boxFolderAdapter, ACE ace) throws ClientException {
+            boxFolderAdapter, ACE ace, String collaborationId) throws
+            ClientException {
         Map<String, Object> boxCollabProperties = new HashMap<>();
         // Nuxeo acl doesn't provide id yet
         boxCollabProperties.put(BoxCollaboration.FIELD_ID,
-                boxFolderAdapter.getBoxItem().getId());
+                computeCollaborationId(boxFolderAdapter
+                        .getBoxItem().getId(), collaborationId));
         // Nuxeo acl doesn't provide created date yet
         boxCollabProperties.put(BoxCollaboration
                 .FIELD_CREATED_AT, null);
@@ -211,7 +207,11 @@ public class BoxServiceImpl implements BoxService {
     public String toJSONString(BoxObject boxObject) throws BoxJSONException {
         BoxJSONParser boxJSONParser = new BoxJSONParser(new
                 BoxResourceHub());
-        return boxObject.toJSONString(boxJSONParser);
+        try {
+            return boxObject.toJSONString(boxJSONParser);
+        } catch (Exception e) {
+            throw new WebResourceNotFoundException("Box Parser Exception", e);
+        }
     }
 
     /**
@@ -323,7 +323,7 @@ public class BoxServiceImpl implements BoxService {
     }
 
     /**
-     * Return a Box compat Exception Response in JSON
+     * @return a Box Exception Response in JSON
      */
     @Override
     public String getJSONBoxException(Exception e, int status) {
@@ -344,4 +344,22 @@ public class BoxServiceImpl implements BoxService {
         return jsonExceptionResponse;
     }
 
+    /**
+     * @return the array containing Folder Id and Collab Id
+     */
+    @Override
+    public String[] getCollaborationArrayIds(String collaborationId) {
+        String[] collaborationIds = collaborationId.split(BoxConstants
+                .BOX_COLLAB_DELIM);
+        if (collaborationIds.length == 0) {
+            return new String[2];
+        }
+        return collaborationIds;
+    }
+
+    public String computeCollaborationId(String folderId,
+            String collaborationId) {
+        return folderId.concat(BoxConstants.BOX_COLLAB_DELIM).concat
+                (collaborationId);
+    }
 }

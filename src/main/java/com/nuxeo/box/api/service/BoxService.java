@@ -54,7 +54,7 @@ public interface BoxService {
             documentModels, String fields) throws ClientException;
 
     BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem,
-            ACE ace) throws ClientException;
+            ACE ace, String collaborationId) throws ClientException;
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
 
@@ -86,4 +86,6 @@ public interface BoxService {
             BoxJSONException;
 
     String getJSONBoxException(Exception e, int status);
+
+    String[] getCollaborationArrayIds(String collaborationId);
 }
