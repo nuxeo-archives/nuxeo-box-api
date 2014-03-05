@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.nuxeo.box.api.BoxConstants;
+import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaborationRole;
@@ -92,8 +93,13 @@ public class BoxServiceImpl implements BoxService {
                 "Document where ecm:fulltext = '" + term + "'");
         DocumentModelList documentModels = session.query(query.toString(),
                 null, Long.parseLong(limit), Long.parseLong(offset), false);
-        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                getBoxDocumentCollection(documentModels, null));
+        // Adapt all documents to box document listing to get all properties
+        List<BoxTypedObject> boxDocuments = new ArrayList<>();
+        for (DocumentModel doc : documentModels) {
+            BoxAdapter boxAdapter = doc.getAdapter(BoxAdapter.class);
+            boxDocuments.add(boxAdapter.getBoxItem());
+        }
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES, boxDocuments);
         collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
                 documentModels.size());
         return new BoxCollection(Collections.unmodifiableMap
