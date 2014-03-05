@@ -86,7 +86,9 @@ public class BoxCommentAdapter {
     }
 
     public void setBoxComment(BoxComment boxComment) {
-        this.boxComment = boxComment;
+        for (String field : boxComment.getKeySet()) {
+            this.boxComment.put(field, boxComment.getValue(field));
+        }
     }
 
     private BoxTypedObject fillItem(DocumentModel doc) throws
@@ -96,9 +98,8 @@ public class BoxCommentAdapter {
         List<DocumentModel> targetList = commentManager
                 .getDocumentsForComment(doc);
         if (targetList.isEmpty()) {
-//            throw new NoSuchDocumentException("Cannot find any document
-// bound" +
-//                    " to the comment " + doc.getId());
+//            throw new WebResourceNotFoundException("Cannot find any document " +
+//                    "bound to the comment " + doc.getId());
             return null;
         }
         DocumentModel target = targetList.get(0);
