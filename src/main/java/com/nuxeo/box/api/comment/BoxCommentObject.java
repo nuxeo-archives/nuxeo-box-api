@@ -16,8 +16,12 @@
  */
 package com.nuxeo.box.api.comment;
 
+import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
+import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
+import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
+import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -27,6 +31,7 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.comment.api.CommentManager;
 import org.nuxeo.ecm.platform.comment.workflow.utils.CommentsConstants;
+import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
@@ -58,15 +63,24 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     BoxService boxService;
 
+    BoxFileAdapter boxFile;
+
     @Override
     public void initialize(Object... args) {
         boxService = Framework.getLocalService(BoxService.class);
         commentManager = Framework.getLocalService(CommentManager.class);
-    }
-
-    @GET
-    public Object doGet() {
-        return getView("index");
+        if (args != null && args.length == 1) {
+            try {
+                String fileId = (String) args[0];
+                CoreSession session = ctx.getCoreSession();
+                DocumentModel file = session.getDocument(new IdRef(fileId));
+                boxFile = (BoxFileAdapter) file.getAdapter
+                        (BoxAdapter.class);
+            } catch (Exception e) {
+                throw WebException.wrap(e);
+            }
+            setRoot(true);
+        }
     }
 
     @GET
@@ -135,5 +149,13 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(commentId));
         session.save();
+    }
+
+
+    @GET
+    public String doGetComments() throws NoSuchDocumentException,
+            ClientException,
+            BoxJSONException {
+        return boxService.toJSONString(boxFile.getComments());
     }
 }

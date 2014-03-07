@@ -142,4 +142,9 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         return boxService.toJSONString(fileAdapter.getBoxItem());
     }
 
+    @Path("{fileId}/comments")
+    public Object doGetComments(@PathParam("fileId") String fileId) {
+        return newObject("comment", fileId);
+    }
+
 }

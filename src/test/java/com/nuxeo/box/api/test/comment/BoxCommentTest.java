@@ -22,9 +22,11 @@ import com.nuxeo.box.api.test.BoxBaseTest;
 import com.nuxeo.box.api.test.BoxServerFeature;
 import com.nuxeo.box.api.test.BoxServerInit;
 import com.sun.jersey.api.client.ClientResponse;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -35,6 +37,7 @@ import org.nuxeo.runtime.test.runner.Jetty;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
 
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +52,7 @@ import static org.junit.Assert.assertEquals;
         ".api", "org.nuxeo.ecm.relations.api", "org.nuxeo.ecm.relations",
         "org.nuxeo.ecm.relations.jena", "org.nuxeo.ecm.relations.io",
         "org.nuxeo.ecm.relations.core" +
-        ".listener", "org.nuxeo.ecm.platform.comment.api" })
+                ".listener", "org.nuxeo.ecm.platform.comment.api" })
 @LocalDeploy({ "com.nuxeo.box.api:comment-jena-contrib.xml" })
 @Jetty(port = 18090)
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
@@ -59,6 +62,7 @@ public class BoxCommentTest extends BoxBaseTest {
     public void itCanManageComment() throws Exception {
         String commentId = itCanPostComment();
         itCanGetComment(commentId);
+        itCanGetCommentsFromAFile(commentId);
         itCanUpdateComment(commentId);
         itCanDeleteComment(commentId);
     }
@@ -118,6 +122,21 @@ public class BoxCommentTest extends BoxBaseTest {
         assertEquals("YOUR_MESSAGE", finalResult.getString("message"));
         assertEquals(file.getId(),
                 finalResult.getJSONObject("item").getString("id"));
+    }
+
+    public void itCanGetCommentsFromAFile(String commentId) throws
+            ClientException,
+            IOException, JSONException {
+        // Fetching the file in Nuxeo way
+        DocumentModel file = BoxServerInit.getFile(1, session);
+
+        ClientResponse response = getResponse(RequestType.GET,
+                "files/" + file.getId() + "/comments");
+
+        // Checking response consistency
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        JSONObject finalResult = getJSONFromResponse(response);
+        assertEquals("2", finalResult.getString("total_count"));
     }
 
     public void itCanUpdateComment(String commentId) throws Exception {
