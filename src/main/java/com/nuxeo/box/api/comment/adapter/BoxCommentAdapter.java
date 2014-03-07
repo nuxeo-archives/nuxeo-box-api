@@ -68,7 +68,9 @@ public class BoxCommentAdapter {
                                 ("comment:creationDate"))));
 
         // Nuxeo comment doesn't provide modified date
-        boxProperties.put(BoxComment.FIELD_MODIFIED_AT, null);
+        boxProperties.put(BoxComment.FIELD_MODIFIED_AT, ISODateTimeFormat.dateTime().print(
+                new DateTime(doc.getPropertyValue
+                        ("dc:modified"))));
 
         // Comment Author
         final UserManager userManager = Framework.getLocalService(UserManager

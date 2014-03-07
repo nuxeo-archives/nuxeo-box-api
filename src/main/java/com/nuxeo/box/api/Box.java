@@ -18,6 +18,7 @@
 
 package com.nuxeo.box.api;
 
+import com.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import com.nuxeo.box.api.service.BoxService;
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -98,25 +99,24 @@ public class Box extends ModuleRoot {
     public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {
             return Response.status(Response.Status.UNAUTHORIZED.getStatusCode
-                    ()).entity
-                    (boxService.getJSONBoxException(e, Response.Status
-                            .UNAUTHORIZED
-                            .getStatusCode())).type(
-                    "json/application").build();
+                    ()).entity(boxService.getJSONBoxException(e,
+                    Response.Status.UNAUTHORIZED.getStatusCode())).type
+                    ("json/application").build();
         } else if (e instanceof WebResourceNotFoundException) {
             return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity
-                            (boxService.getJSONBoxException(e,
-                                    Response.Status.NOT_FOUND
-                                            .getStatusCode())).type(
-                            "json/application").build();
+                    .entity(boxService.getJSONBoxException(e,
+                            Response.Status.NOT_FOUND.getStatusCode())).type
+                            ("json/application").build();
+        } else if (e instanceof BoxRestException) {
+            return Response.status(((BoxRestException) e).getErrorCode())
+                    .entity(boxService.getJSONBoxException(e,
+                            ((BoxRestException) e).getErrorCode())).type
+                            ("json/application").build();
         } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR
-                    .getStatusCode()).entity
-                    (boxService.getJSONBoxException(e,
-                            Response.Status.INTERNAL_SERVER_ERROR
-                                    .getStatusCode())).type(
-                    "json/application").build();
+                    .getStatusCode()).entity(boxService.getJSONBoxException
+                    (e, Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()
+                    )).type("json/application").build();
         }
     }
 

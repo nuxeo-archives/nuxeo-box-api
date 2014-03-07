@@ -1,9 +1,11 @@
 package com.nuxeo.box.api.marshalling.exceptions;
 
+import org.nuxeo.ecm.webengine.WebException;
+
 /**
  * BoxException, this is an exception thrown from executing the api requests.
  */
-public class BoxRestException extends BoxSDKException {
+public class BoxRestException extends WebException {
 
     /**
      * Default serial version uid.
@@ -12,7 +14,7 @@ public class BoxRestException extends BoxSDKException {
 
     private String mMessage;
 
-    private String errorCode;
+    private int errorCode;
 
     /**
      * BoxRestException.
@@ -20,7 +22,6 @@ public class BoxRestException extends BoxSDKException {
      * @param message Message of the exception.
      */
     public BoxRestException(String message) {
-        super(message);
         this.mMessage = message;
     }
 
@@ -41,7 +42,7 @@ public class BoxRestException extends BoxSDKException {
      * @param message   customized exception message.
      * @param errorCode customized exception error code.
      */
-    public BoxRestException(String message, String errorCode) {
+    public BoxRestException(String message, int errorCode) {
         this(message);
         this.errorCode = errorCode;
     }
@@ -55,6 +56,12 @@ public class BoxRestException extends BoxSDKException {
         super(e);
     }
 
+    public BoxRestException(String message, Exception e, int errorCode) {
+        super(e);
+        this.mMessage = message;
+        this.errorCode = errorCode;
+    }
+
     @Override
     public String getMessage() {
         return mMessage;
@@ -65,7 +72,7 @@ public class BoxRestException extends BoxSDKException {
      *
      * @return error code.
      */
-    public String getErrorCode() {
+    public int getErrorCode() {
         return errorCode;
     }
 }

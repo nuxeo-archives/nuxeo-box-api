@@ -19,17 +19,16 @@ package com.nuxeo.box.api.comment;
 import com.nuxeo.box.api.adapter.BoxAdapter;
 import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
 import com.nuxeo.box.api.file.adapter.BoxFileAdapter;
-import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxComment;
-import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import com.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
-import org.nuxeo.ecm.platform.comment.api.CommentManager;
+import org.nuxeo.ecm.platform.comment.api.CommentableDocument;
 import org.nuxeo.ecm.platform.comment.workflow.utils.CommentsConstants;
 import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.WebObject;
@@ -45,6 +44,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Date;
@@ -58,9 +58,6 @@ import java.util.Date;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
-
-    CommentManager commentManager;
-
     BoxService boxService;
 
     BoxFileAdapter boxFile;
@@ -68,7 +65,6 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     @Override
     public void initialize(Object... args) {
         boxService = Framework.getLocalService(BoxService.class);
-        commentManager = Framework.getLocalService(CommentManager.class);
         if (args != null && args.length == 1) {
             try {
                 String fileId = (String) args[0];
@@ -113,8 +109,13 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
                 .getName());
         comment.setProperty("comment", "creationDate", new Date());
         // create the comment
-        DocumentModel newComment = commentManager.createComment(target,
-                comment);
+        CommentableDocument commentableDocument = target.getAdapter(
+                CommentableDocument.class);
+        if (commentableDocument == null) {
+            throw new BoxRestException("This document cannot be commented",
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        }
+        DocumentModel newComment = commentableDocument.addComment(comment);
         final BoxCommentAdapter commentAdapter = newComment.getAdapter
                 (BoxCommentAdapter.class);
         return boxService.toJSONString(commentAdapter.getBoxComment());

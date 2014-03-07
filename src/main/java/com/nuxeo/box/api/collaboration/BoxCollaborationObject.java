@@ -21,6 +21,7 @@ import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import com.nuxeo.box.api.service.BoxService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.nuxeo.ecm.core.api.ClientException;
@@ -47,6 +48,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * WebObject for a Box Collaboration
@@ -102,6 +104,10 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
                 (BoxAdapter.class);
         BoxCollaboration collaboration = boxFolder.getCollaboration
                 (collaborationIds[1]);
+        if (collaboration == null) {
+            throw new BoxRestException("There is no collaboration with id " +
+                    collaborationId, Response.Status.NOT_FOUND.getStatusCode());
+        }
         return boxService.toJSONString(collaboration);
     }
 

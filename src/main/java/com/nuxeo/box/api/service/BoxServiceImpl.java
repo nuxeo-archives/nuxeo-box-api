@@ -35,6 +35,7 @@ import com.nuxeo.box.api.marshalling.dao.BoxObject;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import com.nuxeo.box.api.marshalling.exceptions.NXBoxJsonException;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
 import com.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
@@ -49,9 +50,9 @@ import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
-import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.runtime.api.Framework;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -183,7 +184,7 @@ public class BoxServiceImpl implements BoxService {
                 .FIELD_EXPIRES_AT, null);
         // Nuxeo doesn't provide status on ACL setup (accepted...)
         boxCollabProperties.put(BoxCollaboration.FIELD_STATUS,
-                null);
+                "active");
         // Nuxeo doesn't provide acknowledge date on status (see
         // just above)
         boxCollabProperties.put(BoxCollaboration
@@ -216,7 +217,8 @@ public class BoxServiceImpl implements BoxService {
         try {
             return boxObject.toJSONString(boxJSONParser);
         } catch (Exception e) {
-            throw new WebResourceNotFoundException("Box Parser Exception", e);
+            throw new BoxRestException("Box Parser Exception", e,
+                    Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
 
@@ -345,7 +347,9 @@ public class BoxServiceImpl implements BoxService {
         try {
             jsonExceptionResponse = mapper.writeValueAsString(boxException);
         } catch (JsonProcessingException e1) {
-            return "error when marshalling server exception:" + e.getMessage();
+            throw new BoxRestException("error when marshalling server " +
+                    "exception:", e1, Response.Status.INTERNAL_SERVER_ERROR
+                    .getStatusCode());
         }
         return jsonExceptionResponse;
     }
