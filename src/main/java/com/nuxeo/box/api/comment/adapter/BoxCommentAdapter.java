@@ -22,6 +22,7 @@ import com.nuxeo.box.api.marshalling.dao.BoxItem;
 import com.nuxeo.box.api.marshalling.dao.BoxTypedObject;
 import com.nuxeo.box.api.marshalling.dao.BoxUser;
 import com.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import com.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import com.nuxeo.box.api.service.BoxService;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -68,9 +69,10 @@ public class BoxCommentAdapter {
                                 ("comment:creationDate"))));
 
         // Nuxeo comment doesn't provide modified date
-        boxProperties.put(BoxComment.FIELD_MODIFIED_AT, ISODateTimeFormat.dateTime().print(
-                new DateTime(doc.getPropertyValue
-                        ("dc:modified"))));
+        boxProperties.put(BoxComment.FIELD_MODIFIED_AT,
+                ISODateTimeFormat.dateTime().print(
+                        new DateTime(doc.getPropertyValue
+                                ("dc:modified"))));
 
         // Comment Author
         final UserManager userManager = Framework.getLocalService(UserManager
@@ -100,9 +102,8 @@ public class BoxCommentAdapter {
         List<DocumentModel> targetList = commentManager
                 .getDocumentsForComment(doc);
         if (targetList.isEmpty()) {
-//            throw new WebResourceNotFoundException("Cannot find any document " +
-//                    "bound to the comment " + doc.getId());
-            return null;
+            throw new BoxRestException("Cannot find any document for the " +
+                    "comment with id " + doc.getId());
         }
         DocumentModel target = targetList.get(0);
         Map<String, Object> itemProperties = new HashMap<>();

@@ -116,6 +116,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
                     Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
         DocumentModel newComment = commentableDocument.addComment(comment);
+        newComment.attach(session.getSessionId());
         final BoxCommentAdapter commentAdapter = newComment.getAdapter
                 (BoxCommentAdapter.class);
         return boxService.toJSONString(commentAdapter.getBoxComment());

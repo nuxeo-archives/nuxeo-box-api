@@ -51,8 +51,8 @@ import static org.junit.Assert.assertEquals;
 @Deploy({ "org.nuxeo.ecm.platform.comment", "org.nuxeo.ecm.platform.comment" +
         ".api", "org.nuxeo.ecm.relations.api", "org.nuxeo.ecm.relations",
         "org.nuxeo.ecm.relations.jena", "org.nuxeo.ecm.relations.io",
-        "org.nuxeo.ecm.relations.core" +
-                ".listener", "org.nuxeo.ecm.platform.comment.api" })
+        "org.nuxeo.ecm.relations.core.listener", "org.nuxeo.ecm.platform" +
+        ".comment.api" })
 @LocalDeploy({ "com.nuxeo.box.api:comment-jena-contrib.xml" })
 @Jetty(port = 18090)
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
