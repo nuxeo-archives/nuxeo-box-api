@@ -35,7 +35,7 @@ Files:
 ###REST API Compatibility Matrix
 
 Features | Box | Nuxeo
------------- | ------------- 
+------------ | ------------- | ------------
 [**Folders**](https://developers.box.com/docs/#folders)| Yes | Yes
 [**Files**](https://developers.box.com/docs/#files)| Yes | Yes
 [**Comments**](https://developers.box.com/docs/#comments)| Yes | Yes
@@ -60,7 +60,6 @@ Features | Box | Nuxeo
 The [Box Java SDK](https://github.com/box/box-java-sdk-v2) can be used to browse Nuxeo repositories.
 
 Initialize the client with the following lines to make it point to your Nuxeo server:
-
 
         import com.box.boxjavalibv2.BoxClient;
         import com.box.boxjavalibv2.BoxConfig;
