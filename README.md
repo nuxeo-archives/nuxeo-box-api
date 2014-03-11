@@ -19,18 +19,18 @@ The **Nuxeo** addon _nuxeo-box-api_ provides REST API endpoints [Box](http://www
 
 ###REST API Compatibility Matrix
 
-Box Features | Nuxeo Compatibility
+Features | Box | Nuxeo
 ------------ | -------------
-[**CRUD Folders**](https://developers.box.com/docs/#folders)| Yes
-[**CRUD Files**](https://developers.box.com/docs/#files)| Yes
-[**Comments**](https://developers.box.com/docs/#comments)| Yes
-[**Collaborations**](https://developers.box.com/docs/#collaborations)| Yes
-[**Search**](https://developers.box.com/docs/#search)| Yes
-[**Events**](https://developers.box.com/docs/#events)| Not yet
-[**Shared Items**](https://developers.box.com/docs/#shared-items)| Not yet
-[**Users**](https://developers.box.com/docs/#users)| Not yet
-[**Groups**](https://developers.box.com/docs/#groups)| Not yet
-[**Tasks**](https://developers.box.com/docs/#tasks)| Not yet
+[**Folders**](https://developers.box.com/docs/#folders)| Yes | Yes
+[**Files**](https://developers.box.com/docs/#files)| Yes | Yes
+[**Comments**](https://developers.box.com/docs/#comments)| Yes | Yes
+[**Collaborations**](https://developers.box.com/docs/#collaborations)| Yes | Yes
+[**Search**](https://developers.box.com/docs/#search)| Yes | Yes
+[**Events**](https://developers.box.com/docs/#events)| Yes | Not yet
+[**Shared Items**](https://developers.box.com/docs/#shared-items)| Yes | Not yet
+[**Users**](https://developers.box.com/docs/#users)| Yes | Not yet
+[**Groups**](https://developers.box.com/docs/#groups)| Yes | Not yet
+[**Tasks**](https://developers.box.com/docs/#tasks)| Yes | Not yet
 
 ###Report & Contribute
 
