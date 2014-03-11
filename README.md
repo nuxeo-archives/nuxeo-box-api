@@ -10,17 +10,32 @@ The **Nuxeo** addon _nuxeo-box-api_ provides REST API endpoints [Box](http://www
 
 - Unzip
 
-- Type the following commands from root:
+- Issue the following commands from root:
   - `chmod +x bin/*ctl bin/*.sh`
   - `./bin/nuxeoctl mp-init`
   - `./bin/nuxeoctl mp-install nuxeo-box-api`
   - `./bin/nuxeoctl start`
+- Login
+  - username: Administrator
+  - password: Administrator
+  
+#####Usage examples:
 
+Folders:
+
+- *GET http://localhost:8080/nuxeo/box/**2.0/folders/{folder_id}***
+- *GET https://api.box.com/**2.0/folders/{folder id}***
+
+Files:
+
+- *GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}***
+- *GET https://api.box.com/**2.0/files/{file_id}***
+  
 
 ###REST API Compatibility Matrix
 
 Features | Box | Nuxeo
------------- | -------------
+------------ | ------------- 
 [**Folders**](https://developers.box.com/docs/#folders)| Yes | Yes
 [**Files**](https://developers.box.com/docs/#files)| Yes | Yes
 [**Comments**](https://developers.box.com/docs/#comments)| Yes | Yes
@@ -46,14 +61,15 @@ The [Box Java SDK](https://github.com/box/box-java-sdk-v2) can be used to browse
 
 Initialize the client with the following lines to make it point to your Nuxeo server:
 
+
         import com.box.boxjavalibv2.BoxClient;
         import com.box.boxjavalibv2.BoxConfig;
-
+        
         static final String PROTOCOL = "http";
         static final String SERVER_URL = "localhost:8080";
 
         BoxConfig boxConfig = BoxConfig.getInstance();
-
+        
         boxConfig.setAuthUrlScheme(PROTOCOL); // Default value is "https"
         boxConfig.setOAuthUrlAuthority(SERVER_URL);
         boxConfig.setOAuthApiUrlPath("/nuxeo");
@@ -65,9 +81,9 @@ Initialize the client with the following lines to make it point to your Nuxeo se
         boxConfig.setUploadUrlScheme(PROTOCOL); // Default value is "https"
         boxConfig.setUploadUrlAuthority("/nuxeo");
         boxConfig.setUploadUrlPath("/nuxeo/site/box/2.0");
+        
 
-
-
+        
 ###Box/Nuxeo hybrid client application sample
 
 [This sample application](https://github.com/nuxeo/nuxeo-box-angular-sample) browses Nuxeo and Box repositories with the same [REST API](https://developers.box.com/docs/). Only the base URL should be updated.
@@ -87,7 +103,7 @@ Examples:
 
 Designed by developers for developers, the Nuxeo platform offers a modern architecture, a powerful plug-in model and extensive packaging capabilities for building content applications.
 
-More information on: <http://www.nuxeo.com/>
+More information on: <http://www.nuxeo.com/> 
 
 ###Box
 Box documentation and account:
