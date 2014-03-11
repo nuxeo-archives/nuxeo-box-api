@@ -33,6 +33,9 @@ Files:
 
 - *GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}***
 - *GET https://api.box.com/**2.0/files/{file_id}***
+
+
+The complete documentation of Box API can be found [here](https://developers.box.com/docs/).
   
 
 ###REST API Compatibility Matrix
@@ -52,6 +55,7 @@ Features | Box | Nuxeo
 
 ###Report & Contribute
 
+We are glad to welcome new developpers on this initiative, and even simple usage feedback is great.
 - Ask your questions or report issues on [Nuxeo Answers](http://answers.nuxeo.com)
 - [Nuxeo JIRA Issue Management](https://jira.nuxeo.com/browse/NXP)
 - See [Contributing to Nuxeo](http://doc.nuxeo.com/x/VIZH)
