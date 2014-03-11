@@ -10,7 +10,7 @@ The **Nuxeo** addon _nuxeo-box-api_ provides REST API endpoints [Box](http://www
 
 - Unzip
 
-- Issue the following commands from root:
+- Type the following commands from root:
   - `chmod +x bin/*ctl bin/*.sh`
   - `./bin/nuxeoctl mp-init`
   - `./bin/nuxeoctl mp-install nuxeo-box-api`
