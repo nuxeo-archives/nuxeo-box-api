@@ -61,9 +61,9 @@
       <artifactId>guava</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.box.boxjavalibv2</groupId>
-      <artifactId>BoxJavaLibraryV2</artifactId>
-      <version>1.0</version>
+      <groupId>com.box</groupId>
+      <artifactId>box-java-sdk</artifactId>
+      <version>2.2.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
