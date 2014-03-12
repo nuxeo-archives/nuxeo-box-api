@@ -14,10 +14,15 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 - Unzip
 
 - Issue the following commands from root:
-  - `chmod +x bin/*ctl bin/*.sh`
-  - `./bin/nuxeoctl mp-init`
-  - `./bin/nuxeoctl mp-install nuxeo-box-api`
-  - `./bin/nuxeoctl start`
+  - Linux/Mac:
+    - `chmod +x bin/*ctl bin/*.sh`
+    - `./bin/nuxeoctl mp-init`
+    - `./bin/nuxeoctl mp-install nuxeo-box-api`
+    - `./bin/nuxeoctl start`
+  - Windows:
+    - `bin\nuxeoctl.bat mp-init`
+    - `bin\nuxeoctl.bat mp-install nuxeo-box-api`
+    - `bin\nuxeoctl.bat start`
 - Login
   - username: Administrator
   - password: Administrator
@@ -26,13 +31,13 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 
 Folders:
 
-- *GET http://localhost:8080/nuxeo/box/**2.0/folders/{folder_id}***
-- *GET https://api.box.com/**2.0/folders/{folder id}***
+- GET http://localhost:8080/nuxeo/box/**2.0/folders/{folder_id}**
+- GET https://api.box.com/**2.0/folders/{folder id}**
 
 Files:
 
-- *GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}***
-- *GET https://api.box.com/**2.0/files/{file_id}***
+- GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}**
+- GET https://api.box.com/**2.0/files/{file_id}**
 
 
 The complete documentation of the Box API can be found [here](https://developers.box.com/docs/).
@@ -64,7 +69,40 @@ We are glad to welcome new developers on this initiative, and even simple usage 
 
 ###Java Box SDK usage with Nuxeo Box API
 
-The [Box Java SDK](https://github.com/box/box-java-sdk-v2) can be used to browse Nuxeo repositories.
+The [Box Java SDK 2.2.2](https://github.com/box/box-java-sdk-v2) can be used to browse Nuxeo repositories.
+
+Maven artifact:
+
+    <dependency>
+      <groupId>com.box</groupId>
+      <artifactId>box-java-sdk</artifactId>
+      <version>2.2.2</version>
+    </dependency>
+
+    <repositories>
+     <repository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+     </repository>
+     <repository>
+      <id>public-snapshot</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
+      </snapshots>
+     </repository>
+    </repositories>
+
 
 Initialize the client with the following lines to make it point to your Nuxeo server:
 
@@ -97,8 +135,8 @@ Initialize the client with the following lines to make it point to your Nuxeo se
 Examples:
 
 - Same endpoints (to fetch a folderish document definition) such as:
-  - *GET http://server/nuxeo/box/**2.0/folders/{folder_id}***
-  - *GET https://api.box.com/**2.0/folders/{folder id}***
+  - GET http://server/nuxeo/box/**2.0/folders/{folder_id}**
+  - GET https://api.box.com/**2.0/folders/{folder id}**
 - Same JSON payload response such as:
   - <http://developers.box.com/docs/#folders-folder-object>
 
