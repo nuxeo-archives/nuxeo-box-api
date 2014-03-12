@@ -8,10 +8,11 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 - extension of feature scope on your project (workflow, conversions, ...)
 
 ### Getting Started
-
-- [Install a Nuxeo server](http://www.nuxeo.com/en/downloads)
-
-Warning: This addon is currently available only in development version (1.0.0-SNAPSHOT for [Nuxeo 5.9.3-SNAPSHOT](http://community.nuxeo.com/static/snapshots/nuxeo-cap-5.9.3-I20140311_0119-tomcat.zip) but can run under Fast Track 5.9.2)
+<!-- - [Install a Nuxeo server](http://www.nuxeo.com/en/downloads)  -->
+- Install a [Nuxeo 5.9.3-SNAPSHOT server](http://community.nuxeo.com/static/snapshots/)
+  - Note: while this addon is not yet released,
+     - it is only available in development version: 1.0.0-SNAPSHOT
+     - it requires [Connect registration](https://connect.nuxeo.com/nuxeo/site/connect/trial/form) for access to the Marketplace DEV channel.
 
 - Install nuxeo-box-api from command line with [Nuxeo Control Panel](http://doc.nuxeo.com/x/FwNc):
   - Linux/Mac:
