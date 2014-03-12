@@ -142,4 +142,10 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git://github.com/nuxeo/nuxeo-box-api.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:nuxeo/nuxeo-box-api.git</developerConnection>
+    <url>https://github.com/nuxeo/nuxeo-box-api</url>
+  </scm>
+
 </project>
