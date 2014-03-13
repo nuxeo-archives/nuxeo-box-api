@@ -9,9 +9,11 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 
 ### Getting Started
 
-- [Downlaod a Nuxeo server](http://www.nuxeo.com/en/downloads) (zip)
+- [Downlaod a Nuxeo server](http://www.nuxeo.com/en/downloads) (the zip version)
 
-- Install nuxeo-box-api from command line:
+- Unzip it
+
+- Install nuxeo-box-api plugin from command line 
   - Linux/Mac:
     - `NUXEO_HOME/bin/nuxeoctl mp-init`
     - `NUXEO_HOME/bin/nuxeoctl mp-install nuxeo-box-api`
@@ -30,6 +32,9 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
   - password: Administrator
 
 - You can now use the Box api against this running Nuxeo server.
+
+
+Note: Your machine needs internet access. If you have a proxy setting, skip the mp-init and mp-install steps at first, just do nuxeoctl start and run the wizzard where you will be asked your proxy settings.
   
 #####API Usage Examples:
 
