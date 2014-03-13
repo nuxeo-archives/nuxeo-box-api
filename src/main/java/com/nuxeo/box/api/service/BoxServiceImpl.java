@@ -26,7 +26,6 @@ import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaborationRole;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
-import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.dao.BoxGroup;
@@ -306,13 +305,6 @@ public class BoxServiceImpl implements BoxService {
             BoxJSONException {
         return new BoxJSONParser(new BoxResourceHub())
                 .parseIntoBoxObject(jsonBoxFile, BoxFile.class);
-    }
-
-    @Override
-    public BoxComment getBoxComment(String jsonBoxComment) throws
-            BoxJSONException {
-        return new BoxJSONParser(new BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxComment, BoxComment.class);
     }
 
     @Override

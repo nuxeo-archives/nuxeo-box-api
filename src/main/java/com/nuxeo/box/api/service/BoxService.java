@@ -20,7 +20,6 @@ import com.google.common.collect.BiMap;
 import com.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import com.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import com.nuxeo.box.api.marshalling.dao.BoxCollection;
-import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxFolder;
 import com.nuxeo.box.api.marshalling.dao.BoxGroup;
@@ -74,9 +73,6 @@ public interface BoxService {
             BoxJSONException;
 
     BoxFile getBoxFile(String jsonBoxFile) throws
-            BoxJSONException;
-
-    BoxComment getBoxComment(String jsonBoxComment) throws
             BoxJSONException;
 
     BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration) throws

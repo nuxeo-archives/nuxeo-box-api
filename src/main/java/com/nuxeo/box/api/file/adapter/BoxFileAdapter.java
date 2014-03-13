@@ -18,9 +18,6 @@ package com.nuxeo.box.api.file.adapter;
 
 import com.nuxeo.box.api.BoxConstants;
 import com.nuxeo.box.api.adapter.BoxAdapter;
-import com.nuxeo.box.api.comment.adapter.BoxCommentAdapter;
-import com.nuxeo.box.api.marshalling.dao.BoxCollection;
-import com.nuxeo.box.api.marshalling.dao.BoxComment;
 import com.nuxeo.box.api.marshalling.dao.BoxFile;
 import com.nuxeo.box.api.marshalling.dao.BoxItem;
 import com.nuxeo.box.api.marshalling.dao.BoxLock;
@@ -32,14 +29,11 @@ import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.Lock;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
-import org.nuxeo.ecm.platform.comment.api.CommentManager;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,26 +88,6 @@ public class BoxFileAdapter extends BoxAdapter {
         boxProperties.put(BoxItem.FIELD_NAME, boxItem.getName());
         boxProperties.put(BoxItem.FIELD_ETAG, boxItem.getEtag());
         return new BoxFile(boxProperties);
-    }
-
-    public BoxCollection getComments() throws ClientException {
-        List<BoxComment> boxComments = new ArrayList<>();
-        Map<String, Object> collectionProperties = new HashMap<>();
-        CommentManager commentManager = Framework.getLocalService
-                (CommentManager.class);
-        List<DocumentModel> comments = commentManager
-                .getComments(doc);
-        for (DocumentModel comment : comments) {
-            BoxCommentAdapter boxCommentAdapter = comment.getAdapter
-                    (BoxCommentAdapter.class);
-            boxComments.add(boxCommentAdapter.getBoxComment());
-        }
-        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxComments);
-        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
-                comments.size());
-        return new BoxCollection(Collections.unmodifiableMap
-                (collectionProperties));
     }
 
 }

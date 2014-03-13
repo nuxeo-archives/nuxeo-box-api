@@ -5,9 +5,6 @@
     <adapter
             class="com.nuxeo.box.api.adapter.BoxAdapter"
             factory="com.nuxeo.box.api.adapter.BoxAdapterFactory"/>
-    <adapter
-            class="com.nuxeo.box.api.comment.adapter.BoxCommentAdapter"
-            factory="com.nuxeo.box.api.adapter.BoxAdapterFactory"/>
   </extension>
 
 </component>

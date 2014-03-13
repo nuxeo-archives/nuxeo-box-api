@@ -82,11 +82,6 @@ public class Box extends ModuleRoot {
         return newObject("search");
     }
 
-    @Path("/comments")
-    public Object doGetComment() {
-        return newObject("comment");
-    }
-
     @Path("/collaborations")
     public Object doGetCollaborations() {
         return newObject("collaborations");
