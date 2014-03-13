@@ -1,4 +1,4 @@
-<component name="com.nuxeo.box.api.folder.adapter.adapter">
+<component name="org.nuxeo.box.api.folder.adapter.adapter">
 
   <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService"
              point="adapters">

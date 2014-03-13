@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.Map;
 
 /**
- * Box item, this is a base class for the box items({@link com.nuxeo.box.api
+ * Box item, this is a base class for the box items({@link org.nuxeo.box.api
  * .dao.BoxFile}/{@link
  * BoxFolder}/...)
  */

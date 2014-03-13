@@ -76,7 +76,7 @@ public enum BoxResourceType implements IBoxType {
      */
     COLLABORATION,
     /**
-     * A plural format of {@link com.nuxeo.box.api.marshalling.dao
+     * A plural format of {@link org.nuxeo.box.api.marshalling.dao
      * .BoxResourceType
      * .COLLABORATIONS}.
      */
