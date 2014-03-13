@@ -8,44 +8,47 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 - extension of feature scope on your project (workflow, conversions, ...)
 
 ### Getting Started
-<!-- - [Install a Nuxeo server](http://www.nuxeo.com/en/downloads)  -->
-- Install a [Nuxeo 5.9.3-SNAPSHOT server](http://community.nuxeo.com/static/snapshots/)
-  - Note: while this addon is not yet released,
-     - it is only available in development version: 1.0.0-SNAPSHOT
-     - it requires [Connect registration](https://connect.nuxeo.com/nuxeo/site/connect/trial/form) for access to the Marketplace DEV channel.
 
-- Install nuxeo-box-api from command line with [Nuxeo Control Panel](http://doc.nuxeo.com/x/FwNc):
+- [Install a Nuxeo server](http://www.nuxeo.com/en/downloads) (exe or zip)
+
+- Install nuxeo-box-api from command line:
   - Linux/Mac:
-    - `chmod +x bin/*ctl bin/*.sh`
-    - `./bin/nuxeoctl mp-init`
-    - `./bin/nuxeoctl mp-install nuxeo-box-api`
-    - `./bin/nuxeoctl start`
+    - `NUXEO_HOME/bin/nuxeoctl mp-init`
+    - `NUXEO_HOME/bin/nuxeoctl mp-install nuxeo-box-api`
+    - `NUXEO_HOME/bin/nuxeoctl start`
   - Windows:
-    - `bin\nuxeoctl.bat mp-init`
-    - `bin\nuxeoctl.bat mp-install nuxeo-box-api`
-    - `bin\nuxeoctl.bat start`
+    - `NUXEO_HOME\bin\nuxeoctl.bat mp-init`
+    - `NUXEO_HOME\bin\nuxeoctl.bat mp-install nuxeo-box-api`
+    - `NUXEO_HOME\bin\nuxeoctl.bat start`
 
-- Install nuxeo-box-api from [Nuxeo Marketplace](http://marketplace.nuxeo.com/):
-  - Browse [nuxeo-box-api Marketplace Package](https://connect.nuxeo.com/nuxeo/site/marketplace/package/nuxeo-box-api)
+- Follow Nuxeo Wizard by clicking 'Next' buttons then re-start
 
-- Login
+- Check Nuxeo correctly re-started `localhost:8080/nuxeo`
   - username: Administrator
   - password: Administrator
   
-#####Usage examples:
+#####API Usage Examples:
 
-Folders:
+######Folders:
 
 - GET http://localhost:8080/nuxeo/box/**2.0/folders/{folder_id}**
+
+looks like
+
 - GET https://api.box.com/**2.0/folders/{folder id}**
 
-Files:
+######Files:
 
 - GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}**
+
+looks like
+
 - GET https://api.box.com/**2.0/files/{file_id}**
 
 
-The complete documentation of the Box API can be found [here](https://developers.box.com/docs/).
+The complete documentation of the Box API can be found [here](https://developers.box.com/docs/). 
+
+Only the base URL `https://api.box.com` must be replaced by `http://localhost:8080/nuxeo/box` for instance.
   
 
 ###REST API Compatibility Matrix
@@ -54,14 +57,14 @@ Features | Box | Nuxeo
 ------------ | ------------- | ------------
 [**Folders**](https://developers.box.com/docs/#folders)| Yes | Yes
 [**Files**](https://developers.box.com/docs/#files)| Yes | Yes
-[**Comments**](https://developers.box.com/docs/#comments)| Yes | Yes
+[**Comments**](https://developers.box.com/docs/#comments)| Yes | Coming Soon
 [**Collaborations**](https://developers.box.com/docs/#collaborations)| Yes | Yes
 [**Search**](https://developers.box.com/docs/#search)| Yes | Yes
-[**Events**](https://developers.box.com/docs/#events)| Yes | Not yet
-[**Shared Items**](https://developers.box.com/docs/#shared-items)| Yes | Not yet
-[**Users**](https://developers.box.com/docs/#users)| Yes | Not yet
-[**Groups**](https://developers.box.com/docs/#groups)| Yes | Not yet
-[**Tasks**](https://developers.box.com/docs/#tasks)| Yes | Not yet
+[**Events**](https://developers.box.com/docs/#events)| Yes | On Demand
+[**Shared Items**](https://developers.box.com/docs/#shared-items)| Yes | On Demand
+[**Users**](https://developers.box.com/docs/#users)| Yes | On Demand
+[**Groups**](https://developers.box.com/docs/#groups)| Yes | On Demand
+[**Tasks**](https://developers.box.com/docs/#tasks)| Yes | On Demand
 
 ###Report & Contribute
 
