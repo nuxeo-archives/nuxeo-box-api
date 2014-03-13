@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.ecm.box.api.service">
 
-  <implementation class="com.nuxeo.box.api.service.BoxServiceImpl"/>
+  <implementation class="org.nuxeo.box.api.service.BoxServiceImpl"/>
 
   <service>
-    <provide interface="com.nuxeo.box.api.service.BoxService"/>
+    <provide interface="org.nuxeo.box.api.service.BoxService"/>
   </service>
 </component>

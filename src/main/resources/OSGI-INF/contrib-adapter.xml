@@ -1,13 +1,13 @@
-<component name="com.nuxeo.box.api.folder.adapter.adapter">
+<component name="org.nuxeo.box.api.folder.adapter.adapter">
 
   <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService"
              point="adapters">
     <adapter
-            class="com.nuxeo.box.api.adapter.BoxAdapter"
-            factory="com.nuxeo.box.api.adapter.BoxAdapterFactory"/>
+            class="org.nuxeo.box.api.adapter.BoxAdapter"
+            factory="org.nuxeo.box.api.adapter.BoxAdapterFactory"/>
     <adapter
-            class="com.nuxeo.box.api.comment.adapter.BoxCommentAdapter"
-            factory="com.nuxeo.box.api.adapter.BoxAdapterFactory"/>
+            class="org.nuxeo.box.api.comment.adapter.BoxCommentAdapter"
+            factory="org.nuxeo.box.api.adapter.BoxAdapterFactory"/>
   </extension>
 
 </component>

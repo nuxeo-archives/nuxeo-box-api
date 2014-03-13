@@ -5,7 +5,7 @@
     <servlet>
       <servlet-name>Nuxeo BOX API Forward servlet</servlet-name>
       <servlet-class>
-        com.nuxeo.box.api.BoxServlet
+        org.nuxeo.box.api.BoxServlet
       </servlet-class>
     </servlet>
     <servlet-mapping>

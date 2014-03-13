@@ -10,7 +10,7 @@
     <version>5.9.3-SNAPSHOT</version>
   </parent>
 
-  <groupId>com.nuxeo.box.api</groupId>
+  <groupId>org.nuxeo.box.api</groupId>
   <artifactId>nuxeo-box-api</artifactId>
   <name>Nuxeo Box API</name>
   <description>Nuxeo Box API</description>
