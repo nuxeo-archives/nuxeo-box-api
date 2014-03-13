@@ -9,7 +9,7 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 
 ### Getting Started
 
-- [Install a Nuxeo server](http://www.nuxeo.com/en/downloads) (exe or zip)
+- [Downlaod a Nuxeo server](http://www.nuxeo.com/en/downloads) (zip)
 
 - Install nuxeo-box-api from command line:
   - Linux/Mac:
@@ -21,11 +21,15 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
     - `NUXEO_HOME\bin\nuxeoctl.bat mp-install nuxeo-box-api`
     - `NUXEO_HOME\bin\nuxeoctl.bat start`
 
-- Follow Nuxeo Wizard by clicking 'Next' buttons then re-start
+- From your browser, go to 'http://localhost:8080/nuxeo`
+
+- Follow Nuxeo Wizard by clicking 'Next' buttons, re-start once completed
 
 - Check Nuxeo correctly re-started `localhost:8080/nuxeo`
   - username: Administrator
   - password: Administrator
+
+- You can now use the Box api against this running Nuxeo server.
   
 #####API Usage Examples:
 
