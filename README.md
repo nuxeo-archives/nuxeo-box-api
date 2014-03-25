@@ -79,8 +79,8 @@ Features | Box | Nuxeo
 
 We are glad to welcome new developers on this initiative, and even simple usage feedback is great.
 - Ask your questions on [Nuxeo Answers](http://answers.nuxeo.com)
-- Report issues on this github repository (see issues link on the right)
-- See [Contributing to Nuxeo](http://doc.nuxeo.com/x/VIZH)
+- Report issues on this github repository (see [issues link](http://github.com/nuxeo/nuxeo-box-api/issues) on the right)
+- Contribute: Send pull requests!
 
 ##Sample usage
 
