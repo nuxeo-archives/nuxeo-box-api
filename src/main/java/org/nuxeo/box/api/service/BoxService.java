@@ -66,9 +66,9 @@ public interface BoxService {
 
     String getBoxName(DocumentModel doc);
 
-    BoxUser fillUser(NuxeoPrincipal creator);
+    BoxUser getMiniUser(NuxeoPrincipal creator);
 
-    BoxGroup fillGroup(NuxeoGroup group);
+    BoxGroup getMiniGroup(NuxeoGroup group);
 
     BoxFolder getBoxFolder(String jsonBoxFolder) throws
             BoxJSONException;
@@ -82,8 +82,10 @@ public interface BoxService {
     BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration) throws
             BoxJSONException;
 
-    String getJSONFromBox(BoxTypedObject boxTypedObject) throws
-            BoxJSONException;
+    BoxGroup getBoxGroup(String jsonBoxGroup) throws BoxJSONException;
+
+    BoxUser getBoxUser(String jsonBoxUser) throws BoxJSONException;
+
 
     String getJSONBoxException(Exception e, int status);
 

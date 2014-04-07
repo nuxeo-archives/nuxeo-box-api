@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import org.apache.commons.lang.StringUtils;
 import org.nuxeo.box.api.BoxConstants;
 import org.nuxeo.box.api.adapter.BoxAdapter;
 import org.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
@@ -39,7 +40,6 @@ import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.marshalling.exceptions.NXBoxJsonException;
 import org.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
 import org.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
-import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -164,7 +164,8 @@ public class BoxServiceImpl implements BoxService {
         // Nuxeo acl doesn't provide id yet
         boxCollabProperties.put(BoxCollaboration.FIELD_ID,
                 computeCollaborationId(boxFolderAdapter
-                        .getBoxItem().getId(), collaborationId));
+                        .getBoxItem().getId(), collaborationId)
+        );
         // Nuxeo acl doesn't provide created date yet
         boxCollabProperties.put(BoxCollaboration
                 .FIELD_CREATED_AT, null);
@@ -188,8 +189,9 @@ public class BoxServiceImpl implements BoxService {
         // Nuxeo doesn't provide acknowledge date on status (see
         // just above)
         boxCollabProperties.put(BoxCollaboration
-                .FIELD_ACKNOWLEGED_AT,
-                null);
+                        .FIELD_ACKNOWLEGED_AT,
+                null
+        );
 
         // Document itself -> a mandatory folder
         boxCollabProperties.put(BoxCollaboration.FIELD_FOLDER,
@@ -199,8 +201,8 @@ public class BoxServiceImpl implements BoxService {
         NuxeoPrincipal user = userManager.getPrincipal(ace.getUsername());
         NuxeoGroup group = userManager.getGroup(ace.getUsername());
         boxCollabProperties.put(BoxCollaboration
-                .FIELD_ACCESSIBLE_BY, user != null ? fillUser(user) :
-                fillGroup(group));
+                .FIELD_ACCESSIBLE_BY, user != null ? getMiniUser(user) :
+                getMiniGroup(group));
 
         // Box Role
         boxCollabProperties.put(BoxCollaboration.FIELD_ROLE,
@@ -266,7 +268,7 @@ public class BoxServiceImpl implements BoxService {
      * Return a box user from a Nuxeo user metamodel
      */
     @Override
-    public BoxUser fillUser(NuxeoPrincipal creator) {
+    public BoxUser getMiniUser(NuxeoPrincipal creator) {
         final Map<String, Object> mapUser = new HashMap<>();
         mapUser.put(BoxItem.FIELD_ID, creator != null ? creator
                 .getPrincipalId() : "system");
@@ -282,7 +284,7 @@ public class BoxServiceImpl implements BoxService {
      * Return a box group from a Nuxeo user metamodel
      */
     @Override
-    public BoxGroup fillGroup(NuxeoGroup group) {
+    public BoxGroup getMiniGroup(NuxeoGroup group) {
         final Map<String, Object> mapGroup = new HashMap<>();
         mapGroup.put(BoxItem.FIELD_ID, group != null ? group
                 .getName() : "system");
@@ -324,10 +326,15 @@ public class BoxServiceImpl implements BoxService {
     }
 
     @Override
-    public String getJSONFromBox(BoxTypedObject boxTypedObject) throws
-            BoxJSONException {
-        return boxTypedObject.toJSONString(new BoxJSONParser(new
-                BoxResourceHub()));
+    public BoxGroup getBoxGroup(String jsonBoxGroup) throws BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject
+                (jsonBoxGroup, BoxGroup.class);
+    }
+
+    @Override
+    public BoxUser getBoxUser(String jsonBoxUser) throws BoxJSONException {
+        return new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject
+                (jsonBoxUser, BoxUser.class);
     }
 
     /**

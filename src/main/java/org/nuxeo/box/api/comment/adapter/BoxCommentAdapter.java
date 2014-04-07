@@ -79,7 +79,7 @@ public class BoxCommentAdapter {
                 .class);
         final NuxeoPrincipal creator = userManager.getPrincipal((String) doc
                 .getPropertyValue("comment:author"));
-        final BoxUser boxCreator = boxService.fillUser(creator);
+        final BoxUser boxCreator = boxService.getMiniUser(creator);
         boxProperties.put(BoxComment.FIELD_CREATED_BY, boxCreator);
 
         boxProperties.put(BoxComment.FIELD_MESSAGE,

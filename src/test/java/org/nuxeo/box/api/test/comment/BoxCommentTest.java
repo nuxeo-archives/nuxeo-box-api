@@ -85,7 +85,7 @@ public class BoxCommentTest extends BoxBaseTest {
         BoxComment newBoxComment = new BoxComment(parameters);
 
         ClientResponse response = service.path("comments").post
-                (ClientResponse.class, boxService.getJSONFromBox
+                (ClientResponse.class, boxService.toJSONString
                         (newBoxComment));
 
         // Checking response consistency
@@ -148,7 +148,7 @@ public class BoxCommentTest extends BoxBaseTest {
         BoxComment newBoxComment = new BoxComment(parameters);
         ClientResponse response = service.path("comments/" + commentId)
                 .put(ClientResponse.class,
-                        boxService.getJSONFromBox(newBoxComment));
+                        boxService.toJSONString(newBoxComment));
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);

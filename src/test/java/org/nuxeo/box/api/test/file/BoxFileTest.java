@@ -115,7 +115,7 @@ public class BoxFileTest extends BoxBaseTest {
         boxFileUpdated.put("name", "newName");
 
         ClientResponse response = service.path("files/" + File
-                .getId()).put(ClientResponse.class, boxService.getJSONFromBox
+                .getId()).put(ClientResponse.class, boxService.toJSONString
                 (boxFileUpdated));
 
         // Checking response consistency

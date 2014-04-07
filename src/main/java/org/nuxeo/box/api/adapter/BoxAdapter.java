@@ -122,7 +122,7 @@ public abstract class BoxAdapter {
         String creator = doc.getPropertyValue("dc:creator") != null
                 ? (String) doc.getPropertyValue("dc:creator") : "system";
         NuxeoPrincipal principalCreator = userManager.getPrincipal(creator);
-        final BoxUser boxCreator = boxService.fillUser(principalCreator);
+        final BoxUser boxCreator = boxService.getMiniUser(principalCreator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
         //Last Contributor
@@ -133,7 +133,7 @@ public abstract class BoxAdapter {
         final NuxeoPrincipal principalLastContributor = userManager
                 .getPrincipal(
                         lastContributor);
-        final BoxUser boxContributor = boxService.fillUser
+        final BoxUser boxContributor = boxService.getMiniUser
                 (principalLastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 

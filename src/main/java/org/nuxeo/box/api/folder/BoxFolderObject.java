@@ -116,8 +116,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         final DocumentModel nxDocument = session.getDocument(new IdRef
                 (folderId));
         // Create box folder from json payload
-        BoxFolder boxFolderUpdated = new BoxJSONParser(new BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+        BoxFolder boxFolderUpdated = boxService.getBoxFolder(jsonBoxFolder);
         // Adapt nx document to box folder adapter
         final BoxFolderAdapter nxDocumentAdapter = (BoxFolderAdapter)
                 nxDocument.getAdapter(BoxAdapter.class);

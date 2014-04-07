@@ -92,6 +92,21 @@ public class Box extends ModuleRoot {
         return newObject("collaborations");
     }
 
+    @Path("/groups")
+    public Object doGetGroups() {
+        return newObject("groups");
+    }
+
+    @Path("/group_memberships")
+    public Object doGetGroupMemberships() {
+        return newObject("group_memberships");
+    }
+
+    @Path("/users")
+    public Object doGetUsers() {
+        return newObject("users");
+    }
+
     /**
      * Return a Box compat Exception Response in JSON
      */

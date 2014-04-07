@@ -105,7 +105,7 @@ public class BoxFolderTest extends BoxBaseTest {
         BoxFolder newBoxFolder = new BoxFolder(parameters);
 
         ClientResponse response = service.path("folders").post(ClientResponse
-                .class, boxService.getJSONFromBox(newBoxFolder));
+                .class, boxService.toJSONString(newBoxFolder));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -139,7 +139,7 @@ public class BoxFolderTest extends BoxBaseTest {
 
         final ClientResponse response = service.path("folders/" + folder
                 .getId()).put(ClientResponse.class,
-                boxService.getJSONFromBox(boxFolderUpdated));
+                boxService.toJSONString(boxFolderUpdated));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
