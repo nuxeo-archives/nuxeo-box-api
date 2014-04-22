@@ -66,7 +66,7 @@ Features | Box | Nuxeo
 ------------ | ------------- | ------------
 [**Folders**](https://developers.box.com/docs/#folders)| Yes | Yes
 [**Files**](https://developers.box.com/docs/#files)| Yes | Yes
-[**Comments**](https://developers.box.com/docs/#comments)| Yes | Coming Soon
+[**Comments**](https://developers.box.com/docs/#comments)| Yes | Yes
 [**Collaborations**](https://developers.box.com/docs/#collaborations)| Yes | Yes
 [**Search**](https://developers.box.com/docs/#search)| Yes | Yes
 [**Events**](https://developers.box.com/docs/#events)| Yes | On Demand
