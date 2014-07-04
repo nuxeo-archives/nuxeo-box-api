@@ -1,5 +1,5 @@
 #Nuxeo Box API
----
+
 ## General information and motivation
 
 The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box.com) api on top of Nuxeo repository. It transforms the Nuxeo repository into a Box compliant storage backend. Use cases of such an approach are:
