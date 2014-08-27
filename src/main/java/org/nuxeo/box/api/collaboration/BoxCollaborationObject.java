@@ -22,6 +22,7 @@ import org.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import org.nuxeo.box.api.marshalling.dao.BoxUser;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -47,6 +48,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * WebObject for a Box Collaboration
@@ -90,8 +92,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     @Path("/{collaborationId}")
     public String doGetCollaboration(@PathParam("collaborationId") String
             collaborationId)
-            throws NoSuchDocumentException,
-            ClientException, BoxJSONException {
+            throws ClientException, BoxJSONException {
         CoreSession session = ctx.getCoreSession();
         String[] collaborationIds = boxService.getCollaborationArrayIds
                 (collaborationId);
@@ -102,9 +103,8 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
         BoxCollaboration collaboration = boxFolder.getCollaboration
                 (collaborationIds[1]);
         if (collaboration == null) {
-            throw new NoSuchDocumentException("There is no collaboration with" +
-                    " id " +
-                    collaborationId);
+            throw new BoxRestException("There is no collaboration with id " +
+                    collaborationId, Response.Status.NOT_FOUND.getStatusCode());
         }
         return boxService.toJSONString(collaboration);
     }
