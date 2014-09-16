@@ -107,6 +107,8 @@ public class BoxBaseTest {
         boxConfig.setUploadUrlScheme("http");
         boxConfig.setUploadUrlPath("/nuxeo/site/box/2.0");
 
+        boxConfig.setConnectionTimeOut(5000);
+
         boxClient = getAuthenticatedClient(code);
 
     }
