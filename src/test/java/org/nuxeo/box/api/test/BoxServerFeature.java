@@ -16,6 +16,7 @@
  */
 package org.nuxeo.box.api.test;
 
+import org.nuxeo.ecm.core.test.TransactionalFeature;
 import org.nuxeo.ecm.webengine.test.WebEngineFeature;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
@@ -24,7 +25,7 @@ import org.nuxeo.runtime.test.runner.SimpleFeature;
 /**
  * @since 5.9.2
  */
-@Features({ WebEngineFeature.class })
+@Features({ TransactionalFeature.class, WebEngineFeature.class })
 @Deploy({ "org.nuxeo.box.api", "org.nuxeo.ecm.platform.query.api",
         "org.nuxeo.ecm.platform.tag" })
 public class BoxServerFeature extends SimpleFeature {
