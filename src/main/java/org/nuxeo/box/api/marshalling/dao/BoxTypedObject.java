@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.nuxeo.box.api.utils.ISO8601DateParser;
@@ -11,8 +10,7 @@ import java.util.Map;
 /**
  * This is base class for all box objects.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = BoxTypedObject.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = BoxTypedObject.class)
 public class BoxTypedObject extends BoxObject {
 
     public static final String FIELD_TYPE = "type";
@@ -36,8 +34,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -46,10 +43,8 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Get BoxResourceType of this object. using getBoxResourceType() instead
-     * . use getTypeFromLowercaseString method in IBoxResourceHub to parse
-     * the result
-     * String into type object.
+     * Get BoxResourceType of this object. using getBoxResourceType() instead . use getTypeFromLowercaseString method in
+     * IBoxResourceHub to parse the result String into type object.
      *
      * @return
      */
@@ -69,8 +64,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param type type
      */
@@ -90,8 +84,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param id id
      */
@@ -101,8 +94,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Get the time this user was created at. (This returns a String and can
-     * be parsed into {@link java.util.Date} by
+     * Get the time this user was created at. (This returns a String and can be parsed into {@link java.util.Date} by
      *
      * @return the created_at
      */
@@ -112,8 +104,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param createdAt the created_at to set
      */
@@ -125,8 +116,8 @@ public class BoxTypedObject extends BoxObject {
     /**
      * Get the time created at.
      *
-     * @return Date representation of the created_at value. Null if there was
-     * no created_at or if it could not be parsed as an ISO8601 date.
+     * @return Date representation of the created_at value. Null if there was no created_at or if it could not be parsed
+     *         as an ISO8601 date.
      * @throws java.text.ParseException
      */
     public Date dateCreatedAt() {
@@ -134,8 +125,8 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Get the time this user was modified the last time. (This returns a
-     * String and can be parsed into {@link java.util.Date} by
+     * Get the time this user was modified the last time. (This returns a String and can be parsed into
+     * {@link java.util.Date} by
      *
      * @return the modified_at
      */
@@ -145,8 +136,7 @@ public class BoxTypedObject extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param modifiedAt the modified_at to set
      */
@@ -158,8 +148,8 @@ public class BoxTypedObject extends BoxObject {
     /**
      * Get the date this object is modified at.
      *
-     * @return Date representation of the modified_at value. Null if there
-     * was no date_modified or if it could not be parsed as an ISO8601 date.
+     * @return Date representation of the modified_at value. Null if there was no date_modified or if it could not be
+     *         parsed as an ISO8601 date.
      * @throws java.text.ParseException
      */
     public Date dateModifiedAt() {

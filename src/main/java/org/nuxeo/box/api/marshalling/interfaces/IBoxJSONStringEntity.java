@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.interfaces;
 
-
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 
 /**

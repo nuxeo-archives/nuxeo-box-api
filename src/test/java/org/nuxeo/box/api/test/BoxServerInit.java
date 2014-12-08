@@ -34,18 +34,15 @@ import java.io.File;
  */
 public class BoxServerInit implements RepositoryInit {
 
-    public static DocumentModel getFolder(int index, CoreSession session)
-            throws ClientException {
+    public static DocumentModel getFolder(int index, CoreSession session) throws ClientException {
         return session.getDocument(new PathRef("/folder_" + index));
     }
 
-    public static DocumentModel getNote(int index, CoreSession session)
-            throws ClientException {
+    public static DocumentModel getNote(int index, CoreSession session) throws ClientException {
         return session.getDocument(new PathRef("/folder_1/note_" + index));
     }
 
-    public static DocumentModel getFile(int index, CoreSession session)
-            throws ClientException {
+    public static DocumentModel getFile(int index, CoreSession session) throws ClientException {
         return session.getDocument(new PathRef("/folder_2/file"));
     }
 
@@ -53,15 +50,13 @@ public class BoxServerInit implements RepositoryInit {
     public void populate(CoreSession session) throws ClientException {
         // Create some docs
         for (int i = 0; i < 5; i++) {
-            DocumentModel doc = session.createDocumentModel("/", "folder_" + i,
-                    "Folder");
+            DocumentModel doc = session.createDocumentModel("/", "folder_" + i, "Folder");
             doc.setPropertyValue("dc:title", "Folder " + i);
             doc = session.createDocument(doc);
         }
 
         for (int i = 0; i < 5; i++) {
-            DocumentModel doc = session.createDocumentModel("/folder_1",
-                    "note_" + i, "Note");
+            DocumentModel doc = session.createDocumentModel("/folder_1", "note_" + i, "Note");
             doc.setPropertyValue("dc:title", "Note " + i);
 
             doc.setPropertyValue("note:note", "Note " + i);
@@ -69,13 +64,11 @@ public class BoxServerInit implements RepositoryInit {
         }
 
         // Create a file
-        DocumentModel doc = session.createDocumentModel("/folder_2",
-                "file", "File");
+        DocumentModel doc = session.createDocumentModel("/folder_2", "file", "File");
         doc.setPropertyValue("dc:title", "File");
         doc = session.createDocument(doc);
         // upload file blob
-        File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob" +
-                ".json");
+        File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob" + ".json");
         FileBlob fb = new FileBlob(fieldAsJsonFile);
         fb.setMimeType("image/jpeg");
         DocumentHelper.addBlob(doc.getProperty("file:content"), fb);

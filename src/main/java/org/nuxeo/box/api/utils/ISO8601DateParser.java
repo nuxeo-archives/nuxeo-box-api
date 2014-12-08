@@ -8,8 +8,8 @@ package org.nuxeo.box.api.utils;
  * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
  * law or agreed
  * to in writing, software distributed under the License is distributed on an
-  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-  * either express or
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or
  * implied. See the License for the specific language governing permissions
  * and limitations under the License.
  */
@@ -23,20 +23,17 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * ISO 8601 date parsing utility. Designed for parsing the ISO subset used in
- * Dublin Core, RSS 1.0, and Atom.
+ * ISO 8601 date parsing utility. Designed for parsing the ISO subset used in Dublin Core, RSS 1.0, and Atom.
  *
  * @author <a href="mailto:burton@apache.org">Kevin A. Burton (burtonator)</a>
- * @version $Id: ISO8601DateParser.java,v 1.2 2005/06/03 20:25:29 snoopdave
- *          Exp $
+ * @version $Id: ISO8601DateParser.java,v 1.2 2005/06/03 20:25:29 snoopdave Exp $
  */
 public class ISO8601DateParser {
 
     // Use ThreadLocal because SimpleDateFormat is not thread safe. See
     // http://www.javacodegeeks.com/2010/07/java-best-practices-dateformat-in
     // .html.
-    private final static ThreadLocal<DateFormat> mThreadLocalSimpleDateFormat
-            = new ThreadLocal<DateFormat>() {
+    private final static ThreadLocal<DateFormat> mThreadLocalSimpleDateFormat = new ThreadLocal<DateFormat>() {
 
         @Override
         protected DateFormat initialValue() {
@@ -117,8 +114,7 @@ public class ISO8601DateParser {
     }
 
     /**
-     * Same as parse method but does not throws. In case input date string
-     * cannot be parsed, null is returned.
+     * Same as parse method but does not throws. In case input date string cannot be parsed, null is returned.
      */
     public static Date parseSilently(String input) {
         try {

@@ -59,82 +59,62 @@ public abstract class BoxAdapter {
 
     protected BoxItem boxItem;
 
-    protected final BoxService boxService = Framework.getLocalService
-            (BoxService.class);
+    protected final BoxService boxService = Framework.getLocalService(BoxService.class);
 
     public BoxAdapter(DocumentModel doc) throws ClientException {
         this.doc = doc;
         CoreSession session = doc.getCoreSession();
 
         boxProperties.put(BoxItem.FIELD_ID, boxService.getBoxId(doc));
-        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                boxService.getBoxSequenceId(doc));
+        boxProperties.put(BoxItem.FIELD_SEQUENCE_ID, boxService.getBoxSequenceId(doc));
         boxProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag(doc));
 
         boxProperties.put(BoxItem.FIELD_NAME, doc.getName());
         boxProperties.put(BoxItem.FIELD_CREATED_AT,
-                ISODateTimeFormat.dateTime().print(
-                        new DateTime(doc.getPropertyValue("dc:created"))));
+                ISODateTimeFormat.dateTime().print(new DateTime(doc.getPropertyValue("dc:created"))));
         boxProperties.put(BoxItem.FIELD_MODIFIED_AT,
-                ISODateTimeFormat.dateTime().print(
-                        new DateTime(doc.getPropertyValue("dc:modified"))));
-        boxProperties.put(BoxItem.FIELD_DESCRIPTION,
-                doc.getPropertyValue("dc:description"));
+                ISODateTimeFormat.dateTime().print(new DateTime(doc.getPropertyValue("dc:modified"))));
+        boxProperties.put(BoxItem.FIELD_DESCRIPTION, doc.getPropertyValue("dc:description"));
 
         // size
         QuotaAwareDocument quotaAwareDocument = null;
-        if (Framework.getRuntime().getBundle("org.nuxeo.ecm.quota.core") !=
-                null) {
-            quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter
-                    (QuotaAware.class);
+        if (Framework.getRuntime().getBundle("org.nuxeo.ecm.quota.core") != null) {
+            quotaAwareDocument = (QuotaAwareDocument) doc.getAdapter(QuotaAware.class);
         }
-        boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ?
-                quotaAwareDocument.getInnerSize() : -1.0);
+        boxProperties.put(BoxItem.FIELD_SIZE, quotaAwareDocument != null ? quotaAwareDocument.getInnerSize() : -1.0);
 
         // path_collection
         final DocumentModel parentDoc = session.getParentDocument(doc.getRef());
         final Map<String, Object> pathCollection = new HashMap<>();
-        List<BoxTypedObject> hierarchy = getParentsHierarchy(session,
-                parentDoc);
+        List<BoxTypedObject> hierarchy = getParentsHierarchy(session, parentDoc);
         pathCollection.put(BoxCollection.FIELD_ENTRIES, hierarchy);
         pathCollection.put(BoxCollection.FIELD_TOTAL_COUNT, hierarchy.size());
-        BoxCollection boxPathCollection = new BoxCollection(Collections
-                .unmodifiableMap(pathCollection));
+        BoxCollection boxPathCollection = new BoxCollection(Collections.unmodifiableMap(pathCollection));
         boxProperties.put(BoxItem.FIELD_PATH_COLLECTION, boxPathCollection);
 
         // parent
         final Map<String, Object> parentProperties = new HashMap<>();
         parentProperties.put(BoxItem.FIELD_ID, boxService.getBoxId(parentDoc));
-        parentProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                boxService.getBoxSequenceId(parentDoc));
-        parentProperties.put(BoxItem.FIELD_NAME, boxService.getBoxName
-                (parentDoc));
-        parentProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag
-                (parentDoc));
-        BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap
-                (parentProperties));
+        parentProperties.put(BoxItem.FIELD_SEQUENCE_ID, boxService.getBoxSequenceId(parentDoc));
+        parentProperties.put(BoxItem.FIELD_NAME, boxService.getBoxName(parentDoc));
+        parentProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag(parentDoc));
+        BoxFolder parentFolder = new BoxFolder(Collections.unmodifiableMap(parentProperties));
         boxProperties.put(BoxItem.FIELD_PARENT, parentFolder);
 
         // Users
         // Creator
-        final UserManager userManager = Framework.getLocalService(UserManager
-                .class);
-        String creator = doc.getPropertyValue("dc:creator") != null
-                ? (String) doc.getPropertyValue("dc:creator") : "system";
+        final UserManager userManager = Framework.getLocalService(UserManager.class);
+        String creator = doc.getPropertyValue("dc:creator") != null ? (String) doc.getPropertyValue("dc:creator")
+                : "system";
         NuxeoPrincipal principalCreator = userManager.getPrincipal(creator);
         final BoxUser boxCreator = boxService.fillUser(principalCreator);
         boxProperties.put(BoxItem.FIELD_CREATED_BY, boxCreator);
 
-        //Last Contributor
-        String lastContributor = doc.getPropertyValue("dc:lastContributor")
-                != null
-                ? (String) doc.getPropertyValue("dc:lastContributor") :
-                "system";
-        final NuxeoPrincipal principalLastContributor = userManager
-                .getPrincipal(
-                        lastContributor);
-        final BoxUser boxContributor = boxService.fillUser
-                (principalLastContributor);
+        // Last Contributor
+        String lastContributor = doc.getPropertyValue("dc:lastContributor") != null ? (String) doc.getPropertyValue("dc:lastContributor")
+                : "system";
+        final NuxeoPrincipal principalLastContributor = userManager.getPrincipal(lastContributor);
+        final BoxUser boxContributor = boxService.fillUser(principalLastContributor);
         boxProperties.put(BoxItem.FIELD_MODIFIED_BY, boxContributor);
 
         // Owner
@@ -144,8 +124,7 @@ public abstract class BoxAdapter {
         boxProperties.put(BoxItem.FIELD_SHARED_LINK, null);
 
         // Status
-        boxProperties.put(BoxItem.FIELD_ITEM_STATUS,
-                doc.getCurrentLifeCycleState());
+        boxProperties.put(BoxItem.FIELD_ITEM_STATUS, doc.getCurrentLifeCycleState());
 
         // Tags
         boxProperties.put(BoxItem.FIELD_TAGS, getTags(session));
@@ -173,30 +152,23 @@ public abstract class BoxAdapter {
         return doc;
     }
 
-    protected List<BoxTypedObject> getParentsHierarchy(CoreSession session,
-            DocumentModel parentDoc) throws ClientException {
+    protected List<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc)
+            throws ClientException {
         final List<BoxTypedObject> pathCollection = new ArrayList<>();
         while (parentDoc != null) {
-            final Map<String, Object> parentCollectionProperties = new
-                    HashMap<>();
-            parentCollectionProperties.put(BoxItem.FIELD_ID,
-                    boxService.getBoxId(parentDoc));
-            parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID,
-                    boxService.getBoxSequenceId(parentDoc));
-            parentCollectionProperties.put(BoxItem.FIELD_ETAG,
-                    boxService.getBoxEtag(parentDoc));
-            parentCollectionProperties.put(BoxItem.FIELD_NAME,
-                    boxService.getBoxName(parentDoc));
+            final Map<String, Object> parentCollectionProperties = new HashMap<>();
+            parentCollectionProperties.put(BoxItem.FIELD_ID, boxService.getBoxId(parentDoc));
+            parentCollectionProperties.put(BoxItem.FIELD_SEQUENCE_ID, boxService.getBoxSequenceId(parentDoc));
+            parentCollectionProperties.put(BoxItem.FIELD_ETAG, boxService.getBoxEtag(parentDoc));
+            parentCollectionProperties.put(BoxItem.FIELD_NAME, boxService.getBoxName(parentDoc));
             BoxTypedObject boxParent;
             // This different instantiation is related to the param type
             // which is automatically added in json payload by Box marshaller
             // following the box object type
             if (parentDoc.isFolder()) {
-                boxParent = new BoxFolder(Collections
-                        .unmodifiableMap(parentCollectionProperties));
+                boxParent = new BoxFolder(Collections.unmodifiableMap(parentCollectionProperties));
             } else {
-                boxParent = new BoxFile(Collections
-                        .unmodifiableMap(parentCollectionProperties));
+                boxParent = new BoxFile(Collections.unmodifiableMap(parentCollectionProperties));
             }
             pathCollection.add(boxParent);
             parentDoc = session.getParentDocument(parentDoc.getRef());
@@ -205,10 +177,8 @@ public abstract class BoxAdapter {
     }
 
     protected String[] getTags(CoreSession session) throws ClientException {
-        final TagService tagService = Framework.getLocalService(TagService
-                .class);
-        final List<Tag> tags = tagService.getDocumentTags(session,
-                doc.getId(), session.getPrincipal().getName());
+        final TagService tagService = Framework.getLocalService(TagService.class);
+        final List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), session.getPrincipal().getName());
         final String[] tagNames = new String[tags.size()];
         int index = 0;
         for (Tag tag : tags) {
@@ -221,8 +191,7 @@ public abstract class BoxAdapter {
     /**
      * Update the document (nx/box sides) thanks to a box item
      */
-    public void save(CoreSession session) throws ClientException,
-            ParseException, InvocationTargetException,
+    public void save(CoreSession session) throws ClientException, ParseException, InvocationTargetException,
             IllegalAccessException, BoxJSONException {
 
         setDescription(boxItem.getDescription());
@@ -230,18 +199,15 @@ public abstract class BoxAdapter {
 
         String id = boxItem.getParent().getId();
         // check if id is root's one
-        String newParentId = "0".equals(id) ? session.getRootDocument().getId
-                () : id;
+        String newParentId = "0".equals(id) ? session.getRootDocument().getId() : id;
         IdRef documentIdRef = new IdRef(doc.getId());
 
         // If the name has changed, update location in Nuxeo repository
         // OR if parent id has been updated -> move the document
         String oldParentId = session.getParentDocument(documentIdRef).getId();
-        if (!oldParentId.equals(newParentId) || !doc.getName().equals(boxItem
-                .getName())) {
+        if (!oldParentId.equals(newParentId) || !doc.getName().equals(boxItem.getName())) {
 
-            session.move(documentIdRef, new IdRef(newParentId),
-                    boxItem.getName());
+            session.move(documentIdRef, new IdRef(newParentId), boxItem.getName());
             // Title and name are same here
             setTitle(boxItem.getName());
         }
@@ -252,8 +218,7 @@ public abstract class BoxAdapter {
             if (boxItem.getTags().length != 0) {
                 tagService.removeTags(session, doc.getId());
                 for (String tag : boxItem.getTags()) {
-                    tagService.tag(session, doc.getId(), tag,
-                            session.getPrincipal().getName());
+                    tagService.tag(session, doc.getId(), tag, session.getPrincipal().getName());
                 }
             }
         }

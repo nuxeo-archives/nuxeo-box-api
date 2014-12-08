@@ -50,13 +50,12 @@ import java.util.Map;
 public class BoxFileAdapter extends BoxAdapter {
 
     /**
-     * Instantiate the adapter and the Box File from Nuxeo Document and
-     * load its properties into json format
+     * Instantiate the adapter and the Box File from Nuxeo Document and load its properties into json format
      */
     public BoxFileAdapter(DocumentModel doc) throws ClientException {
         super(doc);
 
-        //MD5
+        // MD5
         Blob blob = (Blob) doc.getPropertyValue("file:content");
         if (blob != null) {
             boxProperties.put(BoxFile.FIELD_SHA1, blob.getDigest());
@@ -67,15 +66,12 @@ public class BoxFileAdapter extends BoxAdapter {
         Lock lockInfo = doc.getLockInfo();
         if (lockInfo != null) {
             boxLockProperties.put(BoxItem.FIELD_ID, null);
-            final UserManager userManager = Framework.getLocalService
-                    (UserManager.class);
-            final NuxeoPrincipal lockCreator = userManager.getPrincipal(lockInfo
-                    .getOwner());
+            final UserManager userManager = Framework.getLocalService(UserManager.class);
+            final NuxeoPrincipal lockCreator = userManager.getPrincipal(lockInfo.getOwner());
             final BoxUser boxLockCreator = boxService.fillUser(lockCreator);
             boxLockProperties.put(BoxItem.FIELD_CREATED_BY, boxLockCreator);
             boxLockProperties.put(BoxItem.FIELD_CREATED_AT,
-                    ISODateTimeFormat.dateTime().print(
-                            new DateTime(lockInfo.getCreated())));
+                    ISODateTimeFormat.dateTime().print(new DateTime(lockInfo.getCreated())));
             boxLockProperties.put(BoxLock.FIELD_EXPIRES_AT, null);
             boxLockProperties.put(BoxLock.FIELD_IS_DOWNLOAD_PREVENTED, false);
             BoxLock boxLock = new BoxLock(boxLockProperties);
@@ -99,21 +95,15 @@ public class BoxFileAdapter extends BoxAdapter {
     public BoxCollection getComments() throws ClientException {
         List<BoxComment> boxComments = new ArrayList<>();
         Map<String, Object> collectionProperties = new HashMap<>();
-        CommentManager commentManager = Framework.getLocalService
-                (CommentManager.class);
-        List<DocumentModel> comments = commentManager
-                .getComments(doc);
+        CommentManager commentManager = Framework.getLocalService(CommentManager.class);
+        List<DocumentModel> comments = commentManager.getComments(doc);
         for (DocumentModel comment : comments) {
-            BoxCommentAdapter boxCommentAdapter = comment.getAdapter
-                    (BoxCommentAdapter.class);
+            BoxCommentAdapter boxCommentAdapter = comment.getAdapter(BoxCommentAdapter.class);
             boxComments.add(boxCommentAdapter.getBoxComment());
         }
-        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxComments);
-        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
-                comments.size());
-        return new BoxCollection(Collections.unmodifiableMap
-                (collectionProperties));
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES, boxComments);
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, comments.size());
+        return new BoxCollection(Collections.unmodifiableMap(collectionProperties));
     }
 
 }

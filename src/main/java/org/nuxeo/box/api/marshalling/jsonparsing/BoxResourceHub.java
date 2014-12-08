@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.jsonparsing;
 
-
 import org.nuxeo.box.api.marshalling.dao.BoxCollaboration;
 import org.nuxeo.box.api.marshalling.dao.BoxCollection;
 import org.nuxeo.box.api.marshalling.dao.BoxComment;

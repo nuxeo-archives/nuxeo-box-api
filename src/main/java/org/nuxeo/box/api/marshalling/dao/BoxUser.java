@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -50,8 +49,7 @@ public class BoxUser extends BoxTypedObject {
     /**
      * Whether this user can see other enterprise users in its contact list
      */
-    public static final String FIELD_CAN_SEE_MANAGED_USERS =
-            "can_see_managed_users";
+    public static final String FIELD_CAN_SEE_MANAGED_USERS = "can_see_managed_users";
 
     /**
      * Whether to exempt this user from Enterprise device limits
@@ -61,18 +59,15 @@ public class BoxUser extends BoxTypedObject {
     /**
      * Whether or not this user must use two-factor authentication
      */
-    public static final String FIELD_IS_EXEMPT_FROM_DEVICE_LIMITS =
-            "is_exempt_from_device_limits";
+    public static final String FIELD_IS_EXEMPT_FROM_DEVICE_LIMITS = "is_exempt_from_device_limits";
 
     /**
      * Whether or not this user must use two-factor authentication
      */
-    public static final String FIELD_IS_EXEMPT_FROM_LOGIN_VERIFICATION =
-            "is_exempt_from_login_verficiation";
+    public static final String FIELD_IS_EXEMPT_FROM_LOGIN_VERIFICATION = "is_exempt_from_login_verficiation";
 
     /**
-     * Mini representation of this user's enterprise, including the ID of its
-     * enterprise
+     * Mini representation of this user's enterprise, including the ID of its enterprise
      */
     public static final String FIELD_ENTERPRISE = "enterprise";
 
@@ -98,11 +93,9 @@ public class BoxUser extends BoxTypedObject {
 
     public static final String FIELD_AVATAR_URL = "avatar_url";
 
-    public static final String FIELD_EXEMPT_FROM_DEVICE_LIMITS =
-            "is_exempt_from_device_limits";
+    public static final String FIELD_EXEMPT_FROM_DEVICE_LIMITS = "is_exempt_from_device_limits";
 
-    public static final String FIELD_EXEMPT_FROM_LOGIN_VERIFICATION =
-            "is_exempt_from_login_verification";
+    public static final String FIELD_EXEMPT_FROM_LOGIN_VERIFICATION = "is_exempt_from_login_verification";
 
     public static final String FIELD_MY_TAGS = "my_tags";
 
@@ -123,8 +116,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -143,8 +135,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param name name
      */
@@ -164,8 +155,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param login login
      */
@@ -175,8 +165,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Get the user's enterprise role. The role can be {@link #ROLE_ADMIN},
-     * {@link #ROLE_COADMIN} or {@link #ROLE_USER}
+     * Get the user's enterprise role. The role can be {@link #ROLE_ADMIN}, {@link #ROLE_COADMIN} or {@link #ROLE_USER}
      *
      * @return the role
      */
@@ -186,8 +175,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param role the role to set
      */
@@ -197,8 +185,8 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Get the language of this user. This uses <a href="http://en.wikipedia
-     * .org/wiki/ISO_639-1">ISO 639-1 Language Code</a>
+     * Get the language of this user. This uses <a href="http://en.wikipedia .org/wiki/ISO_639-1">ISO 639-1 Language
+     * Code</a>
      *
      * @return the language
      */
@@ -208,8 +196,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param language the language to set
      */
@@ -229,8 +216,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param spaceAmount the space_amount to set
      */
@@ -250,8 +236,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param spaceUsed the space_used to set
      */
@@ -271,8 +256,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param max_upload_size the max_upload_size to set
      */
@@ -282,8 +266,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Get the tracking codes. This is an array of key/value pairs set by the
-     * user's admin.
+     * Get the tracking codes. This is an array of key/value pairs set by the user's admin.
      *
      * @return the tracking_codes
      */
@@ -294,8 +277,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param trackingCodes the tracking_codes to set
      */
@@ -305,8 +287,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Whether or not the user can see other enterprise users in the contact
-     * list.
+     * Whether or not the user can see other enterprise users in the contact list.
      *
      * @return the can_see_managed_users
      */
@@ -316,8 +297,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param canSeeManagedUsers the can_see_managed_users to set
      */
@@ -337,8 +317,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param isSyncEnabled the is_sync_enabled to set
      */
@@ -348,8 +327,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Get status of the user. This String can be {@link #STATUS_ACTIVE} or
-     * {@link #STATUS_INACTIVE}
+     * Get status of the user. This String can be {@link #STATUS_ACTIVE} or {@link #STATUS_INACTIVE}
      *
      * @return the status
      */
@@ -359,8 +337,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param status the status to set
      */
@@ -380,8 +357,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param jobTitle the job_title to set
      */
@@ -401,8 +377,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param phone the phone to set
      */
@@ -422,8 +397,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param address the address to set
      */
@@ -443,8 +417,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param avatarUrl the avatar_url to set
      */
@@ -464,8 +437,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param isExemptFromDeviceLimits the is_exempt_from_device_limits to set
      */
@@ -485,23 +457,17 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
-     * @param isExemptFromLoginVerification the
-     *                                      is_exempt_from_login_verification
-     *                                      to set
+     * @param isExemptFromLoginVerification the is_exempt_from_login_verification to set
      */
     @JsonProperty(FIELD_EXEMPT_FROM_LOGIN_VERIFICATION)
-    private void setExemptFromLoginVerification(boolean
-            isExemptFromLoginVerification) {
-        put(FIELD_EXEMPT_FROM_LOGIN_VERIFICATION,
-                isExemptFromLoginVerification);
+    private void setExemptFromLoginVerification(boolean isExemptFromLoginVerification) {
+        put(FIELD_EXEMPT_FROM_LOGIN_VERIFICATION, isExemptFromLoginVerification);
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param enterprise enterprise
      */
@@ -521,8 +487,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param myTags my_tags
      */
@@ -532,8 +497,7 @@ public class BoxUser extends BoxTypedObject {
     }
 
     /**
-     * Get set of all tags on items that are visible by this user. Note this
-     * is not tags of the "BoxUser" object.
+     * Get set of all tags on items that are visible by this user. Note this is not tags of the "BoxUser" object.
      *
      * @return tags
      */

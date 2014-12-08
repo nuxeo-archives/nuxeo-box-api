@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -36,8 +35,7 @@ public class BoxRealTimeServer extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param url Url.
      */
@@ -47,8 +45,7 @@ public class BoxRealTimeServer extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */

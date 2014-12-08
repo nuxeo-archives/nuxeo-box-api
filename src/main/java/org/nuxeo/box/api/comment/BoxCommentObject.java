@@ -70,8 +70,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
                 String fileId = (String) args[0];
                 CoreSession session = ctx.getCoreSession();
                 DocumentModel file = session.getDocument(new IdRef(fileId));
-                boxFile = (BoxFileAdapter) file.getAdapter
-                        (BoxAdapter.class);
+                boxFile = (BoxFileAdapter) file.getAdapter(BoxAdapter.class);
             } catch (Exception e) {
                 throw WebException.wrap(e);
             }
@@ -81,62 +80,51 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{commentId}")
-    public String doGetComment(@PathParam("commentId")
-    final String commentId) throws NoSuchDocumentException, ClientException,
-            BoxJSONException {
+    public String doGetComment(@PathParam("commentId") final String commentId) throws NoSuchDocumentException,
+            ClientException, BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel comment = session.getDocument(new IdRef(commentId));
         // Adapt nx document to box comment adapter
-        final BoxCommentAdapter commentAdapter = comment.getAdapter
-                (BoxCommentAdapter.class);
+        final BoxCommentAdapter commentAdapter = comment.getAdapter(BoxCommentAdapter.class);
         return boxService.toJSONString(commentAdapter.getBoxComment());
     }
 
     @POST
-    public String doPostComment(String jsonBoxComment) throws
-            NoSuchDocumentException, ClientException,
+    public String doPostComment(String jsonBoxComment) throws NoSuchDocumentException, ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxComment boxComment = boxService.getBoxComment(jsonBoxComment);
         // Fetch the target
-        DocumentModel target = session.getDocument(new IdRef(boxComment
-                .getItem().getId()));
+        DocumentModel target = session.getDocument(new IdRef(boxComment.getItem().getId()));
         // Create the nx document from box comment information
-        DocumentModel comment = session.createDocumentModel
-                (CommentsConstants.COMMENT_DOC_TYPE);
+        DocumentModel comment = session.createDocumentModel(CommentsConstants.COMMENT_DOC_TYPE);
         comment.setProperty("comment", "text", boxComment.getMessage());
-        comment.setProperty("comment", "author", session.getPrincipal()
-                .getName());
+        comment.setProperty("comment", "author", session.getPrincipal().getName());
         comment.setProperty("comment", "creationDate", new Date());
         // create the comment
-        CommentableDocument commentableDocument = target.getAdapter(
-                CommentableDocument.class);
+        CommentableDocument commentableDocument = target.getAdapter(CommentableDocument.class);
         if (commentableDocument == null) {
             throw new BoxRestException("This document cannot be commented",
                     Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
         DocumentModel newComment = commentableDocument.addComment(comment);
         newComment.attach(session.getSessionId());
-        final BoxCommentAdapter commentAdapter = newComment.getAdapter
-                (BoxCommentAdapter.class);
+        final BoxCommentAdapter commentAdapter = newComment.getAdapter(BoxCommentAdapter.class);
         return boxService.toJSONString(commentAdapter.getBoxComment());
     }
 
     @PUT
     @Path("{commentId}")
-    public String doPutComment(@PathParam("commentId") String commentId,
-            String jsonBoxComment) throws ClientException, BoxJSONException,
-            ParseException, IllegalAccessException,
-            InvocationTargetException, NoSuchDocumentException {
+    public String doPutComment(@PathParam("commentId") String commentId, String jsonBoxComment) throws ClientException,
+            BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException,
+            NoSuchDocumentException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document comment
-        final DocumentModel nxComment = session.getDocument(new IdRef
-                (commentId));
+        final DocumentModel nxComment = session.getDocument(new IdRef(commentId));
         // Create box comment from json payload
         BoxComment boxCommentUpdated = boxService.getBoxComment(jsonBoxComment);
         // Adapt nx document to box comment adapter
-        final BoxCommentAdapter nxDocumentAdapter = nxComment.getAdapter
-                (BoxCommentAdapter.class);
+        final BoxCommentAdapter nxDocumentAdapter = nxComment.getAdapter(BoxCommentAdapter.class);
         // Update both nx document and box comment adapter
         nxDocumentAdapter.setBoxComment(boxCommentUpdated);
         nxDocumentAdapter.save(session);
@@ -146,18 +134,14 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @DELETE
     @Path("{commentId}")
-    public void doDeleteComment(@PathParam("commentId") String commentId) throws
-            ClientException {
+    public void doDeleteComment(@PathParam("commentId") String commentId) throws ClientException {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(commentId));
         session.save();
     }
 
-
     @GET
-    public String doGetComments() throws NoSuchDocumentException,
-            ClientException,
-            BoxJSONException {
+    public String doGetComments() throws NoSuchDocumentException, ClientException, BoxJSONException {
         return boxService.toJSONString(boxFile.getComments());
     }
 }

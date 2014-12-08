@@ -68,24 +68,20 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         return getView("index");
     }
 
-
     @GET
     @Path("{fileId}")
-    public String doGetFile(@PathParam("fileId")
-    final String fileId) throws NoSuchDocumentException, ClientException,
+    public String doGetFile(@PathParam("fileId") final String fileId) throws NoSuchDocumentException, ClientException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel file = session.getDocument(new IdRef(fileId));
         // Adapt nx document to box folder adapter
-        final BoxFileAdapter fileAdapter = (BoxFileAdapter) file.getAdapter
-                (BoxAdapter.class);
+        final BoxFileAdapter fileAdapter = (BoxFileAdapter) file.getAdapter(BoxAdapter.class);
         return boxService.toJSONString(fileAdapter.getBoxItem());
     }
 
     @DELETE
     @Path("{fileId}")
-    public void doDeleteFile(@PathParam("fileId") String fileId) throws
-            ClientException {
+    public void doDeleteFile(@PathParam("fileId") String fileId) throws ClientException {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(fileId));
         session.save();
@@ -93,19 +89,15 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{fileId}")
-    public String doUpdateFile(@PathParam("fileId") String fileId,
-            String jsonBoxFile) throws ClientException, BoxJSONException,
-            ParseException, IllegalAccessException, InvocationTargetException {
+    public String doUpdateFile(@PathParam("fileId") String fileId, String jsonBoxFile) throws ClientException,
+            BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document with given id
-        final DocumentModel nxDocument = session.getDocument(new IdRef
-                (fileId));
+        final DocumentModel nxDocument = session.getDocument(new IdRef(fileId));
         // Create box File from json payload
         BoxFile boxFileUpdated = boxService.getBoxFile(jsonBoxFile);
         // Adapt nx document to box File adapter
-        final BoxFileAdapter nxDocumentAdapter = (BoxFileAdapter)
-                nxDocument.getAdapter
-                        (BoxAdapter.class);
+        final BoxFileAdapter nxDocumentAdapter = (BoxFileAdapter) nxDocument.getAdapter(BoxAdapter.class);
         // Update both nx document and box File adapter
         nxDocumentAdapter.setBoxItem(boxFileUpdated);
         nxDocumentAdapter.save(session);
@@ -116,10 +108,9 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
     @POST
     @Path("content")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public String doPostFile(@FormDataParam("file") InputStream
-            uploadedInputStream, @FormDataParam("filename") String fileName,
-            @FormDataParam("parent_id") String parentId) throws ClientException,
-            BoxJSONException, IOException {
+    public String doPostFile(@FormDataParam("file") InputStream uploadedInputStream,
+            @FormDataParam("filename") String fileName, @FormDataParam("parent_id") String parentId)
+            throws ClientException, BoxJSONException, IOException {
         // Fetching its parent to get parent id
         final CoreSession session = ctx.getCoreSession();
         DocumentModel documentParent;
@@ -129,15 +120,11 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
             documentParent = session.getDocument(new IdRef(parentId));
         }
         // Create the nx document from box item information
-        DocumentModel newFile = session.createDocumentModel(documentParent
-                .getPathAsString(), fileName, "File");
-        newFile.setPropertyValue("file:content",
-                new FileBlob(uploadedInputStream));
+        DocumentModel newFile = session.createDocumentModel(documentParent.getPathAsString(), fileName, "File");
+        newFile.setPropertyValue("file:content", new FileBlob(uploadedInputStream));
         newFile = session.createDocument(newFile);
         // Adapt nx document to box folder adapter
-        final BoxFileAdapter fileAdapter = (BoxFileAdapter) newFile
-                .getAdapter
-                        (BoxAdapter.class);
+        final BoxFileAdapter fileAdapter = (BoxFileAdapter) newFile.getAdapter(BoxAdapter.class);
         // Return the new box folder json
         return boxService.toJSONString(fileAdapter.getBoxItem());
     }

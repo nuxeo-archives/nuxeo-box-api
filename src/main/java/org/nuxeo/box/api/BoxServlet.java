@@ -27,8 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * This servlet is bound to /box and dispatch calls to /site/box in oder to have
- * better looking URLs.
+ * This servlet is bound to /box and dispatch calls to /site/box in oder to have better looking URLs.
  *
  * @since 5.9.3
  */
@@ -40,12 +39,10 @@ public class BoxServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         RequestDispatcher rd = req.getRequestDispatcher("/site/box"
-                + URIUtils.quoteURIPathComponent(req.getPathInfo(), false,
-                false));
+                + URIUtils.quoteURIPathComponent(req.getPathInfo(), false, false));
         rd.forward(req, resp);
     }
 

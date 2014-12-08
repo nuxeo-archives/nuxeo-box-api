@@ -47,8 +47,7 @@ import static org.junit.Assert.assertEquals;
 public class BoxCollaborationTest extends BoxBaseTest {
 
     @Test
-    public void collaborationSuite() throws JSONException, ClientException,
-            IOException {
+    public void collaborationSuite() throws JSONException, ClientException, IOException {
         String collaborationId = itCanPostCollaboration();
         itCanFetchACollaboration(collaborationId);
         itCanFetchCollaborations();
@@ -57,17 +56,15 @@ public class BoxCollaborationTest extends BoxBaseTest {
         checkIfNoCollaboration(collaborationId);
     }
 
-    protected String itCanPostCollaboration() throws ClientException,
-            IOException, JSONException {
+    protected String itCanPostCollaboration() throws ClientException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
         // Posting with few properties
-        ClientResponse response = service.path("collaborations").post
-                (ClientResponse.class, "{\"item\": { \"id\": \"" + folder
-                        .getId() + "\", " +
-                        "\"type\": \"folder\"}, \"accessible_by\": { \"id\": " +
-                        "\"members\", \"type\": \"user\" }, " +
-                        "\"role\": \"editor\"}");
+        ClientResponse response = service.path("collaborations").post(
+                ClientResponse.class,
+                "{\"item\": { \"id\": \"" + folder.getId() + "\", "
+                        + "\"type\": \"folder\"}, \"accessible_by\": { \"id\": "
+                        + "\"members\", \"type\": \"user\" }, " + "\"role\": \"editor\"}");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
@@ -75,39 +72,31 @@ public class BoxCollaborationTest extends BoxBaseTest {
         return finalResult.getString("id");
     }
 
-    protected void itCanFetchACollaboration(String collaborationId) throws
-            ClientException,
-            IOException, JSONException {
+    protected void itCanFetchACollaboration(String collaborationId) throws ClientException, IOException, JSONException {
         // Fetching the collaboration through NX Box API
-        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
-                "collaborations/" + collaborationId);
+        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET, "collaborations/" + collaborationId);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
-        assertEquals("members", finalResult.getJSONObject("accessible_by")
-                .getString("login"));
+        assertEquals("members", finalResult.getJSONObject("accessible_by").getString("login"));
     }
 
-    protected void itCanFetchCollaborations() throws ClientException,
-            IOException, JSONException {
+    protected void itCanFetchCollaborations() throws ClientException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
         // Fetching the collaboration through NX Box API
-        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
-                "folders/" + folder.getId() + "/collaborations");
+        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET, "folders/" + folder.getId()
+                + "/collaborations");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
-        assertEquals("editor", ((JSONObject) finalResult.getJSONArray
-                ("entries").get(0)).get("role"));
+        assertEquals("editor", ((JSONObject) finalResult.getJSONArray("entries").get(0)).get("role"));
         assertEquals("1", finalResult.getString("total_count"));
     }
 
-    protected void itCanUpdateCollaboration(String collaborationId) throws
-            ClientException, IOException, JSONException {
+    protected void itCanUpdateCollaboration(String collaborationId) throws ClientException, IOException, JSONException {
         // Posting with few properties
-        ClientResponse response = service.path("collaborations/" +
-                collaborationId).put(ClientResponse.class,
+        ClientResponse response = service.path("collaborations/" + collaborationId).put(ClientResponse.class,
                 "{\"role\": \"viewer\"}");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -115,26 +104,18 @@ public class BoxCollaborationTest extends BoxBaseTest {
         assertEquals("viewer", finalResult.get("role"));
     }
 
-    public void itCanDeleteCollaboration(String collaborationId) throws
-            IOException, JSONException,
-            ClientException {
-        ClientResponse response = service.path("collaborations/" +
-                collaborationId).delete(ClientResponse.class);
+    public void itCanDeleteCollaboration(String collaborationId) throws IOException, JSONException, ClientException {
+        ClientResponse response = service.path("collaborations/" + collaborationId).delete(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
     }
 
-    protected void checkIfNoCollaboration(String collaborationId) throws
-            IOException, JSONException, ClientException {
+    protected void checkIfNoCollaboration(String collaborationId) throws IOException, JSONException, ClientException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
-        ClientResponse response = getResponse(RequestType.GET,
-                "collaborations/" + collaborationId);
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-                response.getStatus());
-        response = getResponse(RequestType.GET,
-                "folders/" + folder.getId() + "/collaborations");
+        ClientResponse response = getResponse(RequestType.GET, "collaborations/" + collaborationId);
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        response = getResponse(RequestType.GET, "folders/" + folder.getId() + "/collaborations");
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals("0", finalResult.getString("total_count"));

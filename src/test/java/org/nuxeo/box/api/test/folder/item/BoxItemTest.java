@@ -48,16 +48,14 @@ public class BoxItemTest extends BoxBaseTest {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        ClientResponse response = service.path("folders/" + folder.getId() +
-                "/items").get(ClientResponse.class);
+        ClientResponse response = service.path("folders/" + folder.getId() + "/items").get(ClientResponse.class);
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("total_count"), "5");
-        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
-        ).get("etag"), ((JSONObject) finalResult.getJSONArray("entries").get
-                (0)).get("sequence_id") + "_0.0");
+        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)).get("etag"),
+                ((JSONObject) finalResult.getJSONArray("entries").get(0)).get("sequence_id") + "_0.0");
     }
 
     @Test
@@ -65,17 +63,14 @@ public class BoxItemTest extends BoxBaseTest {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        ClientResponse response = service.path("folders/" + folder.getId() +
-                "/items").queryParam("limit", "2").queryParam("fields",
-                "name").get(ClientResponse.class);
+        ClientResponse response = service.path("folders/" + folder.getId() + "/items").queryParam("limit", "2").queryParam(
+                "fields", "name").get(ClientResponse.class);
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("total_count"), "2");
-        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)
-        ).get("etag"), null);
+        assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)).get("etag"), null);
     }
-
 
 }

@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -29,8 +28,7 @@ public class BoxEvent extends BoxItem {
 
     public static final String EVENT_TYPE_ITEM_COPY = "ITEM_COPY";
 
-    public static final String EVENT_TYPE_TASK_ASSIGNMENT_CREATE =
-            "TASK_ASSIGNMENT_CREATE";
+    public static final String EVENT_TYPE_TASK_ASSIGNMENT_CREATE = "TASK_ASSIGNMENT_CREATE";
 
     public static final String EVENT_TYPE_LOCK_CREATE = "LOCK_CREATE";
 
@@ -38,14 +36,11 @@ public class BoxEvent extends BoxItem {
 
     public static final String EVENT_TYPE_ITEM_TRASH = "ITEM_TRASH";
 
-    public static final String EVENT_TYPE_ITEM_UNDELETE_VIA_TRASH =
-            "ITEM_UNDELETE_VIA_TRASH";
+    public static final String EVENT_TYPE_ITEM_UNDELETE_VIA_TRASH = "ITEM_UNDELETE_VIA_TRASH";
 
-    public static final String EVENT_TYPE_COLLAB_ADD_COLLABORATOR =
-            "COLLAB_ADD_COLLABORATOR";
+    public static final String EVENT_TYPE_COLLAB_ADD_COLLABORATOR = "COLLAB_ADD_COLLABORATOR";
 
-    public static final String EVENT_TYPE_COLLAB_INVITE_COLLABORATOR =
-            "COLLAB_INVITE_COLLABORATOR";
+    public static final String EVENT_TYPE_COLLAB_INVITE_COLLABORATOR = "COLLAB_INVITE_COLLABORATOR";
 
     public static final String EVENT_TYPE_ITEM_SYNC = "ITEM_SYNC";
 
@@ -53,18 +48,15 @@ public class BoxEvent extends BoxItem {
 
     public static final String EVENT_TYPE_ITEM_RENAME = "ITEM_RENAME";
 
-    public static final String EVENT_TYPE_ITEM_SHARED_CREATE =
-            "ITEM_SHARED_CREATE";
+    public static final String EVENT_TYPE_ITEM_SHARED_CREATE = "ITEM_SHARED_CREATE";
 
-    public static final String EVENT_TYPE_ITEM_SHARED_UNSHARE =
-            "ITEM_SHARED_UNSHARE";
+    public static final String EVENT_TYPE_ITEM_SHARED_UNSHARE = "ITEM_SHARED_UNSHARE";
 
     public static final String EVENT_TYPE_ITEM_SHARED = "ITEM_SHARED";
 
     public static final String EVENT_TYPE_TAG_ITEM_CREATE = "TAG_ITEM_CREATE";
 
-    public static final String EVENT_TYPE_ADD_LOGIN_ACTIVITY_DEVICE =
-            "ADD_LOGIN_ACTIVITY_DEVICE";
+    public static final String EVENT_TYPE_ADD_LOGIN_ACTIVITY_DEVICE = "ADD_LOGIN_ACTIVITY_DEVICE";
 
     /**
      * Constructor.
@@ -83,8 +75,7 @@ public class BoxEvent extends BoxItem {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -104,8 +95,7 @@ public class BoxEvent extends BoxItem {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param eventId Event id.
      */
@@ -125,8 +115,7 @@ public class BoxEvent extends BoxItem {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param eventType Event type. See http://developers.box.com/docs/#events
      */

@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.nuxeo.box.api.utils.ISO8601DateParser;
@@ -11,8 +10,7 @@ import java.util.Map;
 /**
  * Box File object
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = BoxFile.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = BoxFile.class)
 public class BoxFile extends BoxItem {
 
     public final static String FIELD_SHA1 = "sha1";
@@ -23,8 +21,7 @@ public class BoxFile extends BoxItem {
 
     public final static String FIELD_CONTENT_CREATED_AT = "content_created_at";
 
-    public final static String FIELD_CONTENT_MODIFIED_AT =
-            "content_modified_at";
+    public final static String FIELD_CONTENT_MODIFIED_AT = "content_modified_at";
 
     /**
      * Constructor.
@@ -43,8 +40,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -63,8 +59,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param sha1 sha1
      */
@@ -79,9 +74,8 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Return the date content created on local machine,
-     * if this date was not provided when uploading the file,
-     * this will be the time file was uploaded.
+     * Return the date content created on local machine, if this date was not provided when uploading the file, this
+     * will be the time file was uploaded.
      *
      * @return
      */
@@ -100,8 +94,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Return the date content last modified on local machine,
-     * if this date was not provided when uploading the file,
+     * Return the date content last modified on local machine, if this date was not provided when uploading the file,
      * this will be the time file was uploaded.
      *
      * @return
@@ -126,8 +119,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param versionNumber version number
      */
@@ -147,8 +139,7 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param commentCount comment count
      */

@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.interfaces;
 
-
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 
 import java.io.InputStream;
@@ -8,8 +7,7 @@ import java.io.InputStream;
 public interface IBoxJSONParser {
 
     /**
-     * Convert the object into String. No exception will be thrown,
-     * in case of failure, null is returned.
+     * Convert the object into String. No exception will be thrown, in case of failure, null is returned.
      *
      * @param object
      * @return
@@ -17,26 +15,22 @@ public interface IBoxJSONParser {
     String convertBoxObjectToJSONStringQuietly(final Object object);
 
     /**
-     * Convert InputStream to object.No exception will be thrown,
-     * in case of failure, null is returned.
+     * Convert InputStream to object.No exception will be thrown, in case of failure, null is returned.
      *
      * @param inputStream
      * @param theClass
      * @return
      */
-    <T> T parseIntoBoxObjectQuietly(final InputStream inputStream,
-            final Class<T> theClass);
+    <T> T parseIntoBoxObjectQuietly(final InputStream inputStream, final Class<T> theClass);
 
     /**
-     * Convert the json string into object.No exception will be thrown,
-     * in case of failure, null is returned.
+     * Convert the json string into object.No exception will be thrown, in case of failure, null is returned.
      *
      * @param jsonString
      * @param theClass
      * @return
      */
-    <T> T parseIntoBoxObjectQuietly(final String jsonString, final Class<T>
-            theClass);
+    <T> T parseIntoBoxObjectQuietly(final String jsonString, final Class<T> theClass);
 
     /**
      * Convert the object into String.
@@ -45,8 +39,7 @@ public interface IBoxJSONParser {
      * @return
      * @throws BoxJSONException
      */
-    String convertBoxObjectToJSONString(final Object object) throws
-            BoxJSONException;
+    String convertBoxObjectToJSONString(final Object object) throws BoxJSONException;
 
     /**
      * Convert InputStream to object.
@@ -56,8 +49,7 @@ public interface IBoxJSONParser {
      * @return
      * @throws BoxJSONException
      */
-    <T> T parseIntoBoxObject(final InputStream inputStream, final Class<T>
-            theClass) throws BoxJSONException;
+    <T> T parseIntoBoxObject(final InputStream inputStream, final Class<T> theClass) throws BoxJSONException;
 
     /**
      * Convert the json string into object.
@@ -67,6 +59,5 @@ public interface IBoxJSONParser {
      * @return
      * @throws BoxJSONException
      */
-    <T> T parseIntoBoxObject(final String jsonString,
-            final Class<T> theClass) throws BoxJSONException;
+    <T> T parseIntoBoxObject(final String jsonString, final Class<T> theClass) throws BoxJSONException;
 }

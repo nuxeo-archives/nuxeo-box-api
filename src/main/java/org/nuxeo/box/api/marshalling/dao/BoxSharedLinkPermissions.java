@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import java.util.Map;
 
 // CHECKSTYLE:OFF
@@ -28,8 +27,7 @@ public class BoxSharedLinkPermissions extends BoxObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */

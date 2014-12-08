@@ -59,7 +59,6 @@ import javax.ws.rs.core.Response;
 @Produces({ MediaType.APPLICATION_JSON })
 public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
 
-
     BoxService boxService;
 
     BoxFolderAdapter boxFolder;
@@ -72,8 +71,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
                 String folderId = (String) args[0];
                 CoreSession session = ctx.getCoreSession();
                 DocumentModel folder = session.getDocument(new IdRef(folderId));
-                boxFolder = (BoxFolderAdapter) folder.getAdapter
-                        (BoxAdapter.class);
+                boxFolder = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
             } catch (Exception e) {
                 throw WebException.wrap(e);
             }
@@ -82,29 +80,22 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetCollaborations() throws NoSuchDocumentException,
-            ClientException,
-            BoxJSONException {
+    public String doGetCollaborations() throws NoSuchDocumentException, ClientException, BoxJSONException {
         return boxService.toJSONString(boxFolder.getCollaborations());
     }
 
     @GET
     @Path("/{collaborationId}")
-    public String doGetCollaboration(@PathParam("collaborationId") String
-            collaborationId)
-            throws ClientException, BoxJSONException {
+    public String doGetCollaboration(@PathParam("collaborationId") String collaborationId) throws ClientException,
+            BoxJSONException {
         CoreSession session = ctx.getCoreSession();
-        String[] collaborationIds = boxService.getCollaborationArrayIds
-                (collaborationId);
-        DocumentModel folder = session.getDocument(new IdRef
-                (collaborationIds[0]));
-        boxFolder = (BoxFolderAdapter) folder.getAdapter
-                (BoxAdapter.class);
-        BoxCollaboration collaboration = boxFolder.getCollaboration
-                (collaborationIds[1]);
+        String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
+        DocumentModel folder = session.getDocument(new IdRef(collaborationIds[0]));
+        boxFolder = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
+        BoxCollaboration collaboration = boxFolder.getCollaboration(collaborationIds[1]);
         if (collaboration == null) {
-            throw new BoxRestException("There is no collaboration with id " +
-                    collaborationId, Response.Status.NOT_FOUND.getStatusCode());
+            throw new BoxRestException("There is no collaboration with id " + collaborationId,
+                    Response.Status.NOT_FOUND.getStatusCode());
         }
         return boxService.toJSONString(collaboration);
     }
@@ -114,13 +105,10 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
      */
     @DELETE
     @Path("/{collaborationId}")
-    public void doRemoveCollaboration(@PathParam("collaborationId") String
-            collaborationId) throws NoSuchDocumentException,
-            ClientException,
-            BoxJSONException {
+    public void doRemoveCollaboration(@PathParam("collaborationId") String collaborationId)
+            throws NoSuchDocumentException, ClientException, BoxJSONException {
         CoreSession session = ctx.getCoreSession();
-        String[] collaborationIds = boxService.getCollaborationArrayIds
-                (collaborationId);
+        String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
         DocumentRef docRef = new IdRef(collaborationIds[0]);
         ACP acp = session.getACP(docRef);
         acp.removeACL(collaborationIds[1]);
@@ -129,15 +117,11 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public String doPostCollaboration(String jsonBoxCollaboration) throws
-            ClientException,
-            BoxJSONException {
+    public String doPostCollaboration(String jsonBoxCollaboration) throws ClientException, BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
-        BoxCollaboration boxCollaboration = boxService.getBoxCollaboration
-                (jsonBoxCollaboration);
+        BoxCollaboration boxCollaboration = boxService.getBoxCollaboration(jsonBoxCollaboration);
         String documentId = boxCollaboration.getFolder().getId();
-        DocumentModel targetDocument = session.getDocument(new IdRef
-                (documentId));
+        DocumentModel targetDocument = session.getDocument(new IdRef(documentId));
         // ACLs Setup
         ACP acp = session.getACP(targetDocument.getRef());
         String collaborationId = RandomStringUtils.random(6, false, true);
@@ -146,30 +130,23 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
             acl = new ACLImpl(collaborationId);
             acp.addACL(acl);
         }
-        ACE ace = new ACE(boxCollaboration.getAccessibleBy().getId(),
-                boxService.getNxBoxRole().inverse().get(boxCollaboration
-                        .getRole()), true);
+        ACE ace = new ACE(boxCollaboration.getAccessibleBy().getId(), boxService.getNxBoxRole().inverse().get(
+                boxCollaboration.getRole()), true);
         acl.add(ace);
         session.setACP(targetDocument.getRef(), acp, true);
         session.save();
         // Return the new box collab json
-        BoxFolderAdapter boxFolderUpdated = (BoxFolderAdapter) targetDocument
-                .getAdapter(BoxAdapter.class);
-        return boxService.toJSONString(boxService.getBoxCollaboration
-                (boxFolderUpdated, ace, collaborationId));
+        BoxFolderAdapter boxFolderUpdated = (BoxFolderAdapter) targetDocument.getAdapter(BoxAdapter.class);
+        return boxService.toJSONString(boxService.getBoxCollaboration(boxFolderUpdated, ace, collaborationId));
     }
 
     @PUT
     @Path("/{collaborationId}")
-    public String doPutCollaboration(@PathParam("collaborationId") String
-            collaborationId, String jsonBoxCollaboration) throws
-            ClientException,
-            BoxJSONException {
+    public String doPutCollaboration(@PathParam("collaborationId") String collaborationId, String jsonBoxCollaboration)
+            throws ClientException, BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
-        BoxCollaboration boxCollaboration = boxService.getBoxCollaboration
-                (jsonBoxCollaboration);
-        String[] collaborationIds = boxService.getCollaborationArrayIds
-                (collaborationId);
+        BoxCollaboration boxCollaboration = boxService.getBoxCollaboration(jsonBoxCollaboration);
+        String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
         DocumentRef docRef = new IdRef(collaborationIds[0]);
         DocumentModel targetDocument = session.getDocument(docRef);
         // ACLs Setup
@@ -181,13 +158,10 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
 
         // Get the changes
         ACE existingACE = acl.getACEs()[0];
-        String updatedPermission = boxService.getNxBoxRole().inverse().get
-                (boxCollaboration.getRole());
+        String updatedPermission = boxService.getNxBoxRole().inverse().get(boxCollaboration.getRole());
         BoxUser updatedUser = boxCollaboration.getAccessibleBy();
-        String user = updatedUser != null ? updatedUser.getId() : existingACE
-                .getUsername();
-        String permission = updatedPermission != null ? updatedPermission :
-                existingACE.getPermission();
+        String user = updatedUser != null ? updatedUser.getId() : existingACE.getUsername();
+        String permission = updatedPermission != null ? updatedPermission : existingACE.getPermission();
         // Remove the existing ACE - creating the new one
         acl.remove(0);
         ACE ace = new ACE(user, permission, true);
@@ -195,10 +169,8 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
         session.setACP(targetDocument.getRef(), acp, true);
         session.save();
         // Return the new box collab json
-        BoxFolderAdapter boxFolderUpdated = (BoxFolderAdapter) targetDocument
-                .getAdapter(BoxAdapter.class);
-        return boxService.toJSONString(boxService.getBoxCollaboration
-                (boxFolderUpdated, ace, collaborationIds[1]));
+        BoxFolderAdapter boxFolderUpdated = (BoxFolderAdapter) targetDocument.getAdapter(BoxAdapter.class);
+        return boxService.toJSONString(boxService.getBoxCollaboration(boxFolderUpdated, ace, collaborationIds[1]));
     }
 
 }

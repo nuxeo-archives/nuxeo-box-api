@@ -54,8 +54,7 @@ public class BoxCommentAdapter {
     protected DocumentModel comment;
 
     /**
-     * Instantiate the adapter and the Box Comment from Nuxeo Document and
-     * load its properties into json format
+     * Instantiate the adapter and the Box Comment from Nuxeo Document and load its properties into json format
      */
     public BoxCommentAdapter(DocumentModel doc) throws ClientException {
         BoxService boxService = Framework.getLocalService(BoxService.class);
@@ -64,26 +63,19 @@ public class BoxCommentAdapter {
 
         boxProperties.put(BoxComment.FIELD_ID, doc.getId());
         boxProperties.put(BoxComment.FIELD_CREATED_AT,
-                ISODateTimeFormat.dateTime().print(
-                        new DateTime(doc.getPropertyValue
-                                ("comment:creationDate"))));
+                ISODateTimeFormat.dateTime().print(new DateTime(doc.getPropertyValue("comment:creationDate"))));
 
         // Nuxeo comment doesn't provide modified date
         boxProperties.put(BoxComment.FIELD_MODIFIED_AT,
-                ISODateTimeFormat.dateTime().print(
-                        new DateTime(doc.getPropertyValue
-                                ("dc:modified"))));
+                ISODateTimeFormat.dateTime().print(new DateTime(doc.getPropertyValue("dc:modified"))));
 
         // Comment Author
-        final UserManager userManager = Framework.getLocalService(UserManager
-                .class);
-        final NuxeoPrincipal creator = userManager.getPrincipal((String) doc
-                .getPropertyValue("comment:author"));
+        final UserManager userManager = Framework.getLocalService(UserManager.class);
+        final NuxeoPrincipal creator = userManager.getPrincipal((String) doc.getPropertyValue("comment:author"));
         final BoxUser boxCreator = boxService.fillUser(creator);
         boxProperties.put(BoxComment.FIELD_CREATED_BY, boxCreator);
 
-        boxProperties.put(BoxComment.FIELD_MESSAGE,
-                doc.getPropertyValue("comment:text"));
+        boxProperties.put(BoxComment.FIELD_MESSAGE, doc.getPropertyValue("comment:text"));
         boxProperties.put(BoxComment.FIELD_IS_REPLY_COMMENT, null);
         boxProperties.put(BoxComment.FIELD_ITEM, fillItem(doc));
         boxComment = new BoxComment(boxProperties);
@@ -95,15 +87,11 @@ public class BoxCommentAdapter {
         }
     }
 
-    private BoxTypedObject fillItem(DocumentModel doc) throws
-            ClientException {
-        CommentManager commentManager = Framework.getLocalService
-                (CommentManager.class);
-        List<DocumentModel> targetList = commentManager
-                .getDocumentsForComment(doc);
+    private BoxTypedObject fillItem(DocumentModel doc) throws ClientException {
+        CommentManager commentManager = Framework.getLocalService(CommentManager.class);
+        List<DocumentModel> targetList = commentManager.getDocumentsForComment(doc);
         if (targetList.isEmpty()) {
-            throw new BoxRestException("Cannot find any document for the " +
-                    "comment with id " + doc.getId());
+            throw new BoxRestException("Cannot find any document for the " + "comment with id " + doc.getId());
         }
         DocumentModel target = targetList.get(0);
         Map<String, Object> itemProperties = new HashMap<>();
@@ -115,8 +103,7 @@ public class BoxCommentAdapter {
     /**
      * Update the comment (nx/box sides)
      */
-    public void save(CoreSession session) throws ClientException,
-            ParseException, InvocationTargetException,
+    public void save(CoreSession session) throws ClientException, ParseException, InvocationTargetException,
             IllegalAccessException, BoxJSONException {
         comment.setPropertyValue("comment:text", boxComment.getMessage());
         session.saveDocument(comment);

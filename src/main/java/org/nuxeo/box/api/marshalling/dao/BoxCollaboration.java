@@ -12,8 +12,7 @@ import java.util.Map;
 /**
  * Data for collaboration.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = BoxCollaboration.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = BoxCollaboration.class)
 public class BoxCollaboration extends BoxTypedObject {
 
     public static final String FIELD_CREATED_BY = "created_by";
@@ -62,8 +61,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -83,8 +81,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param createdBy the created_by to set
      */
@@ -105,20 +102,17 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param accessibleBy the accessible_by to set
      */
     @JsonProperty(FIELD_ACCESSIBLE_BY)
-    private void setAccessibleBy(BoxUser
-            accessibleBy) {
+    private void setAccessibleBy(BoxUser accessibleBy) {
         put(FIELD_ACCESSIBLE_BY, accessibleBy);
     }
 
     /**
-     * Get the time this collaboration expires. This returns a String and can
-     * be parsed into {@link java.util.Date} by
+     * Get the time this collaboration expires. This returns a String and can be parsed into {@link java.util.Date} by
      *
      * @return the expires_at
      */
@@ -129,8 +123,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param expiresAt the expires_at to set
      */
@@ -142,8 +135,8 @@ public class BoxCollaboration extends BoxTypedObject {
     /**
      * Get the time this collaboration expires.
      *
-     * @return Date representation of the expires_at value. Null if there was
-     * no expires_at or if it could not be parsed as an ISO8601 date.
+     * @return Date representation of the expires_at value. Null if there was no expires_at or if it could not be parsed
+     *         as an ISO8601 date.
      * @throws java.text.ParseException
      */
     public Date dateExpiresAt() throws ParseException {
@@ -151,8 +144,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Get the status of this collaboration. Can be STATUS_ACCEPTED,
-     * link STATUS_PENDING or STATUS_REJECTED
+     * Get the status of this collaboration. Can be STATUS_ACCEPTED, link STATUS_PENDING or STATUS_REJECTED
      *
      * @return the status
      */
@@ -163,8 +155,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param status the status to set
      */
@@ -174,8 +165,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Get the role/permission. This is a role/permission String defined in
-     * CollaborationRole
+     * Get the role/permission. This is a role/permission String defined in CollaborationRole
      *
      * @return the role/permission
      */
@@ -185,8 +175,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param role the role to set
      */
@@ -196,8 +185,8 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Get the time when the status of this collaboration was changed. This
-     * returns a String and can be parsed into {@link java.util.Date} by
+     * Get the time when the status of this collaboration was changed. This returns a String and can be parsed into
+     * {@link java.util.Date} by
      *
      * @return the acknowledged_at
      */
@@ -208,8 +197,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param acknowledgedAt the acknowledged_at to set
      */
@@ -229,8 +217,7 @@ public class BoxCollaboration extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}.
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}.
      *
      * @param item the item to set
      */

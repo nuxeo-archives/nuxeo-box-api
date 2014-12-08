@@ -68,21 +68,18 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{folderId}")
-    public String doGetFolder(@PathParam("folderId")
-    final String folderId) throws NoSuchDocumentException, ClientException,
-            BoxJSONException {
+    public String doGetFolder(@PathParam("folderId") final String folderId) throws NoSuchDocumentException,
+            ClientException, BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
-        final DocumentModel folder = "0".equals(folderId) ? session
-                .getRootDocument() : session.getDocument(new IdRef(folderId));
+        final DocumentModel folder = "0".equals(folderId) ? session.getRootDocument() : session.getDocument(new IdRef(
+                folderId));
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder
-                .getAdapter(BoxAdapter.class);
+        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
         return boxService.toJSONString(folderAdapter.getBoxItem());
     }
 
     @POST
-    public String doPostFolder(String jsonBoxFolder) throws ClientException,
-            BoxJSONException {
+    public String doPostFolder(String jsonBoxFolder) throws ClientException, BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxFolder boxFolder = boxService.getBoxFolder(jsonBoxFolder);
         // Fetching its parent to get parent id
@@ -91,36 +88,31 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
         if ("0".equals(parentId)) {
             documentParent = session.getRootDocument();
         } else {
-            documentParent = session.getDocument(new IdRef(boxFolder
-                    .getParent().getId()));
+            documentParent = session.getDocument(new IdRef(boxFolder.getParent().getId()));
         }
         // Create the nx document from box folder information
-        DocumentModel newFolder = session.createDocumentModel(documentParent
-                .getPathAsString(), boxFolder.getName(), "Folder");
+        DocumentModel newFolder = session.createDocumentModel(documentParent.getPathAsString(), boxFolder.getName(),
+                "Folder");
         newFolder.setPropertyValue("dc:title", boxFolder.getName());
         newFolder = session.createDocument(newFolder);
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) newFolder
-                .getAdapter(BoxAdapter.class);
+        final BoxFolderAdapter folderAdapter = (BoxFolderAdapter) newFolder.getAdapter(BoxAdapter.class);
         // Return the new box folder json
         return boxService.toJSONString(folderAdapter.getBoxItem());
     }
 
     @PUT
     @Path("{folderId}")
-    public String doPutFolder(@PathParam("folderId") String folderId,
-            String jsonBoxFolder) throws ClientException, BoxJSONException,
-            ParseException, IllegalAccessException, InvocationTargetException {
+    public String doPutFolder(@PathParam("folderId") String folderId, String jsonBoxFolder) throws ClientException,
+            BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document with given id
-        final DocumentModel nxDocument = session.getDocument(new IdRef
-                (folderId));
+        final DocumentModel nxDocument = session.getDocument(new IdRef(folderId));
         // Create box folder from json payload
-        BoxFolder boxFolderUpdated = new BoxJSONParser(new BoxResourceHub())
-                .parseIntoBoxObject(jsonBoxFolder, BoxFolder.class);
+        BoxFolder boxFolderUpdated = new BoxJSONParser(new BoxResourceHub()).parseIntoBoxObject(jsonBoxFolder,
+                BoxFolder.class);
         // Adapt nx document to box folder adapter
-        final BoxFolderAdapter nxDocumentAdapter = (BoxFolderAdapter)
-                nxDocument.getAdapter(BoxAdapter.class);
+        final BoxFolderAdapter nxDocumentAdapter = (BoxFolderAdapter) nxDocument.getAdapter(BoxAdapter.class);
         // Update both nx document and box folder adapter
         nxDocumentAdapter.setBoxItem(boxFolderUpdated);
         nxDocumentAdapter.save(session);
@@ -130,8 +122,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @DELETE
     @Path("{folderId}")
-    public void doDeleteFolder(@PathParam("folderId") String folderId) throws
-            ClientException {
+    public void doDeleteFolder(@PathParam("folderId") String folderId) throws ClientException {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(folderId));
         session.save();

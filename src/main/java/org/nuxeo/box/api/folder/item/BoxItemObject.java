@@ -59,8 +59,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             String folderId = (String) args[0];
             CoreSession session = ctx.getCoreSession();
             DocumentModel folder = session.getDocument(new IdRef(folderId));
-            folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter
-                    .class);
+            folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
         } catch (Exception e) {
             throw WebException.wrap(e);
         }
@@ -68,16 +67,13 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetItems(@QueryParam("offset") String offset,
-            @QueryParam("limit") String limit, @QueryParam("fields") String
-            fields) throws
-            BoxJSONException, ClientException {
+    public String doGetItems(@QueryParam("offset") String offset, @QueryParam("limit") String limit,
+            @QueryParam("fields") String fields) throws BoxJSONException, ClientException {
         CoreSession session = ctx.getCoreSession();
-        BoxCollection itemCollection = folderAdapter.getItemCollection
-                (session, Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT)
-                        , Objects.firstNonNull(offset,
-                        BoxConstants.BOX_OFFSET), Objects.firstNonNull
-                        (fields, BoxConstants.BOX_FIELDS));
+        BoxCollection itemCollection = folderAdapter.getItemCollection(session,
+                Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT),
+                Objects.firstNonNull(offset, BoxConstants.BOX_OFFSET),
+                Objects.firstNonNull(fields, BoxConstants.BOX_FIELDS));
         return boxService.toJSONString(itemCollection);
     }
 

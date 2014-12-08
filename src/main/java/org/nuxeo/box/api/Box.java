@@ -35,7 +35,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
-
 /**
  * Entry point for Nuxeo Box API
  *
@@ -54,8 +53,7 @@ public class Box extends ModuleRoot {
     }
 
     @Path("/")
-    public Object doGetRepository(@PathParam("repo")
-    final String repositoryParam) throws NoSuchDocumentException {
+    public Object doGetRepository(@PathParam("repo") final String repositoryParam) throws NoSuchDocumentException {
         if (StringUtils.isNotBlank(repositoryParam)) {
             String repoName = repositoryParam.substring("repo/".length() + 1);
             try {
@@ -98,25 +96,20 @@ public class Box extends ModuleRoot {
     @Override
     public Object handleError(final WebApplicationException e) {
         if (e instanceof WebSecurityException) {
-            return Response.status(Response.Status.UNAUTHORIZED.getStatusCode
-                    ()).entity(boxService.getJSONBoxException(e,
-                    Response.Status.UNAUTHORIZED.getStatusCode())).type
-                    ("json/application").build();
+            return Response.status(Response.Status.UNAUTHORIZED.getStatusCode()).entity(
+                    boxService.getJSONBoxException(e, Response.Status.UNAUTHORIZED.getStatusCode())).type(
+                    "json/application").build();
         } else if (e instanceof WebResourceNotFoundException) {
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode())
-                    .entity(boxService.getJSONBoxException(e,
-                            Response.Status.NOT_FOUND.getStatusCode())).type
-                            ("json/application").build();
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(
+                    boxService.getJSONBoxException(e, Response.Status.NOT_FOUND.getStatusCode())).type(
+                    "json/application").build();
         } else if (e instanceof BoxRestException) {
-            return Response.status(((BoxRestException) e).getErrorCode())
-                    .entity(boxService.getJSONBoxException(e,
-                            ((BoxRestException) e).getErrorCode())).type
-                            ("json/application").build();
+            return Response.status(((BoxRestException) e).getErrorCode()).entity(
+                    boxService.getJSONBoxException(e, ((BoxRestException) e).getErrorCode())).type("json/application").build();
         } else {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR
-                    .getStatusCode()).entity(boxService.getJSONBoxException
-                    (e, Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()
-                    )).type("json/application").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).entity(
+                    boxService.getJSONBoxException(e, Response.Status.INTERNAL_SERVER_ERROR.getStatusCode())).type(
+                    "json/application").build();
         }
     }
 

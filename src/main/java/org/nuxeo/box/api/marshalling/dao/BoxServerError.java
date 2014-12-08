@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,8 +34,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -53,8 +51,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param status the status to set
      */
@@ -72,8 +69,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param code the code to set
      */
@@ -91,8 +87,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param helpUrl the help_url to set
      */
@@ -110,8 +105,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param message the message to set
      */
@@ -129,8 +123,7 @@ public class BoxServerError extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param requestId the request_id to set
      */
@@ -138,7 +131,6 @@ public class BoxServerError extends BoxTypedObject {
     protected void setRequestId(String requestId) {
         put(FIELD_REQUEST_ID, requestId);
     }
-
 
     /**
      * Deprecated, use getStatus() instead

@@ -36,16 +36,14 @@ public class BoxClientTest extends BoxBaseTest {
 
     @Ignore
     @Test
-    //TODO NXIO-65: activate it after OAuth testing
-    public void itCanFetchABoxFolderWithBoxClient() throws
-            BoxServerException, AuthFatalFailureException, BoxRestException,
-            ClientException {
+    // TODO NXIO-65: activate it after OAuth testing
+    public void itCanFetchABoxFolderWithBoxClient() throws BoxServerException, AuthFatalFailureException,
+            BoxRestException, ClientException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
         // Fetching the folder through Box Client
-        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder
-                ("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
+        BoxFolder boxFolder = boxClient.getFoldersManager().getFolder("e438d0c4-0b7e-4272-986c-513b3b61a796", null);
         assertNotNull(boxFolder);
     }
 }

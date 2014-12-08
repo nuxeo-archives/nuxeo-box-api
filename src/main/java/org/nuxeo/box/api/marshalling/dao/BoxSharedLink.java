@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -41,8 +40,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -61,8 +59,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param theUrl the url to set
      */
@@ -82,8 +79,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param downloadUrl the download_url to set
      */
@@ -103,8 +99,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param passwordEnabled the password_enabled to set
      */
@@ -124,8 +119,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param downloadCount the download_count to set
      */
@@ -135,8 +129,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Get the time to unshare this link. This returns a String and can be
-     * parsed into {@link java.util.Date} by
+     * Get the time to unshare this link. This returns a String and can be parsed into {@link java.util.Date} by
      *
      * @return the unshared_at
      */
@@ -146,8 +139,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param unsharedAt the unshared_at to set
      */
@@ -167,8 +159,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param previewCount the preview_count to set
      */
@@ -178,8 +169,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Get access. This can only be the strings defined in {@link com.box
-     * .boxjavalibv2.dao.BoxSharedLinkAccess}
+     * Get access. This can only be the strings defined in {@link com.box .boxjavalibv2.dao.BoxSharedLinkAccess}
      *
      * @return the access
      */
@@ -189,8 +179,7 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param accessLevel the access to set
      */
@@ -210,14 +199,12 @@ public class BoxSharedLink extends BoxObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param permissionsEntity the permissions to set
      */
     @JsonProperty(FIELD_PERMISSIONS)
-    private void setPermissions(final BoxSharedLinkPermissions
-            permissionsEntity) {
+    private void setPermissions(final BoxSharedLinkPermissions permissionsEntity) {
         put(FIELD_PERMISSIONS, permissionsEntity);
     }
 }

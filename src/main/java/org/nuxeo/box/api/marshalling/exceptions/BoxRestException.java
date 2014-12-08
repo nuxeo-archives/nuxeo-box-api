@@ -29,7 +29,7 @@ public class BoxRestException extends WebException {
      * BoxRestException.
      *
      * @param exception raw exception.
-     * @param message   customized exception message.
+     * @param message customized exception message.
      */
     public BoxRestException(Exception exception, String message) {
         super(exception);
@@ -39,7 +39,7 @@ public class BoxRestException extends WebException {
     /**
      * BoxRestException.
      *
-     * @param message   customized exception message.
+     * @param message customized exception message.
      * @param errorCode customized exception error code.
      */
     public BoxRestException(String message, int errorCode) {

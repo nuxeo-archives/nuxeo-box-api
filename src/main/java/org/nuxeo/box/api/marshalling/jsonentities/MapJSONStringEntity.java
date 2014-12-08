@@ -9,8 +9,7 @@ import java.util.LinkedHashMap;
 /**
  * Implemenation of {@link org.nuxeo.box.api.marshalling.interfaces.IBoxJSONStringEntity} based on LinkedHashMap.
  */
-public class MapJSONStringEntity extends LinkedHashMap<String,
-        Object> implements IBoxJSONStringEntity {
+public class MapJSONStringEntity extends LinkedHashMap<String, Object> implements IBoxJSONStringEntity {
 
     private static final long serialVersionUID = 1L;
 

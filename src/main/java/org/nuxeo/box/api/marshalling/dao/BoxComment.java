@@ -8,8 +8,7 @@ import java.util.Map;
 /**
  * Comment.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = BoxComment.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = BoxComment.class)
 public class BoxComment extends BoxTypedObject {
 
     public static final String FIELD_IS_REPLY_COMMENT = "is_reply_comment";
@@ -37,8 +36,7 @@ public class BoxComment extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -57,8 +55,7 @@ public class BoxComment extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param isReplyComment whether it's reply comment
      */
@@ -78,8 +75,7 @@ public class BoxComment extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param message the comment String.
      */
@@ -99,8 +95,7 @@ public class BoxComment extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param createdBy user creating this comment
      */
@@ -120,8 +115,7 @@ public class BoxComment extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param item the object commented
      */

@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -8,12 +7,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.Map;
 
 /**
- * Box item, this is a base class for the box items({@link org.nuxeo.box.api
- * .dao.BoxFile}/{@link
- * BoxFolder}/...)
+ * Box item, this is a base class for the box items({@link org.nuxeo.box.api .dao.BoxFile}/{@link BoxFolder}/...)
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,
-        property = "type", defaultImpl = BoxItem.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type", defaultImpl = BoxItem.class)
 public class BoxItem extends BoxTypedObject {
 
     public static final String FIELD_ETAG = "etag";
@@ -55,8 +51,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */
@@ -75,8 +70,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param pathCollection the path_collection to set
      */
@@ -96,8 +90,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param tags the tags to set
      */
@@ -119,8 +112,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter.This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter.This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param sequenceId sequence id
      */
@@ -140,8 +132,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param name name of the item
      */
@@ -161,8 +152,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param description description
      */
@@ -182,8 +172,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param size
      */
@@ -193,8 +182,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Get shared link of box item. Note if there is not shared link created,
-     * this is null.
+     * Get shared link of box item. Note if there is not shared link created, this is null.
      *
      * @return shared link of box item
      */
@@ -306,8 +294,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param etag etag
      */
@@ -317,8 +304,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Get the status of this item, which indicates whether this item is
-     * deleted or not.
+     * Get the status of this item, which indicates whether this item is deleted or not.
      *
      * @return the item_status
      */
@@ -328,8 +314,7 @@ public class BoxItem extends BoxTypedObject {
     }
 
     /**
-     * Setter. This is only used by {@see <a href="http://jackson.codehaus
-     * .org">Jackson JSON processer</a>}
+     * Setter. This is only used by {@see <a href="http://jackson.codehaus .org">Jackson JSON processer</a>}
      *
      * @param itemStatus the item_status to set
      */

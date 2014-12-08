@@ -48,11 +48,9 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(FeaturesRunner.class)
 @Features({ BoxServerFeature.class })
-@Deploy({ "org.nuxeo.ecm.platform.comment", "org.nuxeo.ecm.platform.comment" +
-        ".api", "org.nuxeo.ecm.relations.api", "org.nuxeo.ecm.relations",
-        "org.nuxeo.ecm.relations.jena", "org.nuxeo.ecm.relations.io",
-        "org.nuxeo.ecm.relations.core.listener", "org.nuxeo.ecm.platform" +
-        ".comment.api" })
+@Deploy({ "org.nuxeo.ecm.platform.comment", "org.nuxeo.ecm.platform.comment" + ".api", "org.nuxeo.ecm.relations.api",
+        "org.nuxeo.ecm.relations", "org.nuxeo.ecm.relations.jena", "org.nuxeo.ecm.relations.io",
+        "org.nuxeo.ecm.relations.core.listener", "org.nuxeo.ecm.platform" + ".comment.api" })
 @LocalDeploy({ "org.nuxeo.box.api:comment-jena-contrib.xml" })
 @Jetty(port = 18090)
 @RepositoryConfig(cleanup = Granularity.METHOD, init = BoxServerInit.class)
@@ -84,22 +82,19 @@ public class BoxCommentTest extends BoxBaseTest {
 
         BoxComment newBoxComment = new BoxComment(parameters);
 
-        ClientResponse response = service.path("comments").post
-                (ClientResponse.class, boxService.getJSONFromBox
-                        (newBoxComment));
+        ClientResponse response = service.path("comments").post(ClientResponse.class,
+                boxService.getJSONFromBox(newBoxComment));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
-        assertEquals("A new comment on the file", finalResult.getString
-                ("message"));
+        assertEquals("A new comment on the file", finalResult.getString("message"));
 
         // Posting with few properties
-        response = service.path("comments").post(ClientResponse
-                .class, "{\"item\": {\"type\": \"file\", " +
-                "\"id\": \"" + file.getId() + "\"}," +
-                " " +
-                "\"message\": \"YOUR_MESSAGE\"}");
+        response = service.path("comments").post(
+                ClientResponse.class,
+                "{\"item\": {\"type\": \"file\", " + "\"id\": \"" + file.getId() + "\"}," + " "
+                        + "\"message\": \"YOUR_MESSAGE\"}");
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -112,26 +107,21 @@ public class BoxCommentTest extends BoxBaseTest {
         // Fetching the file in Nuxeo way
         DocumentModel file = BoxServerInit.getFile(1, session);
 
-        ClientResponse response = getResponse(RequestType.GET,
-                "comments/" + commentId);
+        ClientResponse response = getResponse(RequestType.GET, "comments/" + commentId);
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(commentId, finalResult.getString("id"));
         assertEquals("YOUR_MESSAGE", finalResult.getString("message"));
-        assertEquals(file.getId(),
-                finalResult.getJSONObject("item").getString("id"));
+        assertEquals(file.getId(), finalResult.getJSONObject("item").getString("id"));
     }
 
-    public void itCanGetCommentsFromAFile(String commentId) throws
-            ClientException,
-            IOException, JSONException {
+    public void itCanGetCommentsFromAFile(String commentId) throws ClientException, IOException, JSONException {
         // Fetching the file in Nuxeo way
         DocumentModel file = BoxServerInit.getFile(1, session);
 
-        ClientResponse response = getResponse(RequestType.GET,
-                "files/" + file.getId() + "/comments");
+        ClientResponse response = getResponse(RequestType.GET, "files/" + file.getId() + "/comments");
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -146,33 +136,27 @@ public class BoxCommentTest extends BoxBaseTest {
         parameters.put("message", "COMMENT_UPDATE");
 
         BoxComment newBoxComment = new BoxComment(parameters);
-        ClientResponse response = service.path("comments/" + commentId)
-                .put(ClientResponse.class,
-                        boxService.getJSONFromBox(newBoxComment));
+        ClientResponse response = service.path("comments/" + commentId).put(ClientResponse.class,
+                boxService.getJSONFromBox(newBoxComment));
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("message"), "COMMENT_UPDATE");
 
         // Posting with few properties
-        response = service.path("comments/" + commentId).put(ClientResponse
-                .class, "{\"message\":\"My New Message\"}");
+        response = service.path("comments/" + commentId).put(ClientResponse.class, "{\"message\":\"My New Message\"}");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     public void itCanDeleteComment(String commentId) throws Exception {
-        //Call delete on this folder
-        ClientResponse response = service.path("comments/" + commentId)
-                .delete(ClientResponse.class);
+        // Call delete on this folder
+        ClientResponse response = service.path("comments/" + commentId).delete(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
         // Checking if folder is removed
-        response = getResponse(BoxBaseTest.RequestType.GET,
-                "comments/" + commentId);
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-                response.getStatus());
+        response = getResponse(BoxBaseTest.RequestType.GET, "comments/" + commentId);
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
 }

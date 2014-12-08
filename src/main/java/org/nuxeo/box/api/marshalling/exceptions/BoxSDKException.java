@@ -17,8 +17,7 @@ public abstract class BoxSDKException extends Exception {
     }
 
     /**
-     * Status code of this exception. This could be helpful for exception
-     * wrapping http responses. By default, it is -1.
+     * Status code of this exception. This could be helpful for exception wrapping http responses. By default, it is -1.
      */
     public int getStatusCode() {
         return -1;

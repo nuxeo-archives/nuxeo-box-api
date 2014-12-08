@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 
 import java.io.InputStream;
@@ -61,8 +60,7 @@ public class BoxPreview extends BoxObject {
     }
 
     /**
-     * Get content of the preview. Caller is responsible for closing the
-     * InputStream.
+     * Get content of the preview. Caller is responsible for closing the InputStream.
      *
      * @return preview input stream.
      * @throws org.nuxeo.box.api.marshalling.exceptions.BoxRestException

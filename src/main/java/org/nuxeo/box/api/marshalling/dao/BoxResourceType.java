@@ -71,14 +71,11 @@ public enum BoxResourceType implements IBoxType {
      */
     FILE_VERSIONS,
     /**
-     * Box's equivalent of access control lists. They can be used to set and
-     * apply permissions for users to folders.
+     * Box's equivalent of access control lists. They can be used to set and apply permissions for users to folders.
      */
     COLLABORATION,
     /**
-     * A plural format of {@link org.nuxeo.box.api.marshalling.dao
-     * .BoxResourceType
-     * .COLLABORATIONS}.
+     * A plural format of {@link org.nuxeo.box.api.marshalling.dao .BoxResourceType .COLLABORATIONS}.
      */
     COLLABORATIONS,
     /**
@@ -131,9 +128,7 @@ public enum BoxResourceType implements IBoxType {
     LOGIN_TOKEN;
 
     // As a performance optimization, set up string values for all types.
-    private static final Map<BoxResourceType,
-            String> typeToLowercaseString = new HashMap<BoxResourceType,
-            String>();
+    private static final Map<BoxResourceType, String> typeToLowercaseString = new HashMap<BoxResourceType, String>();
 
     static {
         for (BoxResourceType type : values()) {
@@ -143,19 +138,15 @@ public enum BoxResourceType implements IBoxType {
     }
 
     /**
-     * Get the BoxResourceType from a lower case string value. For example
-     * "file" would return BoxResourceType.FILE Deprecated,
-     * use getTypeFromLowercaseString
-     * method in IBoxResourceHub instead.
+     * Get the BoxResourceType from a lower case string value. For example "file" would return BoxResourceType.FILE
+     * Deprecated, use getTypeFromLowercaseString method in IBoxResourceHub instead.
      *
      * @param string
      * @return
      */
     @Deprecated
-    public static BoxResourceType
-    getTypeFromLowercaseString(final String string) {
-        return Enum.valueOf(BoxResourceType.class,
-                string.toUpperCase(Locale.US));
+    public static BoxResourceType getTypeFromLowercaseString(final String string) {
+        return Enum.valueOf(BoxResourceType.class, string.toUpperCase(Locale.US));
     }
 
     @Override

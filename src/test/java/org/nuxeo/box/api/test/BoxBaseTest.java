@@ -70,26 +70,23 @@ public class BoxBaseTest {
 
     public static final String redirect_uri = "blabla";
 
-
     protected BoxClient boxClient;
 
     protected ObjectMapper mapper;
 
     protected WebResource service;
 
-    protected BoxClient getAuthenticatedClient(String code) throws
-            BoxRestException, BoxServerException, AuthFatalFailureException {
+    protected BoxClient getAuthenticatedClient(String code) throws BoxRestException, BoxServerException,
+            AuthFatalFailureException {
         BoxClient client = new BoxClient(key, secret);
-        BoxOAuthRequestObject obj = BoxOAuthRequestObject
-                .createOAuthRequestObject(code, key, secret, redirect_uri);
+        BoxOAuthRequestObject obj = BoxOAuthRequestObject.createOAuthRequestObject(code, key, secret, redirect_uri);
         BoxOAuthToken bt = client.getOAuthManager().createOAuth(obj);
         client.authenticate(bt);
         return client;
     }
 
     // TODO NXIO-65: activate it to test with Box client and NX OAuth
-    public void initBoxClient() throws AuthFatalFailureException,
-            BoxServerException, BoxRestException {
+    public void initBoxClient() throws AuthFatalFailureException, BoxServerException, BoxRestException {
 
         String code = "D2MT5whdEw";
 
@@ -118,7 +115,7 @@ public class BoxBaseTest {
         service = getServiceFor("Administrator", "Administrator");
         mapper = new ObjectMapper();
         // TODO NXIO-65: activate it to test with Box client and NX OAuth
-        //initBoxClient();
+        // initBoxClient();
     }
 
     protected WebResource getServiceFor(String user, String password) {
@@ -133,9 +130,8 @@ public class BoxBaseTest {
         return getResponse(requestType, path, null, null, null);
     }
 
-    protected ClientResponse getResponse(RequestType requestType, String path,
-            String data, MultivaluedMap<String, String> queryParams,
-            MultiPart mp) {
+    protected ClientResponse getResponse(RequestType requestType, String path, String data,
+            MultivaluedMap<String, String> queryParams, MultiPart mp) {
         WebResource wr = service.path(path);
 
         if (queryParams != null && !queryParams.isEmpty()) {
@@ -143,7 +139,7 @@ public class BoxBaseTest {
         }
 
         Builder builder = wr.accept(MediaType.APPLICATION_JSON) //
-                .header("X-NXDocumentProperties", "dublincore");
+        .header("X-NXDocumentProperties", "dublincore");
         if (mp != null) {
             builder = wr.type(MediaType.MULTIPART_FORM_DATA_TYPE);
         }
@@ -180,8 +176,7 @@ public class BoxBaseTest {
     protected String getCode() throws IOException {
         ServerSocket serverSocket = new ServerSocket(PORT);
         Socket socket = serverSocket.accept();
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket
-                .getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         while (true) {
             String code = StringUtils.EMPTY;
             code = in.readLine();
@@ -201,12 +196,10 @@ public class BoxBaseTest {
         GET, POST, DELETE, PUT, POSTREQUEST
     }
 
-    protected JSONObject getJSONFromResponse(ClientResponse response) throws
-            IOException, JSONException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader
-                (response.getEntityInputStream()));
+    protected JSONObject getJSONFromResponse(ClientResponse response) throws IOException, JSONException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntityInputStream()));
         StringBuilder builder = new StringBuilder();
-        for (String line = null; (line = reader.readLine()) != null; ) {
+        for (String line = null; (line = reader.readLine()) != null;) {
             builder.append(line).append("\n");
         }
         JSONTokener tokener = new JSONTokener(builder.toString());
@@ -214,4 +207,3 @@ public class BoxBaseTest {
     }
 
 }
-

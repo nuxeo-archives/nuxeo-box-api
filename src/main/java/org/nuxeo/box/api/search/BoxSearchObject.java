@@ -49,19 +49,15 @@ public class BoxSearchObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     /**
-     * The string in query to search for; can be matched against item names,
-     * descriptions, text content of a file, and other fields of the
-     * different item types.
+     * The string in query to search for; can be matched against item names, descriptions, text content of a file, and
+     * other fields of the different item types.
      */
     @GET
-    public String doSearch(@QueryParam("query") String query,
-            @QueryParam("offset") String offset,
-            @QueryParam("limit") String limit) throws ClientException,
-            BoxJSONException {
-        return boxService.toJSONString(boxService.searchBox(query,
-                ctx.getCoreSession(), Objects.firstNonNull(limit,
-                BoxConstants.BOX_LIMIT), Objects.firstNonNull(offset,
-                BoxConstants.BOX_OFFSET)));
+    public String doSearch(@QueryParam("query") String query, @QueryParam("offset") String offset,
+            @QueryParam("limit") String limit) throws ClientException, BoxJSONException {
+        return boxService.toJSONString(boxService.searchBox(query, ctx.getCoreSession(),
+                Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT),
+                Objects.firstNonNull(offset, BoxConstants.BOX_OFFSET)));
     }
 
 }

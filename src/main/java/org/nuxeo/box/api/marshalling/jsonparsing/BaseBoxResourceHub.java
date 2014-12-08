@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.jsonparsing;
 
-
 import org.nuxeo.box.api.marshalling.dao.BoxObject;
 import org.nuxeo.box.api.marshalling.interfaces.IBoxResourceHub;
 import org.nuxeo.box.api.marshalling.interfaces.IBoxType;
@@ -12,8 +11,7 @@ import java.util.Map;
 public abstract class BaseBoxResourceHub implements IBoxResourceHub {
 
     // As a performance optimization, set up string values for all types.
-    private static final Map<String, IBoxType> lowercaseStringToType = new
-            HashMap<String, IBoxType>();
+    private static final Map<String, IBoxType> lowercaseStringToType = new HashMap<String, IBoxType>();
 
     public BaseBoxResourceHub() {
         initializeTypes();
@@ -38,8 +36,8 @@ public abstract class BaseBoxResourceHub implements IBoxResourceHub {
     protected abstract Class getConcreteClassForIBoxType();
 
     /**
-     * Get class for a certain type, assuming the input type is an object of
-     * the concrete class of IBoxType defined in this resource hub.
+     * Get class for a certain type, assuming the input type is an object of the concrete class of IBoxType defined in
+     * this resource hub.
      *
      * @param type
      * @return

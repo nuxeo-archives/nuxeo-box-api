@@ -24,8 +24,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.adapter.DocumentAdapterFactory;
 
 /**
- * Box Adapter Factory - instantiate implementations related to document
- * type
+ * Box Adapter Factory - instantiate implementations related to document type
  *
  * @since 5.9.2
  */

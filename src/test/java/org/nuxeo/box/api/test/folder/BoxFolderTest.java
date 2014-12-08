@@ -59,29 +59,23 @@ public class BoxFolderTest extends BoxBaseTest {
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
         // Fetching the folder through NX Box API
-        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
-                "folders/" + folder.getId());
+        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET, "folders/" + folder.getId());
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
-        assertEquals(finalResult.getString("sequence_id"),
-                finalResult.getString("id"));
+        assertEquals(finalResult.getString("sequence_id"), finalResult.getString("id"));
         assertEquals("project", finalResult.getString("item_status"));
-        assertEquals("/", finalResult.getJSONObject("parent").getString
-                ("name"));
-        assertEquals("null", finalResult.getJSONObject("parent").getString
-                ("etag"));
-        assertEquals("null", finalResult.getJSONObject("parent").getString
-                ("sequence_id"));
+        assertEquals("/", finalResult.getJSONObject("parent").getString("name"));
+        assertEquals("null", finalResult.getJSONObject("parent").getString("etag"));
+        assertEquals("null", finalResult.getJSONObject("parent").getString("sequence_id"));
     }
 
     @Test
     public void itCanFetchABoxRoot() throws Exception {
 
         // Fetching the root through NX Box API
-        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET,
-                "folders/0");
+        ClientResponse response = getResponse(BoxBaseTest.RequestType.GET, "folders/0");
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -90,8 +84,7 @@ public class BoxFolderTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanPostABoxFolder() throws ClientException,
-            BoxJSONException, IOException, JSONException {
+    public void itCanPostABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
@@ -104,8 +97,8 @@ public class BoxFolderTest extends BoxBaseTest {
 
         BoxFolder newBoxFolder = new BoxFolder(parameters);
 
-        ClientResponse response = service.path("folders").post(ClientResponse
-                .class, boxService.getJSONFromBox(newBoxFolder));
+        ClientResponse response = service.path("folders").post(ClientResponse.class,
+                boxService.getJSONFromBox(newBoxFolder));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -113,22 +106,19 @@ public class BoxFolderTest extends BoxBaseTest {
         assertEquals("project", finalResult.getString("item_status"));
 
         // Posting with few properties
-        response = service.path("folders").post(ClientResponse
-                .class, "{\"name\":\"New Folder\", \"parent\": {\"id\": " +
-                "\"0\"}}");
+        response = service.path("folders").post(ClientResponse.class,
+                "{\"name\":\"New Folder\", \"parent\": {\"id\": " + "\"0\"}}");
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void itCanUpdateABoxFolder() throws ClientException,
-            BoxJSONException, IOException, JSONException {
+    public void itCanUpdateABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
 
-        BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder.getAdapter
-                (BoxAdapter.class);
+        BoxFolderAdapter folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
         BoxFolder boxFolderUpdated = (BoxFolder) folderAdapter.getBoxItem();
 
         // Default name checking
@@ -137,8 +127,7 @@ public class BoxFolderTest extends BoxBaseTest {
         // Update the name of the folder
         boxFolderUpdated.put("name", "newName");
 
-        final ClientResponse response = service.path("folders/" + folder
-                .getId()).put(ClientResponse.class,
+        final ClientResponse response = service.path("folders/" + folder.getId()).put(ClientResponse.class,
                 boxService.getJSONFromBox(boxFolderUpdated));
 
         // Checking response consistency
@@ -151,16 +140,12 @@ public class BoxFolderTest extends BoxBaseTest {
     public void itCanDeleteABoxFolder() throws ClientException {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
-        //Call delete on this folder
-        ClientResponse response = service.path("folders/" + folder.getId())
-                .delete(ClientResponse.class);
+        // Call delete on this folder
+        ClientResponse response = service.path("folders/" + folder.getId()).delete(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
         // Checking if folder is removed
-        response = getResponse(BoxBaseTest.RequestType.GET,
-                "folders/" + folder.getId());
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-                response.getStatus());
+        response = getResponse(BoxBaseTest.RequestType.GET, "folders/" + folder.getId());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 }

@@ -47,14 +47,13 @@ public interface BoxService {
 
     BiMap<String, String> getNxBoxRole();
 
-    BoxCollection searchBox(String term, CoreSession session,
-            String limit, String offset) throws ClientException;
+    BoxCollection searchBox(String term, CoreSession session, String limit, String offset) throws ClientException;
 
-    List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList
-            documentModels, String fields) throws ClientException;
+    List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList documentModels, String fields)
+            throws ClientException;
 
-    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem,
-            ACE ace, String collaborationId) throws ClientException;
+    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem, ACE ace, String collaborationId)
+            throws ClientException;
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
 
@@ -70,20 +69,15 @@ public interface BoxService {
 
     BoxGroup fillGroup(NuxeoGroup group);
 
-    BoxFolder getBoxFolder(String jsonBoxFolder) throws
-            BoxJSONException;
+    BoxFolder getBoxFolder(String jsonBoxFolder) throws BoxJSONException;
 
-    BoxFile getBoxFile(String jsonBoxFile) throws
-            BoxJSONException;
+    BoxFile getBoxFile(String jsonBoxFile) throws BoxJSONException;
 
-    BoxComment getBoxComment(String jsonBoxComment) throws
-            BoxJSONException;
+    BoxComment getBoxComment(String jsonBoxComment) throws BoxJSONException;
 
-    BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration) throws
-            BoxJSONException;
+    BoxCollaboration getBoxCollaboration(String jsonBoxCollaboration) throws BoxJSONException;
 
-    String getJSONFromBox(BoxTypedObject boxTypedObject) throws
-            BoxJSONException;
+    String getJSONFromBox(BoxTypedObject boxTypedObject) throws BoxJSONException;
 
     String getJSONBoxException(Exception e, int status);
 

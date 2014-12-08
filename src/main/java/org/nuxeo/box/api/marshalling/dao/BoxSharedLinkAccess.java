@@ -11,14 +11,12 @@ public class BoxSharedLinkAccess {
     public final static String OPEN = "open";
 
     /**
-     * Company access. Indicates the link can only be accessed by accounts
-     * within a same company.
+     * Company access. Indicates the link can only be accessed by accounts within a same company.
      */
     public final static String COMPANY = "company";
 
     /**
-     * Collaborators access.Indicates the link can only be accessed by
-     * collaborators.
+     * Collaborators access.Indicates the link can only be accessed by collaborators.
      */
     public final static String COLLABORATORS = "collaborators";
 }

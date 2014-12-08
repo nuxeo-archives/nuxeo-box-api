@@ -44,37 +44,30 @@ public class BoxExceptionTest extends BoxBaseTest {
 
     @Test
     public void itCanReturnJSONBoxException() throws Exception {
-        //Get wrong folder id
-        ClientResponse response = service.path("folders/blabla").get
-                (ClientResponse.class);
+        // Get wrong folder id
+        ClientResponse response = service.path("folders/blabla").get(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(404, finalResult.getInt("status"));
         assertEquals("No such document: blabla", finalResult.getString("code"));
 
         // Get wrong endpoint
-        response = service.path("folder").get
-                (ClientResponse.class);
+        response = service.path("folder").get(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
         finalResult = getJSONFromResponse(response);
         assertEquals(500, finalResult.getInt("status"));
         assertEquals("Type not found: repo", finalResult.getString("code"));
 
         // Posting with wrong property 'i' instead of 'id'
-        response = service.path("folders").post(ClientResponse
-                .class, "{\"name\":\"New Folder\", \"parent\": {\"i\": " +
-                "\"blabla\"}}");
+        response = service.path("folders").post(ClientResponse.class,
+                "{\"name\":\"New Folder\", \"parent\": {\"i\": " + "\"blabla\"}}");
         // Checking response consistency
-        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
         finalResult = getJSONFromResponse(response);
         assertEquals(500, finalResult.getInt("status"));
-        assertEquals("Failed to get document null", finalResult.getString
-                ("message"));
+        assertEquals("Failed to get document null", finalResult.getString("message"));
     }
 
 }

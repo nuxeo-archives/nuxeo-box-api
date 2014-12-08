@@ -47,8 +47,7 @@ public class BoxSearchTest extends BoxBaseTest {
     public void itCanSearch() throws Exception {
         DatabaseHelper.DATABASE.sleepForFulltext();
         // Searching in fulltext 'folder' term
-        ClientResponse response = service.path("search/").queryParam("query",
-                "folder").get(ClientResponse.class);
+        ClientResponse response = service.path("search/").queryParam("query", "folder").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
@@ -60,10 +59,8 @@ public class BoxSearchTest extends BoxBaseTest {
     public void itCanSearchWithLimit() throws Exception {
         DatabaseHelper.DATABASE.sleepForFulltext();
         // Searching in fulltext 'folder' term and limit @ 2
-        ClientResponse response = service.path("search/").queryParam("query",
-                "folder").queryParam("limit",
-                "2").queryParam("offset",
-                "0").get(ClientResponse.class);
+        ClientResponse response = service.path("search/").queryParam("query", "folder").queryParam("limit", "2").queryParam(
+                "offset", "0").get(ClientResponse.class);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);

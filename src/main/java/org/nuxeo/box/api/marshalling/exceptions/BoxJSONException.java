@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.exceptions;
 
-
 public class BoxJSONException extends BoxSDKException {
 
     /**

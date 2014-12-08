@@ -17,8 +17,7 @@ public class BoxLock extends BoxTypedObject {
 
     public static final String FIELD_LOCK_TYPE = "lock_type";
 
-    public static final String FIELD_IS_DOWNLOAD_PREVENTED =
-            "is_download_prevented";
+    public static final String FIELD_IS_DOWNLOAD_PREVENTED = "is_download_prevented";
 
     public static final String FIELD_SERVICE_ACTION = "service_action";
 
@@ -39,8 +38,7 @@ public class BoxLock extends BoxTypedObject {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */

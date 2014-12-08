@@ -1,6 +1,5 @@
 package org.nuxeo.box.api.marshalling.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -9,8 +8,7 @@ public class BoxEventCollection extends BoxCollectionBase {
 
     public static final String FIELD_CHUNK_SIZE = "chunk_size";
 
-    public static final String FIELD_NEXT_STREAM_POSITION =
-            "next_stream_position";
+    public static final String FIELD_NEXT_STREAM_POSITION = "next_stream_position";
 
     public BoxEventCollection() {
     }
@@ -25,8 +23,7 @@ public class BoxEventCollection extends BoxCollectionBase {
     }
 
     /**
-     * Instantiate the object from a map. Each entry in the map reflects to a
-     * field.
+     * Instantiate the object from a map. Each entry in the map reflects to a field.
      *
      * @param map
      */

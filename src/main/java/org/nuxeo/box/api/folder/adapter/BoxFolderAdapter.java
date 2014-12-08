@@ -47,8 +47,7 @@ import java.util.Map;
 public class BoxFolderAdapter extends BoxAdapter {
 
     /**
-     * Instantiate the adapter and the Box Folder from Nuxeo Document and
-     * load its properties into json format
+     * Instantiate the adapter and the Box Folder from Nuxeo Document and load its properties into json format
      */
     public BoxFolderAdapter(DocumentModel doc) throws ClientException {
         super(doc);
@@ -57,14 +56,12 @@ public class BoxFolderAdapter extends BoxAdapter {
         final Map<String, Object> boxEmailProperties = new HashMap<>();
         boxEmailProperties.put(BoxEmail.FIELD_ACCESS, null);
         boxEmailProperties.put(BoxEmail.FIELD_EMAIL, null);
-        final BoxEmail boxEmail = new BoxEmail(Collections.unmodifiableMap
-                (boxEmailProperties));
+        final BoxEmail boxEmail = new BoxEmail(Collections.unmodifiableMap(boxEmailProperties));
         boxProperties.put(BoxFolder.FIELD_FOLDER_UPLOAD_EMAIL, boxEmail);
 
         // Children
         boxProperties.put(BoxFolder.FIELD_ITEM_COLLECTION,
-                getItemCollection(session, BoxConstants.BOX_LIMIT,
-                        BoxConstants.BOX_OFFSET, BoxConstants.BOX_FIELDS));
+                getItemCollection(session, BoxConstants.BOX_LIMIT, BoxConstants.BOX_OFFSET, BoxConstants.BOX_FIELDS));
 
         boxItem = new BoxFolder(Collections.unmodifiableMap(boxProperties));
     }
@@ -83,65 +80,51 @@ public class BoxFolderAdapter extends BoxAdapter {
      *
      * @return the list of children in item collection
      */
-    public BoxCollection getItemCollection(CoreSession session,
-            String limit, String offset, String fields) throws
-            ClientException {
+    public BoxCollection getItemCollection(CoreSession session, String limit, String offset, String fields)
+            throws ClientException {
         final Map<String, Object> collectionProperties = new HashMap<>();
         // Fetch items
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM Document WHERE ecm:parentId=");
         query.append("'" + doc.getId() + "'");
-        DocumentModelList children = session.query(query.toString(),
-                null, Long.parseLong(limit), Long.parseLong(offset), false);
-        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxService.getBoxDocumentCollection(children, fields));
-        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
-                children.size());
-        return new BoxCollection(Collections.unmodifiableMap
-                (collectionProperties));
+        DocumentModelList children = session.query(query.toString(), null, Long.parseLong(limit),
+                Long.parseLong(offset), false);
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES, boxService.getBoxDocumentCollection(children, fields));
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, children.size());
+        return new BoxCollection(Collections.unmodifiableMap(collectionProperties));
     }
 
     /**
-     * @return the ACLs set as a BoxCollection containing box collaborations
-     * listing
+     * @return the ACLs set as a BoxCollection containing box collaborations listing
      */
-    public BoxCollection getCollaborations() throws
-            ClientException {
+    public BoxCollection getCollaborations() throws ClientException {
         BoxService boxService = Framework.getLocalService(BoxService.class);
         List<BoxCollaboration> boxCollaborations = new ArrayList<>();
         Map<String, Object> collectionProperties = new HashMap<>();
         CoreSession session = doc.getCoreSession();
         for (ACL acl : session.getACP(new IdRef(doc.getId())).getACLs()) {
-            if (!(ACL.LOCAL_ACL.equals(acl.getName()) || ACL.INHERITED_ACL
-                    .equals(acl.getName()))) {
+            if (!(ACL.LOCAL_ACL.equals(acl.getName()) || ACL.INHERITED_ACL.equals(acl.getName()))) {
                 for (ACE ace : acl.getACEs()) {
                     if (ace.isGranted()) {
-                        boxCollaborations.add(boxService.getBoxCollaboration
-                                (this, ace, acl.getName()));
+                        boxCollaborations.add(boxService.getBoxCollaboration(this, ace, acl.getName()));
                     }
                 }
             }
         }
-        collectionProperties.put(BoxCollection.FIELD_ENTRIES,
-                boxCollaborations);
-        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT,
-                boxCollaborations.size());
-        return new BoxCollection(Collections.unmodifiableMap
-                (collectionProperties));
+        collectionProperties.put(BoxCollection.FIELD_ENTRIES, boxCollaborations);
+        collectionProperties.put(BoxCollection.FIELD_TOTAL_COUNT, boxCollaborations.size());
+        return new BoxCollection(Collections.unmodifiableMap(collectionProperties));
     }
 
     /**
      * @return the related collaboration on a specific folder
      */
-    public BoxCollaboration getCollaboration(String collaborationId) throws
-            ClientException {
+    public BoxCollaboration getCollaboration(String collaborationId) throws ClientException {
         CoreSession session = doc.getCoreSession();
-        ACL acl = session.getACP(new IdRef(doc.getId())).getACL
-                (collaborationId);
+        ACL acl = session.getACP(new IdRef(doc.getId())).getACL(collaborationId);
         if (acl == null) {
             return null;
         }
-        return boxService.getBoxCollaboration(this, acl.getACEs()[0],
-                collaborationId);
+        return boxService.getBoxCollaboration(this, acl.getACEs()[0], collaborationId);
     }
 }

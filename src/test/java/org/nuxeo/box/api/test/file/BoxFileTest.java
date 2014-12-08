@@ -72,8 +72,7 @@ public class BoxFileTest extends BoxBaseTest {
         DocumentModel file = BoxServerInit.getFile(1, session);
 
         // Fetching the file through NX Box API
-        ClientResponse response = getResponse(RequestType.GET,
-                "files/" + file.getId());
+        ClientResponse response = getResponse(RequestType.GET, "files/" + file.getId());
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -85,27 +84,21 @@ public class BoxFileTest extends BoxBaseTest {
     public void itCanDeleteABoxFile() throws ClientException {
         // Fetching the file in Nuxeo way
         final DocumentModel file = BoxServerInit.getFile(1, session);
-        //Call delete on this file
-        ClientResponse response = service.path("files/" + file.getId())
-                .delete(ClientResponse.class);
+        // Call delete on this file
+        ClientResponse response = service.path("files/" + file.getId()).delete(ClientResponse.class);
         // Checking response consistency
-        assertEquals(Response.Status.NO_CONTENT.getStatusCode(),
-                response.getStatus());
+        assertEquals(Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
         // Checking if folder is removed
-        response = getResponse(BoxBaseTest.RequestType.GET,
-                "files/" + file.getId());
-        assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-                response.getStatus());
+        response = getResponse(BoxBaseTest.RequestType.GET, "files/" + file.getId());
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void itCanUpdateABoxFile() throws ClientException,
-            BoxJSONException, IOException, JSONException {
+    public void itCanUpdateABoxFile() throws ClientException, BoxJSONException, IOException, JSONException {
         // Fetching the File in Nuxeo way
         final DocumentModel File = BoxServerInit.getFile(1, session);
 
-        BoxFileAdapter FileAdapter = (BoxFileAdapter) File.getAdapter
-                (BoxAdapter.class);
+        BoxFileAdapter FileAdapter = (BoxFileAdapter) File.getAdapter(BoxAdapter.class);
         BoxFile boxFileUpdated = (BoxFile) FileAdapter.getBoxItem();
 
         // Default name checking
@@ -114,9 +107,8 @@ public class BoxFileTest extends BoxBaseTest {
         // Update the name of the File
         boxFileUpdated.put("name", "newName");
 
-        ClientResponse response = service.path("files/" + File
-                .getId()).put(ClientResponse.class, boxService.getJSONFromBox
-                (boxFileUpdated));
+        ClientResponse response = service.path("files/" + File.getId()).put(ClientResponse.class,
+                boxService.getJSONFromBox(boxFileUpdated));
 
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -124,32 +116,26 @@ public class BoxFileTest extends BoxBaseTest {
         assertEquals(finalResult.getString("name"), "newName");
 
         // Putting with few properties
-        response = service.path("files/" + File.getId()).put(ClientResponse
-                .class, "{\"name\":\"new name.jpg\"}");
+        response = service.path("files/" + File.getId()).put(ClientResponse.class, "{\"name\":\"new name.jpg\"}");
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void itCanCreateABoxFile() throws ClientException, IOException,
-            JSONException {
+    public void itCanCreateABoxFile() throws ClientException, IOException, JSONException {
         // Setting the parent
         DocumentModel folder = BoxServerInit.getFolder(1, session);
         FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
         formDataMultiPart.field("parent_id", folder.getId());
         // Setting the blob and name
-        File file = org.nuxeo.common.utils.FileUtils
-                .getResourceFileFromContext("blob.json");
+        File file = org.nuxeo.common.utils.FileUtils.getResourceFileFromContext("blob.json");
         formDataMultiPart.field("filename", file.getName());
-        FormDataBodyPart bodyPart = new FormDataBodyPart("file",
-                new ByteArrayInputStream(FileUtils.readFileToByteArray(file)),
-                MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        FormDataBodyPart bodyPart = new FormDataBodyPart("file", new ByteArrayInputStream(
+                FileUtils.readFileToByteArray(file)), MediaType.APPLICATION_OCTET_STREAM_TYPE);
         formDataMultiPart.bodyPart(bodyPart);
 
-        final ClientResponse response = service.path("files/content").type
-                (MediaType
-                        .MULTIPART_FORM_DATA)
-                .post(ClientResponse.class, formDataMultiPart);
+        final ClientResponse response = service.path("files/content").type(MediaType.MULTIPART_FORM_DATA).post(
+                ClientResponse.class, formDataMultiPart);
         // Checking response consistency
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
