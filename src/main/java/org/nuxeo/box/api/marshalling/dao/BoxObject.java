@@ -3,8 +3,11 @@ package org.nuxeo.box.api.marshalling.dao;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.nuxeo.box.api.marshalling.jsonentities.DefaultJSONStringEntity;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class BoxObject extends DefaultJSONStringEntity {
+
+    private static final Log log = LogFactory.getLog(BoxObject.class);
 
     private final Map<String, Object> extraMap = new HashMap<String, Object>();
 
@@ -53,7 +58,8 @@ public class BoxObject extends DefaultJSONStringEntity {
                 try {
                     destination.put(entry.getKey(),
                             value.getClass().getConstructor(value.getClass()).newInstance(value));
-                } catch (Exception e) {
+                } catch (ReflectiveOperationException e) {
+                    log.error(e, e);
                 }
             } else if (value instanceof ArrayList<?>) {
                 ArrayList<Object> list = new ArrayList<Object>();
@@ -76,7 +82,8 @@ public class BoxObject extends DefaultJSONStringEntity {
             if (obj instanceof BoxObject) {
                 try {
                     destination.add(obj.getClass().getConstructor(obj.getClass()).newInstance(obj));
-                } catch (Exception e) {
+                } catch (ReflectiveOperationException e) {
+                    log.error(e, e);
                 }
             } else {
                 destination.add(obj);

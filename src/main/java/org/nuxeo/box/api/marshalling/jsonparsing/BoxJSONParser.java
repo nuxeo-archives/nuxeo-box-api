@@ -6,11 +6,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.marshalling.interfaces.IBoxJSONParser;
 import org.nuxeo.box.api.marshalling.interfaces.IBoxResourceHub;
 import org.nuxeo.box.api.marshalling.interfaces.IBoxType;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -69,7 +71,7 @@ public class BoxJSONParser implements IBoxJSONParser {
     public String convertBoxObjectToJSONString(Object object) throws BoxJSONException {
         try {
             return getObjectMapper().writeValueAsString(object);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new BoxJSONException(e);
         }
     }
@@ -80,7 +82,7 @@ public class BoxJSONParser implements IBoxJSONParser {
             JsonFactory jsonFactory = new JsonFactory();
             JsonParser jp = jsonFactory.createJsonParser(inputStream);
             return getObjectMapper().readValue(jp, theClass);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new BoxJSONException(e);
         }
     }
@@ -91,7 +93,7 @@ public class BoxJSONParser implements IBoxJSONParser {
             JsonFactory jsonFactory = new JsonFactory();
             JsonParser jp = jsonFactory.createJsonParser(jsonString);
             return getObjectMapper().readValue(jp, theClass);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new BoxJSONException(e);
         }
     }

@@ -60,7 +60,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             CoreSession session = ctx.getCoreSession();
             DocumentModel folder = session.getDocument(new IdRef(folderId));
             folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
-        } catch (Exception e) {
+        } catch (ClientException e) {
             throw WebException.wrap(e);
         }
         setRoot(true);

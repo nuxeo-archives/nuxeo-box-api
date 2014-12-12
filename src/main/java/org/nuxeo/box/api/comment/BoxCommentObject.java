@@ -71,7 +71,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
                 CoreSession session = ctx.getCoreSession();
                 DocumentModel file = session.getDocument(new IdRef(fileId));
                 boxFile = (BoxFileAdapter) file.getAdapter(BoxAdapter.class);
-            } catch (Exception e) {
+            } catch (ClientException e) {
                 throw WebException.wrap(e);
             }
             setRoot(true);

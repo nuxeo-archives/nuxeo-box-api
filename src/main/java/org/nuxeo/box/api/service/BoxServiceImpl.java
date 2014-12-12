@@ -184,11 +184,12 @@ public class BoxServiceImpl implements BoxService {
     /**
      * Marshalling the box object to JSON
      */
+    @Override
     public String toJSONString(BoxObject boxObject) throws BoxJSONException {
         BoxJSONParser boxJSONParser = new BoxJSONParser(new BoxResourceHub());
         try {
             return boxObject.toJSONString(boxJSONParser);
-        } catch (Exception e) {
+        } catch (BoxJSONException e) {
             throw new BoxRestException("Box Parser Exception", e, Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
         }
     }
