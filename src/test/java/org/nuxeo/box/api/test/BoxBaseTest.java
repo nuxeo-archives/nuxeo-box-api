@@ -25,7 +25,9 @@ import com.box.boxjavalibv2.exceptions.BoxServerException;
 import com.box.boxjavalibv2.requests.requestobjects.BoxOAuthRequestObject;
 import com.box.restclientv2.exceptions.BoxRestException;
 import com.google.inject.Inject;
+
 import org.nuxeo.box.api.service.BoxService;
+
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -35,6 +37,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.multipart.impl.MultiPartWriter;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
@@ -45,6 +48,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -55,6 +59,8 @@ import java.net.Socket;
  * @since 5.9.2
  */
 public class BoxBaseTest {
+
+    private static final Integer TIMEOUT = Integer.valueOf(1000 * 60 * 5); // 5min
 
     @Inject
     protected CoreSession session;
@@ -122,6 +128,8 @@ public class BoxBaseTest {
         ClientConfig config = new DefaultClientConfig();
         config.getClasses().add(MultiPartWriter.class);
         Client client = Client.create(config);
+        client.setConnectTimeout(TIMEOUT);
+        client.setReadTimeout(TIMEOUT);
         client.addFilter(new HTTPBasicAuthFilter(user, password));
         return client.resource("http://localhost:18090/box/2.0/");
     }
