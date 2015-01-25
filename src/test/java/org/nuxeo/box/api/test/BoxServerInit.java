@@ -16,16 +16,19 @@
  */
 package org.nuxeo.box.api.test;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.nuxeo.common.utils.FileUtils;
 import org.nuxeo.ecm.automation.core.util.DocumentHelper;
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.PathRef;
-import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.test.annotations.RepositoryInit;
-
-import java.io.File;
 
 /**
  * Initialization of box testing repository
@@ -68,11 +71,15 @@ public class BoxServerInit implements RepositoryInit {
         doc.setPropertyValue("dc:title", "File");
         doc = session.createDocument(doc);
         // upload file blob
-        File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob" + ".json");
-        FileBlob fb = new FileBlob(fieldAsJsonFile);
-        fb.setMimeType("image/jpeg");
-        DocumentHelper.addBlob(doc.getProperty("file:content"), fb);
-        session.saveDocument(doc);
+        try {
+            File fieldAsJsonFile = FileUtils.getResourceFileFromContext("blob" + ".json");
+            Blob fb = Blobs.createBlob(fieldAsJsonFile);
+            fb.setMimeType("image/jpeg");
+            DocumentHelper.addBlob(doc.getProperty("file:content"), fb);
+            session.saveDocument(doc);
+        } catch (IOException e) {
+            throw new NuxeoException(e);
+        }
 
         session.save();
 

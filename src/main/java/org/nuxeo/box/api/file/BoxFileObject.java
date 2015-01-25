@@ -16,22 +16,11 @@
  */
 package org.nuxeo.box.api.file;
 
-import org.nuxeo.box.api.adapter.BoxAdapter;
-import org.nuxeo.box.api.file.adapter.BoxFileAdapter;
-import org.nuxeo.box.api.marshalling.dao.BoxFile;
-import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
-import org.nuxeo.box.api.service.BoxService;
-import com.sun.jersey.multipart.FormDataParam;
-import org.nuxeo.ecm.core.api.ClientException;
-import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
-import org.nuxeo.ecm.webengine.model.WebObject;
-import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
-import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
-import org.nuxeo.runtime.api.Framework;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -42,10 +31,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
+
+import org.nuxeo.box.api.adapter.BoxAdapter;
+import org.nuxeo.box.api.file.adapter.BoxFileAdapter;
+import org.nuxeo.box.api.marshalling.dao.BoxFile;
+import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
+import org.nuxeo.box.api.service.BoxService;
+import org.nuxeo.ecm.core.api.Blobs;
+import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.model.NoSuchDocumentException;
+import org.nuxeo.ecm.webengine.model.WebObject;
+import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
+import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
+import org.nuxeo.runtime.api.Framework;
+
+import com.sun.jersey.multipart.FormDataParam;
 
 /**
  * WebObject for a Box File
@@ -121,7 +124,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
         }
         // Create the nx document from box item information
         DocumentModel newFile = session.createDocumentModel(documentParent.getPathAsString(), fileName, "File");
-        newFile.setPropertyValue("file:content", new FileBlob(uploadedInputStream));
+        newFile.setPropertyValue("file:content", (Serializable) Blobs.createBlob(uploadedInputStream));
         newFile = session.createDocument(newFile);
         // Adapt nx document to box folder adapter
         final BoxFileAdapter fileAdapter = (BoxFileAdapter) newFile.getAdapter(BoxAdapter.class);
