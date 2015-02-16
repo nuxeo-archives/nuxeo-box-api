@@ -16,7 +16,6 @@
  */
 package org.nuxeo.box.api.test.file;
 
-import com.google.inject.Inject;
 import org.nuxeo.box.api.adapter.BoxAdapter;
 import org.nuxeo.box.api.marshalling.dao.BoxFile;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
@@ -25,9 +24,11 @@ import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.box.api.test.BoxBaseTest;
 import org.nuxeo.box.api.test.BoxServerFeature;
 import org.nuxeo.box.api.test.BoxServerInit;
+
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
+
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +43,10 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

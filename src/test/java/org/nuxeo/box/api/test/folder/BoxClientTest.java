@@ -1,10 +1,12 @@
 package org.nuxeo.box.api.test.folder;
 
+import javax.inject.Inject;
+
 import com.box.boxjavalibv2.dao.BoxFolder;
 import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
 import com.box.boxjavalibv2.exceptions.BoxServerException;
 import com.box.restclientv2.exceptions.BoxRestException;
-import com.google.inject.Inject;
+
 import org.nuxeo.box.api.test.BoxBaseTest;
 import org.nuxeo.box.api.test.BoxServerFeature;
 import org.nuxeo.box.api.test.BoxServerInit;

@@ -24,7 +24,6 @@ import com.box.boxjavalibv2.exceptions.AuthFatalFailureException;
 import com.box.boxjavalibv2.exceptions.BoxServerException;
 import com.box.boxjavalibv2.requests.requestobjects.BoxOAuthRequestObject;
 import com.box.restclientv2.exceptions.BoxRestException;
-import com.google.inject.Inject;
 
 import org.nuxeo.box.api.service.BoxService;
 
@@ -46,6 +45,7 @@ import org.json.JSONTokener;
 import org.junit.Before;
 import org.nuxeo.ecm.core.api.CoreSession;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
