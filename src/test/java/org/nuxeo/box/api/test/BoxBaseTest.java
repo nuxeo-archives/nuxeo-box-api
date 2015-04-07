@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.junit.Before;
 import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.test.CoreFeature;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -61,6 +62,9 @@ import java.net.Socket;
 public class BoxBaseTest {
 
     private static final Integer TIMEOUT = Integer.valueOf(1000 * 60 * 5); // 5min
+
+    @Inject
+    protected CoreFeature coreFeature;
 
     @Inject
     protected CoreSession session;
@@ -81,6 +85,10 @@ public class BoxBaseTest {
     protected ObjectMapper mapper;
 
     protected WebResource service;
+
+    protected void sleepForFulltext() {
+        coreFeature.getStorageConfiguration().sleepForFulltext();
+    }
 
     protected BoxClient getAuthenticatedClient(String code) throws BoxRestException, BoxServerException,
             AuthFatalFailureException {
