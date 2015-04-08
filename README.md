@@ -1,19 +1,17 @@
 #Nuxeo Box API
 
-## General information and motivation
-
 The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box.com) api on top of Nuxeo repository. It transforms the Nuxeo repository into a Box compliant storage backend. Use cases of such an approach are:
 - light integration on continuous integration chain for your Box development
 - on-premise setup of Box stored content
 
 
-### Getting Started
+# Getting Started
 
 - [Download a Nuxeo server](http://www.nuxeo.com/en/downloads) (the zip version)
 
 - Unzip it
 
-- Install nuxeo-box-api plugin from command line 
+- Install nuxeo-box-api plugin from command line
   - Linux/Mac:
     - `NUXEO_HOME/bin/nuxeoctl mp-init`
     - `NUXEO_HOME/bin/nuxeoctl mp-install nuxeo-box-api`
@@ -35,10 +33,10 @@ The **Nuxeo** addon _nuxeo-box-api_ is an implementation of [Box](http://www.box
 
 
 Note: Your machine needs internet access. If you have a proxy setting, skip the mp-init and mp-install steps at first, just do nuxeoctl start and run the wizzard where you will be asked your proxy settings.
-  
-#####API Usage Examples:
 
-######Folders:
+##API Usage Examples:
+
+###Folders:
 
 - GET http://localhost:8080/nuxeo/box/**2.0/folders/{folder_id}**
 
@@ -46,7 +44,7 @@ looks like
 
 - GET https://api.box.com/**2.0/folders/{folder id}**
 
-######Files:
+###Files:
 
 - GET http://localhost:8080/nuxeo/box/**2.0/files/{file_id}**
 
@@ -55,12 +53,12 @@ looks like
 - GET https://api.box.com/**2.0/files/{file_id}**
 
 
-The complete documentation of the Box API can be found [here](https://developers.box.com/docs/). 
+The complete documentation of the Box API can be found [here](https://developers.box.com/docs/).
 
 Only the base URL `https://api.box.com` must be replaced by `http://localhost:8080/nuxeo/box` for instance.
-  
 
-###REST API Compatibility Matrix
+
+##REST API Compatibility Matrix
 
 Features | Box | Nuxeo
 ------------ | ------------- | ------------
@@ -75,16 +73,9 @@ Features | Box | Nuxeo
 [**Groups**](https://developers.box.com/docs/#groups)| Yes | On Demand
 [**Tasks**](https://developers.box.com/docs/#tasks)| Yes | On Demand
 
-###Report & Contribute
+#Sample usage
 
-We are glad to welcome new developers on this initiative, and even simple usage feedback is great.
-- Ask your questions on [Nuxeo Answers](http://answers.nuxeo.com)
-- Report issues on this github repository (see [issues link](http://github.com/nuxeo/nuxeo-box-api/issues) on the right)
-- Contribute: Send pull requests!
-
-##Sample usage
-
-###Java Box SDK usage with Nuxeo Box API
+##Java Box SDK usage with Nuxeo Box API
 
 The [Box Java SDK 2.2.2](https://github.com/box/box-java-sdk-v2) can be used to browse Nuxeo repositories.
 
@@ -125,12 +116,12 @@ Initialize the client with the following lines to make it point to your Nuxeo se
 
         import com.box.boxjavalibv2.BoxClient;
         import com.box.boxjavalibv2.BoxConfig;
-        
+
         static final String PROTOCOL = "http";
         static final String SERVER_URL = "localhost:8080";
 
         BoxConfig boxConfig = BoxConfig.getInstance();
-        
+
         boxConfig.setAuthUrlScheme(PROTOCOL); // Default value is "https"
         boxConfig.setOAuthUrlAuthority(SERVER_URL);
         boxConfig.setOAuthApiUrlPath("/nuxeo");
@@ -142,10 +133,10 @@ Initialize the client with the following lines to make it point to your Nuxeo se
         boxConfig.setUploadUrlScheme(PROTOCOL); // Default value is "https"
         boxConfig.setUploadUrlAuthority("/nuxeo");
         boxConfig.setUploadUrlPath("/nuxeo/site/box/2.0");
-        
 
-        
-###Box/Nuxeo hybrid client application sample
+
+
+##Box/Nuxeo hybrid client application sample
 
 [This sample application](https://github.com/nuxeo/nuxeo-box-angular-sample) browses Nuxeo and Box repositories with the same [REST API](https://developers.box.com/docs/). Only the base URL should be updated.
 
@@ -157,16 +148,33 @@ Examples:
 - Same JSON payload response such as:
   - <http://developers.box.com/docs/#folders-folder-object>
 
-##About
-###Nuxeo
 
-[Nuxeo](http://www.nuxeo.com) provides a modular, extensible Java-based [open source software platform for enterprise content management](http://www.nuxeo.com/en/products/content-management-platform), and packaged applications for [document management](http://www.nuxeo.com/en/products/document-management), [digital asset management](http://www.nuxeo.com/en/products/digital-asset-management), [social collaboration](http://www.nuxeo.com/en/products/social-collaboration) and [case management](http://www.nuxeo.com/en/products/case-management).
+# Building
 
-Designed by developers for developers, the Nuxeo platform offers a modern architecture, a powerful plug-in model and extensive packaging capabilities for building content applications.
+    mvn clean install
 
-More information on: <http://www.nuxeo.com/> 
+## Deploying
 
-###Box
+Install [the Nuxeo Box API Marketplace Package](https://connect.nuxeo.com/nuxeo/site/marketplace/package/nuxeo-box-api).
+Or manually copy the built artifacts into `$NUXEO_HOME/templates/custom/bundles/` and activate the "custom" template.
+
+## QA results
+
+[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=addons_nuxeo-box-api-master)](https://qa.nuxeo.org/jenkins/job/addons_nuxeo-box-api-master/)
+
+##Report & Contribute
+
+We are glad to welcome new developers on this initiative, and even simple usage feedback is great.
+- Ask your questions on [Nuxeo Answers](http://answers.nuxeo.com)
+- Report issues on this GitHub repository (see [issues link](http://github.com/nuxeo/nuxeo-box-api/issues) on the right)
+- Contribute: Send pull requests!
+
+#About
+##Nuxeo
+
+Nuxeo dramatically improves how content-based applications are built, managed and deployed, making customers more agile, innovative and successful. Nuxeo provides a next generation, enterprise ready platform for building traditional and cutting-edge content oriented applications. Combining a powerful application development environment with SaaS-based tools and a modular architecture, the Nuxeo Platform and Products provide clear business value to some of the most recognizable brands including Verizon, Electronic Arts, Netflix, Sharp, FICO, the U.S. Navy, and Boeing. Nuxeo is headquartered in New York and Paris. More information is available at www.nuxeo.com.
+
+##Box
 Box documentation and account:
 
 - <https://app.box.com/signup/personal/> -> Box Signup
