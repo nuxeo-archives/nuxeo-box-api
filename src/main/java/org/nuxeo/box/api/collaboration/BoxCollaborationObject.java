@@ -80,13 +80,13 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetCollaborations() throws NoSuchDocumentException, ClientException, BoxJSONException {
+    public String doGetCollaborations() throws NoSuchDocumentException, BoxJSONException {
         return boxService.toJSONString(boxFolder.getCollaborations());
     }
 
     @GET
     @Path("/{collaborationId}")
-    public String doGetCollaboration(@PathParam("collaborationId") String collaborationId) throws ClientException,
+    public String doGetCollaboration(@PathParam("collaborationId") String collaborationId) throws
             BoxJSONException {
         CoreSession session = ctx.getCoreSession();
         String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
@@ -106,7 +106,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     @DELETE
     @Path("/{collaborationId}")
     public void doRemoveCollaboration(@PathParam("collaborationId") String collaborationId)
-            throws NoSuchDocumentException, ClientException, BoxJSONException {
+            throws NoSuchDocumentException, BoxJSONException {
         CoreSession session = ctx.getCoreSession();
         String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
         DocumentRef docRef = new IdRef(collaborationIds[0]);
@@ -117,7 +117,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public String doPostCollaboration(String jsonBoxCollaboration) throws ClientException, BoxJSONException {
+    public String doPostCollaboration(String jsonBoxCollaboration) throws BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxCollaboration boxCollaboration = boxService.getBoxCollaboration(jsonBoxCollaboration);
         String documentId = boxCollaboration.getFolder().getId();
@@ -143,7 +143,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     @PUT
     @Path("/{collaborationId}")
     public String doPutCollaboration(@PathParam("collaborationId") String collaborationId, String jsonBoxCollaboration)
-            throws ClientException, BoxJSONException {
+            throws BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxCollaboration boxCollaboration = boxService.getBoxCollaboration(jsonBoxCollaboration);
         String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);

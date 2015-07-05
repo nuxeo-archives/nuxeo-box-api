@@ -85,7 +85,7 @@ public class BoxServiceImpl implements BoxService {
 
     @Override
     public BoxCollection searchBox(String term, CoreSession session, String limit, String offset)
-            throws ClientException {
+            {
         final Map<String, Object> collectionProperties = new HashMap<>();
         StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM " + "Document where ecm:fulltext = '" + term + "'");
@@ -104,7 +104,7 @@ public class BoxServiceImpl implements BoxService {
 
     @Override
     public List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList documentModels, String fields)
-            throws ClientException {
+            {
 
         final List<BoxTypedObject> boxObject = new ArrayList<>();
         for (DocumentModel documentModel : documentModels) {
@@ -146,7 +146,7 @@ public class BoxServiceImpl implements BoxService {
      */
     @Override
     public BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxFolderAdapter, ACE ace, String collaborationId)
-            throws ClientException {
+            {
         Map<String, Object> boxCollabProperties = new HashMap<>();
         // Nuxeo acl doesn't provide id yet
         boxCollabProperties.put(BoxCollaboration.FIELD_ID,

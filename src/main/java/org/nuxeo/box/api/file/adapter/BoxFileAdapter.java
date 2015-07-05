@@ -52,7 +52,7 @@ public class BoxFileAdapter extends BoxAdapter {
     /**
      * Instantiate the adapter and the Box File from Nuxeo Document and load its properties into json format
      */
-    public BoxFileAdapter(DocumentModel doc) throws ClientException {
+    public BoxFileAdapter(DocumentModel doc) {
         super(doc);
 
         // MD5
@@ -92,7 +92,7 @@ public class BoxFileAdapter extends BoxAdapter {
         return new BoxFile(boxProperties);
     }
 
-    public BoxCollection getComments() throws ClientException {
+    public BoxCollection getComments() {
         List<BoxComment> boxComments = new ArrayList<>();
         Map<String, Object> collectionProperties = new HashMap<>();
         CommentManager commentManager = Framework.getLocalService(CommentManager.class);

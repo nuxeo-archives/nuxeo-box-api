@@ -73,7 +73,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{fileId}")
-    public String doGetFile(@PathParam("fileId") final String fileId) throws NoSuchDocumentException, ClientException,
+    public String doGetFile(@PathParam("fileId") final String fileId) throws NoSuchDocumentException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel file = session.getDocument(new IdRef(fileId));
@@ -84,7 +84,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @DELETE
     @Path("{fileId}")
-    public void doDeleteFile(@PathParam("fileId") String fileId) throws ClientException {
+    public void doDeleteFile(@PathParam("fileId") String fileId) {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(fileId));
         session.save();
@@ -92,7 +92,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{fileId}")
-    public String doUpdateFile(@PathParam("fileId") String fileId, String jsonBoxFile) throws ClientException,
+    public String doUpdateFile(@PathParam("fileId") String fileId, String jsonBoxFile) throws
             BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document with given id
@@ -113,7 +113,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public String doPostFile(@FormDataParam("file") InputStream uploadedInputStream,
             @FormDataParam("filename") String fileName, @FormDataParam("parent_id") String parentId)
-            throws ClientException, BoxJSONException, IOException {
+            throws BoxJSONException, IOException {
         // Fetching its parent to get parent id
         final CoreSession session = ctx.getCoreSession();
         DocumentModel documentParent;

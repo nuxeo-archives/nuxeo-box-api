@@ -47,13 +47,11 @@ public interface BoxService {
 
     BiMap<String, String> getNxBoxRole();
 
-    BoxCollection searchBox(String term, CoreSession session, String limit, String offset) throws ClientException;
+    BoxCollection searchBox(String term, CoreSession session, String limit, String offset);
 
-    List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList documentModels, String fields)
-            throws ClientException;
+    List<BoxTypedObject> getBoxDocumentCollection(DocumentModelList documentModels, String fields);
 
-    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem, ACE ace, String collaborationId)
-            throws ClientException;
+    BoxCollaboration getBoxCollaboration(BoxFolderAdapter boxItem, ACE ace, String collaborationId);
 
     String toJSONString(BoxObject boxObject) throws BoxJSONException;
 
@@ -82,4 +80,5 @@ public interface BoxService {
     String getJSONBoxException(Exception e, int status);
 
     String[] getCollaborationArrayIds(String collaborationId);
+
 }

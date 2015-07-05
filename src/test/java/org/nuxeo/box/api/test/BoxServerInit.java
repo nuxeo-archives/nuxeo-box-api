@@ -37,20 +37,20 @@ import org.nuxeo.ecm.core.test.annotations.RepositoryInit;
  */
 public class BoxServerInit implements RepositoryInit {
 
-    public static DocumentModel getFolder(int index, CoreSession session) throws ClientException {
+    public static DocumentModel getFolder(int index, CoreSession session) {
         return session.getDocument(new PathRef("/folder_" + index));
     }
 
-    public static DocumentModel getNote(int index, CoreSession session) throws ClientException {
+    public static DocumentModel getNote(int index, CoreSession session) {
         return session.getDocument(new PathRef("/folder_1/note_" + index));
     }
 
-    public static DocumentModel getFile(int index, CoreSession session) throws ClientException {
+    public static DocumentModel getFile(int index, CoreSession session) {
         return session.getDocument(new PathRef("/folder_2/file"));
     }
 
     @Override
-    public void populate(CoreSession session) throws ClientException {
+    public void populate(CoreSession session) {
         // Create some docs
         for (int i = 0; i < 5; i++) {
             DocumentModel doc = session.createDocumentModel("/", "folder_" + i, "Folder");

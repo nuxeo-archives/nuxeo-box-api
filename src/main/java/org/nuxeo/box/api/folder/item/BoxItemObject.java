@@ -68,7 +68,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     public String doGetItems(@QueryParam("offset") String offset, @QueryParam("limit") String limit,
-            @QueryParam("fields") String fields) throws BoxJSONException, ClientException {
+            @QueryParam("fields") String fields) throws BoxJSONException {
         CoreSession session = ctx.getCoreSession();
         BoxCollection itemCollection = folderAdapter.getItemCollection(session,
                 Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT),

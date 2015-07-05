@@ -69,7 +69,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     @GET
     @Path("{folderId}")
     public String doGetFolder(@PathParam("folderId") final String folderId) throws NoSuchDocumentException,
-            ClientException, BoxJSONException {
+            BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel folder = "0".equals(folderId) ? session.getRootDocument() : session.getDocument(new IdRef(
                 folderId));
@@ -79,7 +79,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public String doPostFolder(String jsonBoxFolder) throws ClientException, BoxJSONException {
+    public String doPostFolder(String jsonBoxFolder) throws BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxFolder boxFolder = boxService.getBoxFolder(jsonBoxFolder);
         // Fetching its parent to get parent id
@@ -103,7 +103,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{folderId}")
-    public String doPutFolder(@PathParam("folderId") String folderId, String jsonBoxFolder) throws ClientException,
+    public String doPutFolder(@PathParam("folderId") String folderId, String jsonBoxFolder) throws
             BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document with given id
@@ -122,7 +122,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @DELETE
     @Path("{folderId}")
-    public void doDeleteFolder(@PathParam("folderId") String folderId) throws ClientException {
+    public void doDeleteFolder(@PathParam("folderId") String folderId) {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(folderId));
         session.save();

@@ -56,7 +56,7 @@ public class BoxCommentAdapter {
     /**
      * Instantiate the adapter and the Box Comment from Nuxeo Document and load its properties into json format
      */
-    public BoxCommentAdapter(DocumentModel doc) throws ClientException {
+    public BoxCommentAdapter(DocumentModel doc) {
         BoxService boxService = Framework.getLocalService(BoxService.class);
 
         comment = doc;
@@ -87,7 +87,7 @@ public class BoxCommentAdapter {
         }
     }
 
-    private BoxTypedObject fillItem(DocumentModel doc) throws ClientException {
+    private BoxTypedObject fillItem(DocumentModel doc) {
         CommentManager commentManager = Framework.getLocalService(CommentManager.class);
         List<DocumentModel> targetList = commentManager.getDocumentsForComment(doc);
         if (targetList.isEmpty()) {
@@ -103,7 +103,7 @@ public class BoxCommentAdapter {
     /**
      * Update the comment (nx/box sides)
      */
-    public void save(CoreSession session) throws ClientException, ParseException, InvocationTargetException,
+    public void save(CoreSession session) throws ParseException, InvocationTargetException,
             IllegalAccessException, BoxJSONException {
         comment.setPropertyValue("comment:text", boxComment.getMessage());
         session.saveDocument(comment);

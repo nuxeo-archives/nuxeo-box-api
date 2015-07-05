@@ -117,7 +117,7 @@ public class BoxCommentTest extends BoxBaseTest {
         assertEquals(file.getId(), finalResult.getJSONObject("item").getString("id"));
     }
 
-    public void itCanGetCommentsFromAFile(String commentId) throws ClientException, IOException, JSONException {
+    public void itCanGetCommentsFromAFile(String commentId) throws IOException, JSONException {
         // Fetching the file in Nuxeo way
         DocumentModel file = BoxServerInit.getFile(1, session);
 
