@@ -67,7 +67,7 @@ public class BoxExceptionTest extends BoxBaseTest {
         assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
         finalResult = getJSONFromResponse(response);
         assertEquals(500, finalResult.getInt("status"));
-        assertEquals("Failed to get document null", finalResult.getString("message"));
+        assertEquals("Invalid reference (null)", finalResult.getString("message"));
     }
 
 }
