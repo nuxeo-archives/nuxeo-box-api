@@ -54,7 +54,7 @@ public class BoxSearchObject extends AbstractResource<ResourceTypeImpl> {
      */
     @GET
     public String doSearch(@QueryParam("query") String query, @QueryParam("offset") String offset,
-            @QueryParam("limit") String limit) throws ClientException, BoxJSONException {
+            @QueryParam("limit") String limit) throws BoxJSONException {
         return boxService.toJSONString(boxService.searchBox(query, ctx.getCoreSession(),
                 Objects.firstNonNull(limit, BoxConstants.BOX_LIMIT),
                 Objects.firstNonNull(offset, BoxConstants.BOX_OFFSET)));

@@ -49,7 +49,7 @@ public class BoxFolderAdapter extends BoxAdapter {
     /**
      * Instantiate the adapter and the Box Folder from Nuxeo Document and load its properties into json format
      */
-    public BoxFolderAdapter(DocumentModel doc) throws ClientException {
+    public BoxFolderAdapter(DocumentModel doc) {
         super(doc);
         CoreSession session = doc.getCoreSession();
         // Email update
@@ -81,7 +81,7 @@ public class BoxFolderAdapter extends BoxAdapter {
      * @return the list of children in item collection
      */
     public BoxCollection getItemCollection(CoreSession session, String limit, String offset, String fields)
-            throws ClientException {
+            {
         final Map<String, Object> collectionProperties = new HashMap<>();
         // Fetch items
         StringBuilder query = new StringBuilder();
@@ -97,7 +97,7 @@ public class BoxFolderAdapter extends BoxAdapter {
     /**
      * @return the ACLs set as a BoxCollection containing box collaborations listing
      */
-    public BoxCollection getCollaborations() throws ClientException {
+    public BoxCollection getCollaborations() {
         BoxService boxService = Framework.getLocalService(BoxService.class);
         List<BoxCollaboration> boxCollaborations = new ArrayList<>();
         Map<String, Object> collectionProperties = new HashMap<>();
@@ -119,7 +119,7 @@ public class BoxFolderAdapter extends BoxAdapter {
     /**
      * @return the related collaboration on a specific folder
      */
-    public BoxCollaboration getCollaboration(String collaborationId) throws ClientException {
+    public BoxCollaboration getCollaboration(String collaborationId) {
         CoreSession session = doc.getCoreSession();
         ACL acl = session.getACP(new IdRef(doc.getId())).getACL(collaborationId);
         if (acl == null) {

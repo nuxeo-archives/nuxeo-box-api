@@ -81,7 +81,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     @GET
     @Path("{commentId}")
     public String doGetComment(@PathParam("commentId") final String commentId) throws NoSuchDocumentException,
-            ClientException, BoxJSONException {
+            BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel comment = session.getDocument(new IdRef(commentId));
         // Adapt nx document to box comment adapter
@@ -90,7 +90,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public String doPostComment(String jsonBoxComment) throws NoSuchDocumentException, ClientException,
+    public String doPostComment(String jsonBoxComment) throws NoSuchDocumentException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxComment boxComment = boxService.getBoxComment(jsonBoxComment);
@@ -115,7 +115,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @PUT
     @Path("{commentId}")
-    public String doPutComment(@PathParam("commentId") String commentId, String jsonBoxComment) throws ClientException,
+    public String doPutComment(@PathParam("commentId") String commentId, String jsonBoxComment) throws
             BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException,
             NoSuchDocumentException {
         final CoreSession session = ctx.getCoreSession();
@@ -134,14 +134,14 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @DELETE
     @Path("{commentId}")
-    public void doDeleteComment(@PathParam("commentId") String commentId) throws ClientException {
+    public void doDeleteComment(@PathParam("commentId") String commentId) {
         final CoreSession session = ctx.getCoreSession();
         session.removeDocument(new IdRef(commentId));
         session.save();
     }
 
     @GET
-    public String doGetComments() throws NoSuchDocumentException, ClientException, BoxJSONException {
+    public String doGetComments() throws NoSuchDocumentException, BoxJSONException {
         return boxService.toJSONString(boxFile.getComments());
     }
 }

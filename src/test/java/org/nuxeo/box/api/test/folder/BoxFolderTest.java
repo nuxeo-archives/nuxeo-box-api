@@ -84,7 +84,7 @@ public class BoxFolderTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanPostABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+    public void itCanPostABoxFolder() throws BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         DocumentModel folder = BoxServerInit.getFolder(1, session);
 
@@ -114,7 +114,7 @@ public class BoxFolderTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanUpdateABoxFolder() throws ClientException, BoxJSONException, IOException, JSONException {
+    public void itCanUpdateABoxFolder() throws BoxJSONException, IOException, JSONException {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
 
@@ -137,7 +137,7 @@ public class BoxFolderTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanDeleteABoxFolder() throws ClientException {
+    public void itCanDeleteABoxFolder() {
         // Fetching the folder in Nuxeo way
         final DocumentModel folder = BoxServerInit.getFolder(1, session);
         // Call delete on this folder

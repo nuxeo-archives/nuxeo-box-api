@@ -61,7 +61,7 @@ public abstract class BoxAdapter {
 
     protected final BoxService boxService = Framework.getLocalService(BoxService.class);
 
-    public BoxAdapter(DocumentModel doc) throws ClientException {
+    public BoxAdapter(DocumentModel doc) {
         this.doc = doc;
         CoreSession session = doc.getCoreSession();
 
@@ -153,7 +153,7 @@ public abstract class BoxAdapter {
     }
 
     protected List<BoxTypedObject> getParentsHierarchy(CoreSession session, DocumentModel parentDoc)
-            throws ClientException {
+            {
         final List<BoxTypedObject> pathCollection = new ArrayList<>();
         while (parentDoc != null) {
             final Map<String, Object> parentCollectionProperties = new HashMap<>();
@@ -176,7 +176,7 @@ public abstract class BoxAdapter {
         return pathCollection;
     }
 
-    protected String[] getTags(CoreSession session) throws ClientException {
+    protected String[] getTags(CoreSession session) {
         final TagService tagService = Framework.getLocalService(TagService.class);
         final List<Tag> tags = tagService.getDocumentTags(session, doc.getId(), session.getPrincipal().getName());
         final String[] tagNames = new String[tags.size()];
@@ -191,7 +191,7 @@ public abstract class BoxAdapter {
     /**
      * Update the document (nx/box sides) thanks to a box item
      */
-    public void save(CoreSession session) throws ClientException, ParseException, InvocationTargetException,
+    public void save(CoreSession session) throws ParseException, InvocationTargetException,
             IllegalAccessException, BoxJSONException {
 
         setDescription(boxItem.getDescription());
@@ -226,15 +226,15 @@ public abstract class BoxAdapter {
         session.save();
     }
 
-    public void setTitle(String value) throws ClientException {
+    public void setTitle(String value) {
         doc.setPropertyValue("dc:title", value);
     }
 
-    public void setDescription(String value) throws ClientException {
+    public void setDescription(String value) {
         doc.setPropertyValue("dc:description", value);
     }
 
-    public void setCreator(String value) throws ClientException {
+    public void setCreator(String value) {
         doc.setPropertyValue("dc:creator", value);
     }
 }

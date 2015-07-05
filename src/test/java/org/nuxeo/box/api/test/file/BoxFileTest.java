@@ -84,7 +84,7 @@ public class BoxFileTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanDeleteABoxFile() throws ClientException {
+    public void itCanDeleteABoxFile() {
         // Fetching the file in Nuxeo way
         final DocumentModel file = BoxServerInit.getFile(1, session);
         // Call delete on this file
@@ -97,7 +97,7 @@ public class BoxFileTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanUpdateABoxFile() throws ClientException, BoxJSONException, IOException, JSONException {
+    public void itCanUpdateABoxFile() throws BoxJSONException, IOException, JSONException {
         // Fetching the File in Nuxeo way
         final DocumentModel File = BoxServerInit.getFile(1, session);
 
@@ -125,7 +125,7 @@ public class BoxFileTest extends BoxBaseTest {
     }
 
     @Test
-    public void itCanCreateABoxFile() throws ClientException, IOException, JSONException {
+    public void itCanCreateABoxFile() throws IOException, JSONException {
         // Setting the parent
         DocumentModel folder = BoxServerInit.getFolder(1, session);
         FormDataMultiPart formDataMultiPart = new FormDataMultiPart();
