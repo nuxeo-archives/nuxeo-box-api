@@ -38,7 +38,6 @@ import org.nuxeo.box.api.marshalling.dao.BoxFile;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.Blobs;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;

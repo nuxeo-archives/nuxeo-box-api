@@ -21,7 +21,6 @@ import com.google.common.base.Objects;
 import org.nuxeo.box.api.BoxConstants;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;

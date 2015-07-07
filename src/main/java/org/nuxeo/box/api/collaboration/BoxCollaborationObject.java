@@ -24,11 +24,11 @@ import org.nuxeo.box.api.marshalling.dao.BoxUser;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.ACP;
@@ -72,7 +72,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
                 CoreSession session = ctx.getCoreSession();
                 DocumentModel folder = session.getDocument(new IdRef(folderId));
                 boxFolder = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 throw WebException.wrap(e);
             }
             setRoot(true);

@@ -24,7 +24,6 @@ import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.marshalling.jsonparsing.BoxJSONParser;
 import org.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;

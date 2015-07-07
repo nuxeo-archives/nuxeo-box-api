@@ -24,10 +24,10 @@ import org.nuxeo.box.api.folder.adapter.BoxFolderAdapter;
 import org.nuxeo.box.api.marshalling.dao.BoxCollection;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
@@ -60,7 +60,7 @@ public class BoxItemObject extends AbstractResource<ResourceTypeImpl> {
             CoreSession session = ctx.getCoreSession();
             DocumentModel folder = session.getDocument(new IdRef(folderId));
             folderAdapter = (BoxFolderAdapter) folder.getAdapter(BoxAdapter.class);
-        } catch (ClientException e) {
+        } catch (NuxeoException e) {
             throw WebException.wrap(e);
         }
         setRoot(true);

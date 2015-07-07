@@ -21,7 +21,6 @@ package org.nuxeo.box.api;
 import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
 import org.apache.commons.lang.StringUtils;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
@@ -58,7 +57,7 @@ public class Box extends ModuleRoot {
             String repoName = repositoryParam.substring("repo/".length() + 1);
             try {
                 ctx.setRepositoryName(repoName);
-            } catch (final ClientException e) {
+            } catch (IllegalArgumentException e) {
                 throw new WebResourceNotFoundException(e.getMessage());
             }
         }

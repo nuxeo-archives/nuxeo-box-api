@@ -24,7 +24,6 @@ import org.nuxeo.box.api.marshalling.dao.BoxEmail;
 import org.nuxeo.box.api.marshalling.dao.BoxFolder;
 import org.nuxeo.box.api.marshalling.dao.BoxItem;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;

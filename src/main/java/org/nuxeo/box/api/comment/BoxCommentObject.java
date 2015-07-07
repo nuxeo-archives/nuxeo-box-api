@@ -23,10 +23,10 @@ import org.nuxeo.box.api.marshalling.dao.BoxComment;
 import org.nuxeo.box.api.marshalling.exceptions.BoxJSONException;
 import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.comment.api.CommentableDocument;
 import org.nuxeo.ecm.platform.comment.workflow.utils.CommentsConstants;
@@ -71,7 +71,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
                 CoreSession session = ctx.getCoreSession();
                 DocumentModel file = session.getDocument(new IdRef(fileId));
                 boxFile = (BoxFileAdapter) file.getAdapter(BoxAdapter.class);
-            } catch (ClientException e) {
+            } catch (NuxeoException e) {
                 throw WebException.wrap(e);
             }
             setRoot(true);
