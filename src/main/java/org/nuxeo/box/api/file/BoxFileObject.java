@@ -40,8 +40,8 @@ import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.Blobs;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
@@ -72,7 +72,7 @@ public class BoxFileObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{fileId}")
-    public String doGetFile(@PathParam("fileId") final String fileId) throws NoSuchDocumentException,
+    public String doGetFile(@PathParam("fileId") final String fileId) throws DocumentNotFoundException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel file = session.getDocument(new IdRef(fileId));

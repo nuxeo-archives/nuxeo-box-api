@@ -26,6 +26,7 @@ import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoException;
@@ -33,7 +34,6 @@ import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.ACP;
 import org.nuxeo.ecm.core.api.security.impl.ACLImpl;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
@@ -80,7 +80,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetCollaborations() throws NoSuchDocumentException, BoxJSONException {
+    public String doGetCollaborations() throws DocumentNotFoundException, BoxJSONException {
         return boxService.toJSONString(boxFolder.getCollaborations());
     }
 
@@ -106,7 +106,7 @@ public class BoxCollaborationObject extends AbstractResource<ResourceTypeImpl> {
     @DELETE
     @Path("/{collaborationId}")
     public void doRemoveCollaboration(@PathParam("collaborationId") String collaborationId)
-            throws NoSuchDocumentException, BoxJSONException {
+            throws DocumentNotFoundException, BoxJSONException {
         CoreSession session = ctx.getCoreSession();
         String[] collaborationIds = boxService.getCollaborationArrayIds(collaborationId);
         DocumentRef docRef = new IdRef(collaborationIds[0]);

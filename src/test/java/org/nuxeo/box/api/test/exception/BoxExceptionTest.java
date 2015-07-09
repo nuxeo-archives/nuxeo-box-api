@@ -50,7 +50,7 @@ public class BoxExceptionTest extends BoxBaseTest {
         assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(404, finalResult.getInt("status"));
-        assertEquals("No such document: blabla", finalResult.getString("code"));
+        assertEquals("blabla", finalResult.getString("code"));
 
         // Get wrong endpoint
         response = service.path("folder").get(ClientResponse.class);

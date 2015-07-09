@@ -25,9 +25,9 @@ import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.NuxeoException;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.platform.comment.api.CommentableDocument;
 import org.nuxeo.ecm.platform.comment.workflow.utils.CommentsConstants;
 import org.nuxeo.ecm.webengine.WebException;
@@ -80,7 +80,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{commentId}")
-    public String doGetComment(@PathParam("commentId") final String commentId) throws NoSuchDocumentException,
+    public String doGetComment(@PathParam("commentId") final String commentId) throws DocumentNotFoundException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel comment = session.getDocument(new IdRef(commentId));
@@ -90,7 +90,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @POST
-    public String doPostComment(String jsonBoxComment) throws NoSuchDocumentException,
+    public String doPostComment(String jsonBoxComment) throws DocumentNotFoundException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         BoxComment boxComment = boxService.getBoxComment(jsonBoxComment);
@@ -117,7 +117,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     @Path("{commentId}")
     public String doPutComment(@PathParam("commentId") String commentId, String jsonBoxComment) throws
             BoxJSONException, ParseException, IllegalAccessException, InvocationTargetException,
-            NoSuchDocumentException {
+            DocumentNotFoundException {
         final CoreSession session = ctx.getCoreSession();
         // Fetch the nx document comment
         final DocumentModel nxComment = session.getDocument(new IdRef(commentId));
@@ -141,7 +141,7 @@ public class BoxCommentObject extends AbstractResource<ResourceTypeImpl> {
     }
 
     @GET
-    public String doGetComments() throws NoSuchDocumentException, BoxJSONException {
+    public String doGetComments() throws DocumentNotFoundException, BoxJSONException {
         return boxService.toJSONString(boxFile.getComments());
     }
 }

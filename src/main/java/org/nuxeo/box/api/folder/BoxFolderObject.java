@@ -26,8 +26,8 @@ import org.nuxeo.box.api.marshalling.jsonparsing.BoxResourceHub;
 import org.nuxeo.box.api.service.BoxService;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IdRef;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.AbstractResource;
 import org.nuxeo.ecm.webengine.model.impl.ResourceTypeImpl;
@@ -67,7 +67,7 @@ public class BoxFolderObject extends AbstractResource<ResourceTypeImpl> {
 
     @GET
     @Path("{folderId}")
-    public String doGetFolder(@PathParam("folderId") final String folderId) throws NoSuchDocumentException,
+    public String doGetFolder(@PathParam("folderId") final String folderId) throws DocumentNotFoundException,
             BoxJSONException {
         final CoreSession session = ctx.getCoreSession();
         final DocumentModel folder = "0".equals(folderId) ? session.getRootDocument() : session.getDocument(new IdRef(

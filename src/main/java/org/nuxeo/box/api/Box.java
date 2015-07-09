@@ -21,7 +21,7 @@ package org.nuxeo.box.api;
 import org.nuxeo.box.api.marshalling.exceptions.BoxRestException;
 import org.nuxeo.box.api.service.BoxService;
 import org.apache.commons.lang.StringUtils;
-import org.nuxeo.ecm.core.model.NoSuchDocumentException;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.ecm.webengine.model.exceptions.WebSecurityException;
@@ -52,7 +52,7 @@ public class Box extends ModuleRoot {
     }
 
     @Path("/")
-    public Object doGetRepository(@PathParam("repo") final String repositoryParam) throws NoSuchDocumentException {
+    public Object doGetRepository(@PathParam("repo") final String repositoryParam) throws DocumentNotFoundException {
         if (StringUtils.isNotBlank(repositoryParam)) {
             String repoName = repositoryParam.substring("repo/".length() + 1);
             try {
