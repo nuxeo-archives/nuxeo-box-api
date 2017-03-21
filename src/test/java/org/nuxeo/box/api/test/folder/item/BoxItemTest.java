@@ -18,13 +18,16 @@
  */
 package org.nuxeo.box.api.test.folder.item;
 
-import org.nuxeo.box.api.test.BoxBaseTest;
-import org.nuxeo.box.api.test.BoxServerFeature;
-import org.nuxeo.box.api.test.BoxServerInit;
-import com.sun.jersey.api.client.ClientResponse;
+import static org.junit.Assert.assertEquals;
+
+import javax.ws.rs.core.Response;
+
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.box.api.test.BoxBaseTest;
+import org.nuxeo.box.api.test.BoxServerFeature;
+import org.nuxeo.box.api.test.BoxServerInit;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
@@ -32,9 +35,7 @@ import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.Jetty;
 
-import javax.ws.rs.core.Response;
-
-import static org.junit.Assert.assertEquals;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * @since 5.9.2
@@ -57,7 +58,7 @@ public class BoxItemTest extends BoxBaseTest {
         JSONObject finalResult = getJSONFromResponse(response);
         assertEquals(finalResult.getString("total_count"), "5");
         assertEquals(((JSONObject) finalResult.getJSONArray("entries").get(0)).get("etag"),
-                ((JSONObject) finalResult.getJSONArray("entries").get(0)).get("sequence_id") + "_0.0");
+                ((JSONObject) finalResult.getJSONArray("entries").get(0)).get("sequence_id") + "_0.1");
     }
 
     @Test
