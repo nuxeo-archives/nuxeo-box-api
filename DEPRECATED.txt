@@ -1,0 +1,1 @@
+The nuxeo-box-api module is deprecated since 8.10.
